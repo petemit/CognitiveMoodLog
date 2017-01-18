@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
+    tools:context="com.mindbuilders.cognitivemoodlog.DescribeSituationFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+
+    <TextView
+        android:text="@string/describe_your_situation_that_made_you_feel_upset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/DescribeYourSituationLabel"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/DescribeSituationTextBox"
+        android:layout_alignStart="@+id/DescribeSituationTextBox"
+        android:layout_marginTop="80dp"
+        android:width="250dp"
+        android:textSize="18sp"
+        android:textStyle="normal|bold" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:height="123dp"
+        android:width="300dp"
+        android:ems="10"
+        android:hint="type here..."
+        android:layout_marginTop="92dp"
+        android:id="@+id/DescribeSituationTextBox"
+        android:gravity="top"
+        android:textAlignment="gravity"
+        android:background="@drawable/border"
+        android:layout_alignTop="@+id/DescribeYourSituationLabel"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

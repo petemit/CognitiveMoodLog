@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:divider="@drawable/separator">
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textStyle="bold"
+                android:id="@+id/emotioncategoryitem"
+
+                android:hint='"test"'
+                android:gravity="center|left"
+                />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="1dp"
+                android:background="@android:color/darker_gray">
+
+            </View>
+        </LinearLayout>
+
+
+
+            <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/border"
+            android:paddingRight="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="7dp"
+            android:orientation="vertical">
+
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/emotionradiogroup"
+                android:gravity="center_vertical|left"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
+            </RadioGroup>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Emotion Strength"/>
+
+                <SeekBar
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="10"
+                    android:layout_gravity="center"
+                    android:paddingRight="50dp"
+                    android:paddingTop="10dp"
+                    android:progress="0"
+                    android:tickMark="@drawable/tickmark"
+                    android:id="@+id/emotionstrengthseekbar" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>

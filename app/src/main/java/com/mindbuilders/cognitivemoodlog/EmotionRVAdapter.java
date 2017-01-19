@@ -167,7 +167,6 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
                         }
                         listItemRadioGroup.addView(rb);
                     }
-
             }
 
         }

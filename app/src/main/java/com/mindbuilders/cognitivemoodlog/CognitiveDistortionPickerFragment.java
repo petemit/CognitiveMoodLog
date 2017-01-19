@@ -9,8 +9,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -23,20 +27,22 @@ public class CognitiveDistortionPickerFragment extends Fragment {
     List<thoughtobj> thoughtobjList;
     List<thought_cognitivedistortionobj> thought_cognitivedistortionList;
     ViewGroup negThoughtListCogDistortion;
-
-    private Cursor cursor;
-    SQLiteDatabase db;
-    private Context context;
-    private List<String> coglist;
+    CogMoodLogDatabaseHelper dbHelper;
+    private List<CognitiveDistortionobj> cogobjs;
+    int selectedid=-1;
+    boolean hasnotbeenseen=true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_cognitive_picker, container, false);
+        dbHelper=new CogMoodLogDatabaseHelper(this.getContext());
+        cogobjs=dbHelper.getCognitiveDistortionNameList();
 
         negThoughtListCogDistortion=(ViewGroup)rootView.findViewById(R.id.negThoughtListCogDistortion);
         return rootView;
+
 
     }
 
@@ -44,31 +50,60 @@ public class CognitiveDistortionPickerFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if (isVisibleToUser) {
-            Log.e("CogDistoPickerFragment","got here man");
+        if (isVisibleToUser) { // && hasnotbeenseen) {
             thoughtobjList=((CreateNewLogEntry)getActivity()).getThoughtobjList();
             for (thoughtobj tob: thoughtobjList) {
-                LayoutInflater inflater = LayoutInflater.from(rootView.getContext());
-                View tv = inflater.inflate(R.layout.negthought_listitem,rootView,false);
+                if (!tob.isadded()) {
+                    LayoutInflater inflater = LayoutInflater.from(rootView.getContext());
+                    View tv = inflater.inflate(R.layout.negthought_listitem, rootView, false);
 
-                TextView thought=(TextView)tv.findViewById(R.id.negthoughtcogdistlistitem_tv);
-                Spinner spin=(Spinner)tv.findViewById(R.id.cogdistortion_spinner);
-                thought.setText(tob.getNegativethought());
-                negThoughtListCogDistortion.addView(tv);
+                    TextView thought = (TextView) tv.findViewById(R.id.negthoughtcogdistlistitem_tv);
+                    Spinner spin = (Spinner) tv.findViewById(R.id.cogdistortion_spinner);
+                    TextView desc = (TextView) tv.findViewById(R.id.cogdescription);
+                    desc.setId(tob.getId());
+                    spin.setTag(desc.getId());
+                    thought.setText(tob.getNegativethought());
+                    ArrayAdapter<CognitiveDistortionobj> adapter = new ArrayAdapter<CognitiveDistortionobj>(
+                            this.getContext(), android.R.layout.simple_spinner_item, cogobjs);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    spin.setAdapter(adapter);
 
 
+                    spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if (selectedid != -1) {
 
+                                CognitiveDistortionobj cogobj = (CognitiveDistortionobj) ((Spinner) parent).getItemAtPosition(position);
+                                TextView desc = (TextView) rootView.findViewById((int) parent.getTag());
+                                desc.setText(cogobj.getDescription());
+
+                            }
+                            selectedid = 0;
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+                    desc.setText(((CognitiveDistortionobj) spin.getSelectedItem()).getDescription());
+                    negThoughtListCogDistortion.addView(tv);
+                    tob.setIsadded(true);
+                }
+                    hasnotbeenseen=false;
 
             }
         }
     }
 
 
-    public List<String> getCoglist() {
-        return coglist;
+    public List<CognitiveDistortionobj> getCoglist() {
+        return cogobjs;
     }
 
-    public void setCoglist(List<String> coglist) {
-        this.coglist = coglist;
+    public void setCoglist(List<CognitiveDistortionobj> cogobjs) {
+        this.cogobjs = cogobjs;
     }
 }

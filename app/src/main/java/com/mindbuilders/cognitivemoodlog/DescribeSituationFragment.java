@@ -27,6 +27,7 @@ public class DescribeSituationFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static EditText DescribeSituation;
     DescribeSituationFragmentListener activityCommander;
+    utilities util =new utilities(this.getContext());
 
 
     @Override
@@ -40,10 +41,6 @@ public class DescribeSituationFragment extends Fragment {
         }
     }
 
-    public void hideKeyboard(View view) {
-        InputMethodManager inputMethodManager =(InputMethodManager)this.getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
 
 
     @Override
@@ -54,12 +51,14 @@ public class DescribeSituationFragment extends Fragment {
                 R.layout.fragment_describe_situation, container, false);
 
         DescribeSituation=(EditText) rootView.findViewById(R.id.DescribeSituationTextBox);
+
+        //todo remove the textwatcher
         DescribeSituation.addTextChangedListener(textWatcher);
         DescribeSituation.setOnFocusChangeListener(new View.OnFocusChangeListener(){
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus){
-                    hideKeyboard(v);
+                    util.hideKeyboard(v);
                     activityCommander.updateSituation(DescribeSituation.getText().toString());
                 }
 

@@ -28,6 +28,7 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
     private List<thoughtobj> thoughtobjList;
     int thoughtincrementor=1;
     ThoughtAddFragmentListener mthoughtaddListener;
+    utilities util =new utilities(this.getContext());
 
     @Override
     public void onAttach(Activity activity) {
@@ -51,6 +52,15 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
         negThoughtEditText=(EditText)rootView.findViewById(R.id.addnegthoughtedittext);
         negthoughtlistview=(ViewGroup)rootView.findViewById(R.id.negthoughtlist);
         situationDescription.setText(((CreateNewLogEntry)getActivity()).getSituation());
+        negThoughtEditText.setOnFocusChangeListener(new View.OnFocusChangeListener(){
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus){
+                    util.hideKeyboard(v);
+                }
+
+            }
+        });
         setThoughtList(new ArrayList<thoughtobj>());
         // todo create a way to recreate this view when pulled from memory.  Just take the objects from the parent activity
         return rootView;

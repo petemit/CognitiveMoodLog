@@ -12,6 +12,7 @@ public class thoughtobj {
     private String positivethought;
     private int positivebeliefbefore;
     private int positivebeliefafter;
+    private boolean isadded=false;
 
     public int getId() {
         return id;
@@ -67,5 +68,13 @@ public class thoughtobj {
 
     public void setPositivebeliefafter(int positivebeliefafter) {
         this.positivebeliefafter = positivebeliefafter;
+    }
+
+    public boolean isadded() {
+        return isadded;
+    }
+
+    public void setIsadded(boolean isadded) {
+        this.isadded = isadded;
     }
 }

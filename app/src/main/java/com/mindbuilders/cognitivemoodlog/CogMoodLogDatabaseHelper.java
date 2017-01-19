@@ -1,9 +1,14 @@
 package com.mindbuilders.cognitivemoodlog;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.mindbuilders.cognitivemoodlog.CogMoodLogDatabaseContract.*;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Peter on 12/30/2016.
@@ -13,6 +18,9 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     public final static String DATABASE_NAME="CognitiveMoodLog.db";
     public final static int DATABASE_VERSION=1;
 
+    private Cursor cursor;
+    SQLiteDatabase db;
+    CogMoodLogDatabaseHelper dbHelper;
 
     public CogMoodLogDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -92,6 +100,49 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
                         ");";
         db.execSQL(SQL_CREATE_TROUBLESHOOTINGGUIDELINES_TABLE);
 
+    }
+
+    public List<CognitiveDistortionobj> getCognitiveDistortionNameList(){
+        List<CognitiveDistortionobj> cogobjs=new ArrayList<CognitiveDistortionobj>();
+        /* Use CogMoodLogDatabaseHelper to get access to a readable database */
+        db = this.getReadableDatabase();
+        //   db=dbHelper.getReadableDatabase();
+        String[] projection = {
+                "rowid",
+                CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_NAME,
+                CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_DESCRIPTION,
+        };
+
+        String sortOrder =
+                CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_NAME + " DESC";
+
+        Cursor cursor = db.query(
+                CogMoodLogDatabaseContract.cognitivedistortion.TABLE_NAME,                     // The table to query
+                projection,                               // The columns to return
+                null,                                // The columns for the WHERE clause
+                null,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                sortOrder                                 // The sort order
+        );
+        //Populate the name of the list
+
+        //TODO make this a string resource... maybe make a cleaner way to do this?
+        CognitiveDistortionobj firstobj =new CognitiveDistortionobj();
+        firstobj.setId(-1);
+        firstobj.setDescription("Please select a cognitive distortion");
+        firstobj.setName("----");
+        cogobjs.add(firstobj);
+        while (cursor.moveToNext()) {
+            CognitiveDistortionobj obj =new CognitiveDistortionobj();
+            obj.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("rowid"))));
+            obj.setName(cursor.getString(cursor.getColumnIndex("name")));
+            obj.setDescription(cursor.getString(cursor.getColumnIndex("description")));
+            cogobjs.add(obj);
+        }
+        db.close();
+
+        return cogobjs;
     }
 
     @Override

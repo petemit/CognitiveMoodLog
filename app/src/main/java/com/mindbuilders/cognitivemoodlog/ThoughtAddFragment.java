@@ -28,7 +28,7 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
     private List<thoughtobj> thoughtobjList;
     int thoughtincrementor=1;
     ThoughtAddFragmentListener mthoughtaddListener;
-    utilities util =new utilities(this.getContext());
+    utilities util;
 
     @Override
     public void onAttach(Activity activity) {
@@ -46,6 +46,7 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
         // Inflate the layout for this fragment
         rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_thought_add, container, false);
+        util=new utilities(this.getContext());
         situationDescription = (TextView) rootView.findViewById(R.id.ThoughtAddSituationDescription);
         addThoughtButton=(Button)rootView.findViewById(R.id.addnegthoughtbutton);
         addThoughtButton.setOnClickListener(this);
@@ -98,6 +99,8 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
             textView.setTag(thoughtincrementor);
             textView.setText(negThoughtEditText.getText());
             negThoughtEditText.setText("");
+            negThoughtEditText.setEnabled(false);
+            negThoughtEditText.setEnabled(true);
             seekbar.setTag(thoughtincrementor);
 
             seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {

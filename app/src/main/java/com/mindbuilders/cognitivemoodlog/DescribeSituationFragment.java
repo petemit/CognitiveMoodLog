@@ -27,7 +27,7 @@ public class DescribeSituationFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static EditText DescribeSituation;
     DescribeSituationFragmentListener activityCommander;
-    utilities util =new utilities(this.getContext());
+    utilities util;
 
 
     @Override
@@ -46,7 +46,7 @@ public class DescribeSituationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
+        util=new utilities(this.getContext());
         final ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_describe_situation, container, false);
 

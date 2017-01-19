@@ -23,7 +23,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 
-public class CreateNewLogEntry extends FragmentActivity implements DescribeSituationFragment.DescribeSituationFragmentListener, ThoughtAddFragment.ThoughtAddFragmentListener,EmotionRVAdapter.EmotionRVAdapterListener {
+public class CreateNewLogEntry extends FragmentActivity implements DescribeSituationFragment.DescribeSituationFragmentListener, ThoughtAddFragment.ThoughtAddFragmentListener,EmotionRVAdapter.EmotionRVAdapterListener, CognitiveDistortionPickerFragment.CognitiveDistortionPickerListener{
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
@@ -39,7 +39,7 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
     String logentry="";
     boolean isfinished;
     Timestamp timestamp;
-
+    private List<thought_cognitivedistortionobj> thought_cognitivedistortionobjs;
 //    public static String TABLE_NAME="logentry";
 //    public static String COLUMN_USER_ID="user_id";
 //    public static String COLUMN_LOGENTRY="logentry";
@@ -111,6 +111,11 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
 
     public List<thoughtobj> getThoughtobjList() {
         return thoughtobjList;
+    }
+
+    @Override
+    public void updateThought_CognitiveDistortionList(List<thought_cognitivedistortionobj> tcoglist) {
+        this.thought_cognitivedistortionobjs=tcoglist;
     }
 
     /**

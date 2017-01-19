@@ -1,5 +1,6 @@
 package com.mindbuilders.cognitivemoodlog;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,8 +31,21 @@ public class CognitiveDistortionPickerFragment extends Fragment {
     ViewGroup negThoughtListCogDistortion;
     CogMoodLogDatabaseHelper dbHelper;
     private List<CognitiveDistortionobj> cogobjs;
+    CognitiveDistortionPickerListener mCogDistPickListener;
     int selectedid=-1;
-    boolean hasnotbeenseen=true;
+    int tcogincrementor=1;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mCogDistPickListener = (CognitiveDistortionPickerListener) activity;
+        } catch(ClassCastException c){
+            throw new ClassCastException(activity.toString() + " must implement CognitiveDistortionPickerListener");
+        }
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +53,7 @@ public class CognitiveDistortionPickerFragment extends Fragment {
         rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_cognitive_picker, container, false);
         dbHelper=new CogMoodLogDatabaseHelper(this.getContext());
+        thought_cognitivedistortionList=new ArrayList<thought_cognitivedistortionobj>();
         cogobjs=dbHelper.getCognitiveDistortionNameList();
 
         negThoughtListCogDistortion=(ViewGroup)rootView.findViewById(R.id.negThoughtListCogDistortion);
@@ -50,7 +66,7 @@ public class CognitiveDistortionPickerFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if (isVisibleToUser) { // && hasnotbeenseen) {
+        if (isVisibleToUser && ((CreateNewLogEntry)getActivity()).getThoughtobjList()!=null) {
             thoughtobjList=((CreateNewLogEntry)getActivity()).getThoughtobjList();
             for (thoughtobj tob: thoughtobjList) {
                 if (!tob.isadded()) {
@@ -77,6 +93,14 @@ public class CognitiveDistortionPickerFragment extends Fragment {
                                 CognitiveDistortionobj cogobj = (CognitiveDistortionobj) ((Spinner) parent).getItemAtPosition(position);
                                 TextView desc = (TextView) rootView.findViewById((int) parent.getTag());
                                 desc.setText(cogobj.getDescription());
+                                thought_cognitivedistortionobj tcog=new thought_cognitivedistortionobj();
+                                tcog.setThoughtid((int)parent.getTag());
+                                tcog.setCognitivedistortionid(cogobj.getId());
+                                tcog.setId(tcogincrementor);
+                                tcogincrementor++;
+                                thought_cognitivedistortionList.add(tcog);
+                                mCogDistPickListener.updateThought_CognitiveDistortionList(thought_cognitivedistortionList);
+
 
                             }
                             selectedid = 0;
@@ -92,12 +116,15 @@ public class CognitiveDistortionPickerFragment extends Fragment {
                     negThoughtListCogDistortion.addView(tv);
                     tob.setIsadded(true);
                 }
-                    hasnotbeenseen=false;
+
 
             }
         }
     }
 
+    public interface CognitiveDistortionPickerListener {
+        public void updateThought_CognitiveDistortionList(List<thought_cognitivedistortionobj> tcoglist);
+    }
 
     public List<CognitiveDistortionobj> getCoglist() {
         return cogobjs;

@@ -69,7 +69,7 @@ public class CognitiveDistortionPickerFragment extends Fragment {
         if (isVisibleToUser && ((CreateNewLogEntry)getActivity()).getThoughtobjList()!=null) {
             thoughtobjList=((CreateNewLogEntry)getActivity()).getThoughtobjList();
             for (thoughtobj tob: thoughtobjList) {
-                if (!tob.isadded()) {
+                if (!tob.getisIsaddedToCogPicker()) {
                     LayoutInflater inflater = LayoutInflater.from(rootView.getContext());
                     View tv = inflater.inflate(R.layout.negthought_listitem, rootView, false);
 
@@ -114,7 +114,7 @@ public class CognitiveDistortionPickerFragment extends Fragment {
 
                     desc.setText(((CognitiveDistortionobj) spin.getSelectedItem()).getDescription());
                     negThoughtListCogDistortion.addView(tv);
-                    tob.setIsadded(true);
+                    tob.setisIsaddedToCogPicker(true);
                 }
 
 

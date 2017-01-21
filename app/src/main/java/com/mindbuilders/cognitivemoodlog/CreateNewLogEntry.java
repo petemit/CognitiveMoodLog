@@ -118,6 +118,10 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
         this.thought_cognitivedistortionobjs=tcoglist;
     }
 
+    public List<thought_cognitivedistortionobj> getThought_cognitivedistortionobjs() {
+        return thought_cognitivedistortionobjs;
+    }
+
     /**
      * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
      * sequence.
@@ -137,6 +141,8 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
                         return new ThoughtAddFragment();
                 case 3:
                         return new CognitiveDistortionPickerFragment();
+                case 4:
+                        return new PositiveThoughtAddFragment();
 
                 default:
                     return null;

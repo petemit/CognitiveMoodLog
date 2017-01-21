@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -20,7 +20,6 @@
         <item name="unselectedColor">#FF888888</item>
         <item name="selectedColor">@color/colorAccent</item>
     </style>
-
 
     <style name="CustomCirclePageIndicator">
         <item name="fillColor">@color/colorAccent</item>

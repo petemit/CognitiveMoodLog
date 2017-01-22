@@ -4,6 +4,8 @@
     android:layout_height="match_parent"
     android:layout_marginTop="30dp"
     android:layout_marginLeft="10dp"
+    android:clickable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
 
@@ -58,7 +60,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:max="10"
+
             android:progress="0"
+
             android:layout_marginRight="15dp"
             android:id="@+id/posthought_sb" />
     </LinearLayout>

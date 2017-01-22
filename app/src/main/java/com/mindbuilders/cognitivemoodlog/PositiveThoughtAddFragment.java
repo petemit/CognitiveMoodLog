@@ -68,7 +68,7 @@ public class PositiveThoughtAddFragment extends Fragment {
                             int cid=tcdo.getCognitivedistortionid();
 
                             for (CognitiveDistortionobj cog : cogobjs) {
-                                if (cog.getId() == cid) {
+                                if (cog.getId() == cid && cog.getId()>0) {
                                     //This appends the cognitive distortion to the Negative Thought Text
                                     thought.append("   (" + cog.getName() + ")");
                                     Log.e("PosThoughtAddFragment",cog.getName());

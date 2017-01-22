@@ -14,7 +14,7 @@
         android:layout_marginRight="15dp"
         android:layout_marginLeft="15dp"
         android:id="@+id/posthoughtadder_negthought_tv"
-        android:gravity="center"
+        android:gravity="left"
         android:textStyle="bold"
         android:maxLines="10"/>
 
@@ -36,27 +36,27 @@
             android:layout_height="wrap_content"
             android:hint="Enter a Positive Thought"
             android:textSize="14sp"
-            android:gravity="center"
-            android:background="@drawable/border"
-            android:layout_gravity="center"
+            android:gravity="left"
+            android:layout_gravity="left"
 
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:id="@+id/posthought_et"/>
 
         <TextView
-            android:text="Belief Strength"
+            android:text="Belief of Positive Thought"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:gravity="left"
             android:paddingTop="15dp"
+            android:layout_marginLeft="15dp"
             android:id="@+id/textView" />
 
         <SeekBar
             style="@style/Widget.AppCompat.SeekBar.Discrete"
             android:layout_width="225dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="left"
             android:max="10"
             android:progress="0"
             android:layout_marginRight="15dp"
@@ -67,8 +67,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="20dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:background="@color/borderColor"></View>
 
 </LinearLayout>

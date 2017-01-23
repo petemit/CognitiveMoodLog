@@ -1,5 +1,6 @@
 package com.mindbuilders.cognitivemoodlog;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -14,14 +15,18 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.LinePageIndicator;
+import com.viewpagerindicator.TabPageIndicator;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 
 public class CreateNewLogEntry extends FragmentActivity implements DescribeSituationFragment.DescribeSituationFragmentListener, ThoughtAddFragment.ThoughtAddFragmentListener,EmotionRVAdapter.EmotionRVAdapterListener, CognitiveDistortionPickerFragment.CognitiveDistortionPickerListener{
@@ -41,6 +46,7 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
     boolean isfinished;
     Timestamp timestamp;
     private List<thought_cognitivedistortionobj> thought_cognitivedistortionobjs;
+    private static final String[] CONTENT = new String[] { "Situation", "Emotions", "Negative Thoughts", "Cognitive Distortions", "Positive Thoughts", "Review Thoughts", "Review Emotions" };
 
 
     /**
@@ -64,10 +70,14 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
         mPager.setAdapter(mPagerAdapter);
 
 //        //Binding the title view pager indicator
-        CirclePageIndicator circlePageIndicator = (CirclePageIndicator) findViewById(R.id.vpi);
-        circlePageIndicator.setViewPager(mPager);
+        TabPageIndicator2 tabPageIndicator2 = (TabPageIndicator2) findViewById(R.id.vpi);
+        tabPageIndicator2.setViewPager(mPager);
+
 
     }
+
+
+
 
     @Override
     public void onBackPressed() {
@@ -150,6 +160,11 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
                     return null;
             }
 
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return CONTENT[position % CONTENT.length];
         }
 
 

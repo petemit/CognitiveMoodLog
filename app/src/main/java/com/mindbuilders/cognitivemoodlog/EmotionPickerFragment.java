@@ -69,7 +69,7 @@ public class EmotionPickerFragment extends Fragment {
                 sortOrder                                 // The sort order
         );
 
-        rvAdapter=new EmotionRVAdapter(cursor.getCount(),cursor, db);
+        rvAdapter=new EmotionRVAdapter(cursor.getCount(),cursor, db,getActivity());
 
         emotionlist.setLayoutManager(layoutManager);
         emotionlist.setAdapter(rvAdapter);

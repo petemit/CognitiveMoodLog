@@ -20,6 +20,7 @@ import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.LinePageIndicator;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,7 +28,7 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
-    private static final int NUM_PAGES = 5;
+    private static final int NUM_PAGES = 7;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -40,11 +41,7 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
     boolean isfinished;
     Timestamp timestamp;
     private List<thought_cognitivedistortionobj> thought_cognitivedistortionobjs;
-//    public static String TABLE_NAME="logentry";
-//    public static String COLUMN_USER_ID="user_id";
-//    public static String COLUMN_LOGENTRY="logentry";
-//    public static String COLUMN_ISFINISHED="isfinished";
-//    public static String COLUMN_TIMESTAMP = "timestamp";
+
 
     /**
      * The pager adapter, which provides the pages to the view pager widget.
@@ -57,6 +54,7 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_log_entry);
+        emotionobjList=new ArrayList<emotionobj>();
         mPager = (ViewPager) findViewById(R.id.viewpager);
 
         //TODO this is gross still.. probably should use a fragment, but actually... not a bad solution to just get the text from the parent activity, you need to make the situation description its own fragment that you can nest inside the child fragments
@@ -143,6 +141,10 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
                         return new CognitiveDistortionPickerFragment();
                 case 4:
                         return new PositiveThoughtAddFragment();
+                case 5:
+                        return new ReviewNegativeThoughtFragment();
+                case 6:
+                        return new ReviewEmotionFragment();
 
                 default:
                     return null;

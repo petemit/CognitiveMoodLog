@@ -8,9 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="10dp"
-        android:text="Try to select the cognitive distortion that matches up with your thought."/>
+        style="@style/ExplainText"
+        android:text="Try to select the cognitive distortion that matches up with your thought"/>
 
     <ScrollView
         android:layout_width="match_parent"

@@ -8,8 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="10dp"
+        style="@style/ExplainText"
         android:text="Think of a positive thought based in fact that contradicts the negative thought.  Rate your belief of this positive thought."/>
 
     <ScrollView

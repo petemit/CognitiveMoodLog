@@ -14,6 +14,7 @@ public class thoughtobj {
     private int positivebeliefafter;
     private boolean isaddedToCogPicker=false;
     private boolean isaddedToPosThoughtAdd=false;
+    private boolean isnegthoughtreviewdone=false;
 
     public int getId() {
         return id;
@@ -71,8 +72,7 @@ public class thoughtobj {
         this.positivebeliefafter = positivebeliefafter;
     }
 
-    public boolean getisIsaddedToCogPicker() {
-        return isaddedToCogPicker;
+    public boolean getisIsaddedToCogPicker() {return isaddedToCogPicker;
     }
 
     public void setisIsaddedToCogPicker(boolean isadded) {
@@ -84,5 +84,13 @@ public class thoughtobj {
     }
 
     public void setIsIsaddedToPosThoughtAdd(boolean isadded) {this.isaddedToPosThoughtAdd = isadded;
+    }
+
+    public boolean getIsNegThoughtReviewDone() {
+        return isnegthoughtreviewdone;
+    }
+
+    public void setIsNegThoughtReviewDone(boolean isnegthoughtreviewdone) {
+        this.isnegthoughtreviewdone = isnegthoughtreviewdone;
     }
 }

@@ -11,6 +11,9 @@ public class emotionobj {
     private int feelingstrengthBefore;
     private int getFeelingstrengthAfter;
     private int logentryid;
+    private boolean isaddedtoreview=false;
+
+    //todo Break this out into emotion objects and emotion_logentry
 
     public String getName() {
         return name;
@@ -58,5 +61,13 @@ public class emotionobj {
 
     public void setLogentryid(int logentryid) {
         this.logentryid = logentryid;
+    }
+
+    public boolean getIsaddedtoreview() {
+        return isaddedtoreview;
+    }
+
+    public void setIsaddedtoreview(boolean isaddedtoreview) {
+        this.isaddedtoreview = isaddedtoreview;
     }
 }

@@ -34,36 +34,36 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <EditText
-            android:layout_width="225dp"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:hint="Enter a Positive Thought"
-            android:textSize="14sp"
-            android:gravity="left"
-            android:layout_gravity="left"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="16sp"
 
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
+
+            android:inputType="textCapSentences"
+
             android:id="@+id/posthought_et"/>
 
         <TextView
             android:text="Belief of Positive Thought"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left"
+            android:gravity="center"
             android:paddingTop="15dp"
-            android:layout_marginLeft="15dp"
             android:id="@+id/textView" />
 
         <SeekBar
             style="@style/Widget.AppCompat.SeekBar.Discrete"
             android:layout_width="225dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
+            android:layout_gravity="center"
             android:max="10"
 
             android:progress="0"
 
-            android:layout_marginRight="15dp"
+
             android:id="@+id/posthought_sb" />
     </LinearLayout>
 

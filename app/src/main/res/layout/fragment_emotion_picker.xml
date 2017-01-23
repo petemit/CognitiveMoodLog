@@ -10,6 +10,13 @@
 
 
     <TextView
+        android:text="Pick the emotions you feel and rate their strengths"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/ExplainText"></TextView>
+
+<!--
+    <TextView
         android:text="Situation:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,8 +24,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:id="@+id/emotionPickerSituationLabel" />
+        android:textStyle="bold" />-->
 
     <TextView
         android:text="No Situation entered!"
@@ -26,13 +32,13 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="16dp"
+        android:textStyle="bold"
         android:id="@+id/SituationDescription" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp">
+        android:layout_marginTop="20dp">
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"

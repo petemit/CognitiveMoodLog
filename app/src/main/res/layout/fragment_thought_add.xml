@@ -6,7 +6,7 @@
     android:focusableInTouchMode="true"
     android:clickable="true"
     tools:context="com.mindbuilders.cognitivemoodlog.ThoughtAddFragment">
-
+<!--
     <TextView
         android:text="Situation:"
         android:layout_width="wrap_content"
@@ -17,24 +17,26 @@
         android:textSize="18sp"
         android:focusableInTouchMode="true"
         android:textStyle="bold"
-        android:id="@+id/ThoughtAddSituationLabel" />
+        android:id="@+id/ThoughtAddSituationLabel" />-->
+
+    <TextView
+        android:text="Enter any automatic negative thoughts that come when you think of the situation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+
+        style="@style/ExplainText"
+        android:id="@+id/negativethoughtdescription" />
+
 
     <TextView
         android:text="No Situation entered!"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:textStyle="bold"
         android:layout_marginTop="16dp"
         android:id="@+id/ThoughtAddSituationDescription" />
-
-    <TextView
-        android:text="Enter any automatic negative thoughts that come when you think of the situation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:id="@+id/negativethoughtdescription" />
-
-
 
     <LinearLayout
     android:layout_width="match_parent"

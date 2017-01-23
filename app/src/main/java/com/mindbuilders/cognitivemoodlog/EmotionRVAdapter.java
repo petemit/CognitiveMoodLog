@@ -1,5 +1,6 @@
 package com.mindbuilders.cognitivemoodlog;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,15 +30,17 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
     private Context context;
     private List<emotionobj> emotionList;
     EmotionRVAdapterListener mEmotionAddListener;
+    Activity activity;
 
-    public EmotionRVAdapter (int i, Cursor cursor, SQLiteDatabase db){
+    public EmotionRVAdapter (int i, Cursor cursor, SQLiteDatabase db, Activity activity){
         this.cursor=cursor;
         this.db =db;
+        this.activity=activity;
         emotioncategorycount=i;
     }
 
     public interface EmotionRVAdapterListener {
-        public void updateEmotions(List<emotionobj> emotionList);
+        void updateEmotions(List<emotionobj> emotionList);
     }
 
     @Override
@@ -46,7 +49,7 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.emotion_listitem,parent,false);
         EmotionViewHolder viewHolder=new EmotionViewHolder(view);
-        setEmotionList(new ArrayList<emotionobj>());
+        setEmotionList(((CreateNewLogEntry)activity).getEmotionobjList());
         try {
             mEmotionAddListener = (EmotionRVAdapterListener) context;
 
@@ -93,10 +96,11 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     emotionobj emo = new emotionobj();
                     emo.setId(checkedId);
+                    emo.setName(((RadioButton)(group.findViewById(group.getCheckedRadioButtonId()))).getText().toString());
+
 
                     seekbar.setTag(checkedId);
                     getEmotionList().add(emo);
-                    mEmotionAddListener.updateEmotions(getEmotionList());
 
                 }
             });

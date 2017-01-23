@@ -21,6 +21,14 @@
         <item name="selectedColor">@color/colorAccent</item>
     </style>
 
+    <style name="ExplainText">
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">30dp</item>
+    </style>
+
     <style name="CustomCirclePageIndicator">
         <item name="fillColor">@color/colorAccent</item>
         <item name="strokeColor">#FF000000</item>

@@ -13,6 +13,7 @@
         android:id="@+id/negthoughtlistitem"
         android:text="test"
         android:layout_marginRight="8dp"
+        android:textStyle="bold"
         android:gravity="center|top"
         android:maxLines="10"/>
 

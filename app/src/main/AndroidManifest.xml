@@ -21,7 +21,9 @@
         <activity
             android:name=".CreateNewLogEntry"
             android:label="@string/title_activity_create_new_log_entry"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Review" />
+        <activity android:name=".ReviewActivity" />
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package com.mindbuilders.cognitivemoodlog;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -22,6 +23,7 @@ import com.viewpagerindicator.CirclePageIndicator;
 import com.viewpagerindicator.LinePageIndicator;
 import com.viewpagerindicator.TabPageIndicator;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +74,6 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
 //        //Binding the title view pager indicator
         TabPageIndicator2 tabPageIndicator2 = (TabPageIndicator2) findViewById(R.id.vpi);
         tabPageIndicator2.setViewPager(mPager);
-
 
     }
 
@@ -172,6 +173,17 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
         public int getCount() {
             return NUM_PAGES;
         }
+    }
+
+    public void openReviewActivity(){
+
+        Intent myIntent = new Intent(this, ReviewActivity.class);
+        myIntent.putExtra("emotionobjList",(ArrayList)getEmotionobjList());
+        myIntent.putExtra("thoughtobjList",(ArrayList)getThoughtobjList());
+        myIntent.putExtra("thought_cognitivedistortionobj",(ArrayList)getThought_cognitivedistortionobjs());
+
+        startActivity(myIntent);
+
     }
 
 }

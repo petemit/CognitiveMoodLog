@@ -1,10 +1,12 @@
 package com.mindbuilders.cognitivemoodlog;
 
+import java.io.Serializable;
+
 /**
  * Created by Peter on 1/15/2017.
  */
 
-public class thought_cognitivedistortionobj{
+public class thought_cognitivedistortionobj implements Serializable {
     private int thoughtid;
     private int cognitivedistortionid;
     private int id;

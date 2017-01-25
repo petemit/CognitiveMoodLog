@@ -2,9 +2,11 @@ package com.mindbuilders.cognitivemoodlog;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -22,6 +24,7 @@ public class ReviewEmotionFragment extends Fragment {
     CogMoodLogDatabaseHelper dbHelper;
     // ThoughtAddFragment.ThoughtAddFragmentListener thoughtAddListener;
     utilities util;
+    Button finishlogentry;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -32,6 +35,13 @@ public class ReviewEmotionFragment extends Fragment {
         dbHelper=new CogMoodLogDatabaseHelper(this.getContext());
 
         emotionReviewList=(ViewGroup)rootView.findViewById(R.id.emotionReviewList);
+        finishlogentry=(Button)rootView.findViewById(R.id.openReviewFragmentButton);
+        finishlogentry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openReviewActivity(v);
+            }
+        });
         return rootView;
 
 
@@ -82,6 +92,12 @@ public class ReviewEmotionFragment extends Fragment {
                     }
             }
         }//end if
+
+    }
+
+    private void openReviewActivity(View view){
+        ((CreateNewLogEntry)getActivity()).openReviewActivity();
+
 
     }
 

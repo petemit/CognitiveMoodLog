@@ -1,10 +1,12 @@
 package com.mindbuilders.cognitivemoodlog;
 
+import java.io.Serializable;
+
 /**
  * Created by Peter on 1/5/2017.
  */
 
-public class emotionobj {
+public class emotionobj implements Serializable {
     private String name;
     private int id;
     private int emotioncategoryid;

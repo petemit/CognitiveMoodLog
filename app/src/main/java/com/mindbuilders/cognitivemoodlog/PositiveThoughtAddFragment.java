@@ -21,6 +21,7 @@ import java.util.List;
  * Created by Peter on 1/21/2017.
  */
 
+//todo fix that problem where the cognitive distortion isn't updated if you go back and select it
 public class PositiveThoughtAddFragment extends Fragment {
     ViewGroup rootView;
     List<thoughtobj> thoughtobjList;

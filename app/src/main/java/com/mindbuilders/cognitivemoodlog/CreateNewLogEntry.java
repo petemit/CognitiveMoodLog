@@ -182,6 +182,7 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
         myIntent.putExtra("thoughtobjList",(ArrayList)getThoughtobjList());
         myIntent.putExtra("thought_cognitivedistortionobj",(ArrayList)getThought_cognitivedistortionobjs());
 
+
         startActivity(myIntent);
 
     }

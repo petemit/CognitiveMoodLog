@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by Peter on 1/5/2017.
  */
 
-public class thoughtobj implements Serializable {
+public class thoughtobj implements Serializable{
     private int id;
     private String negativethought;
     private int negativebeliefBefore;

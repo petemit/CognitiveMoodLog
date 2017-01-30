@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     Button explainCognitiveTherapyButton;
     Button openOldEntry;
     TextView qotd;
+    static boolean FIRSTLOAD=false;
 
     private final Context mContext =getBaseContext();
     /* Class reference to help load the constructor on runtime */
@@ -46,26 +48,46 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        dbHelper =new CogMoodLogDatabaseHelper(getBaseContext());
         setSupportActionBar(toolbar);
         Stetho.initializeWithDefaults(this);
-try {
+        if (!FIRSTLOAD){
 
-    //delete the DB on startup so we can make sure it's created right.
-    getBaseContext().deleteDatabase("CognitiveMoodLog.db");
+            try {
 
-    dbHelper =new CogMoodLogDatabaseHelper(getBaseContext());
+                db=dbHelper.getReadableDatabase();
+                Cursor cursor=db.rawQuery("select * from emotion",null);
+                if(cursor.getCount()<1){
+                    FIRSTLOAD=true;
+                }
+            }
+            catch (SQLException s){
+                FIRSTLOAD=true;
+                Log.e("mainactivity","db doesn't exist, man");
+            }
+        }
+if (FIRSTLOAD){
+
+    try {
+
+        //delete the DB on startup so we can make sure it's created right.
+        //getBaseContext().deleteDatabase("CognitiveMoodLog.db");
+
+
 
         /* Use CogMoodLogDatabaseHelper to get access to a writable database */
-    db = dbHelper.getWritableDatabase();
+        db = dbHelper.getWritableDatabase();
 
-    PopulateCogMoodLogDatabase(db);
-    db.close();
+        PopulateCogMoodLogDatabase(db);
+        db.close();
 
 
+
+    }
+    catch (Exception e)
+    {e.printStackTrace();}
 
 }
-catch (Exception e)
-{e.printStackTrace();}
     /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

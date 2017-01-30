@@ -61,6 +61,7 @@ public class ReviewNegativeThoughtFragment extends Fragment {
                     seekbar.setTag(tob.getId());
                     TextView negthought = (TextView) tv.findViewById(R.id.negthoughtreview_tv);
                     negthought.setText(tob.getNegativethought());
+                    negthought.setTag(tob.getId()+"negthought_tv");
                     TextView posthought=(TextView) tv.findViewById(R.id.posthoughtreview_tv);
                     posthought.setText(tob.getPositivethought());
                     thought_cognitivedistortionList=((CreateNewLogEntry)this.getActivity()).getThought_cognitivedistortionobjs();
@@ -105,6 +106,25 @@ public class ReviewNegativeThoughtFragment extends Fragment {
                     }
 
                     negThoughtReviewList.addView(tv);
+
+                }
+                else{
+                    TextView textview= (TextView)rootView.findViewWithTag(tob.getId()+"negthought_tv");
+
+
+                    for (thought_cognitivedistortionobj tcdo :thought_cognitivedistortionList) {
+
+                        if (tcdo.getThoughtid() == tob.getId()) {
+                            int cid=tcdo.getCognitivedistortionid();
+
+                            for (CognitiveDistortionobj cog : cogobjs) {
+                                if (cog.getId() == cid && cog.getId()>0) {
+                                    //This appends the cognitive distortion to the Negative Thought Text
+                                    textview.setText(tob.getNegativethought() +"   (" + cog.getName() + ")");
+                                }
+                            }
+                        }
+                    }
 
                 }
                 tob.setIsNegThoughtReviewDone(true);

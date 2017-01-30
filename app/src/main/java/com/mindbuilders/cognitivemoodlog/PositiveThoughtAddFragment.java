@@ -14,6 +14,8 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +73,7 @@ public class PositiveThoughtAddFragment extends Fragment {
                     seekbar.setTag(tob.getId());
                     TextView thought = (TextView) tv.findViewById(R.id.posthoughtadder_negthought_tv);
                     thought.setText(tob.getNegativethought());
+                    thought.setTag(tob.getId()+"thought_tv");
                     EditText posthought_et=(EditText)tv.findViewById(R.id.posthought_et);
                     posthought_et.setTag(tob.getId());
                     thought_cognitivedistortionList=((CreateNewLogEntry)this.getActivity()).getThought_cognitivedistortionobjs();
@@ -116,6 +119,7 @@ public class PositiveThoughtAddFragment extends Fragment {
                     });
 
 
+
                     for (thought_cognitivedistortionobj tcdo :thought_cognitivedistortionList) {
 
                         if (tcdo.getThoughtid() == tob.getId()) {
@@ -132,8 +136,28 @@ public class PositiveThoughtAddFragment extends Fragment {
 
                         posThoughtAdderList.addView(tv);
 
+                }//end if isaddedtoposthoughtadd
+                else{
+                  TextView textview= (TextView)rootView.findViewWithTag(tob.getId()+"thought_tv");
+
+
+                    for (thought_cognitivedistortionobj tcdo :thought_cognitivedistortionList) {
+
+                        if (tcdo.getThoughtid() == tob.getId()) {
+                            int cid=tcdo.getCognitivedistortionid();
+
+                            for (CognitiveDistortionobj cog : cogobjs) {
+                                if (cog.getId() == cid && cog.getId()>0) {
+                                    //This appends the cognitive distortion to the Negative Thought Text
+                                    textview.setText(tob.getNegativethought() +"   (" + cog.getName() + ")");
+                                }
+                            }
+                        }
+                    }
+
                 }
                 tob.setIsIsaddedToPosThoughtAdd(true);
+
             }
         }//end if
 

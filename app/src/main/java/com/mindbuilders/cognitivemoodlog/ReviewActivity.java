@@ -5,7 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
+import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -25,7 +26,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReviewActivity extends Activity {
+public class ReviewActivity extends AppCompatActivity {
 
     private List<emotionobj> emotionobjList;
     private List<thoughtobj> thoughtobjList;
@@ -37,6 +38,7 @@ public class ReviewActivity extends Activity {
     private Button editbutton;
     private Button deletebutton;
     private Button savebutton;
+    private String situation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +51,26 @@ public class ReviewActivity extends Activity {
         thoughtobjList = (ArrayList<thoughtobj>) myIntent.getSerializableExtra("thoughtobjList");
         thought_cognitivedistortionobjsList= (ArrayList<thought_cognitivedistortionobj>)myIntent.
                 getSerializableExtra("thought_cognitivedistortionobj");//
+        situation=(String)myIntent.getStringExtra("situation");
         dbHelper=new CogMoodLogDatabaseHelper(getBaseContext());
         cogobjs=dbHelper.getCognitiveDistortionNameList();
         editbutton=(Button)findViewById(R.id.review_edit_button);
         deletebutton=(Button)findViewById(R.id.review_delete_button);
         savebutton=(Button)findViewById(R.id.review_save_button);
 
+        editbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
         deletebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 1. Instantiate an AlertDialog.Builder with its constructor
-                AlertDialog.Builder builder = new AlertDialog.Builder(getBaseContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(ReviewActivity.this);
 
 // 2. Chain together various setter methods to set the dialog characteristics
                 builder.setMessage("If you delete this entry, all your entered data will be lost!")
@@ -84,11 +95,37 @@ public class ReviewActivity extends Activity {
             }
         });
 
+        savebutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dbHelper.saveLogEntry(emotionobjList,thought_cognitivedistortionobjsList,thoughtobjList, situation);
+                Toast.makeText(ReviewActivity.this,"Logentry Saved",Toast.LENGTH_LONG);
+                Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
+                startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            }
+        });
+
         vg=(ViewGroup)findViewById(R.id.reviewresults);
 
 
 
         TextView emo_tv=new TextView(this.getBaseContext());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         emo_tv.setText("Emotion Review:");
         emo_tv.setTypeface(Typeface.DEFAULT_BOLD);
         emo_tv.setPadding(15,20,0,20);

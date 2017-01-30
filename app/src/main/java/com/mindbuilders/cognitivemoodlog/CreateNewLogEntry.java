@@ -181,7 +181,7 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
         myIntent.putExtra("emotionobjList",(ArrayList)getEmotionobjList());
         myIntent.putExtra("thoughtobjList",(ArrayList)getThoughtobjList());
         myIntent.putExtra("thought_cognitivedistortionobj",(ArrayList)getThought_cognitivedistortionobjs());
-
+        myIntent.putExtra("situation",this.getSituation());
 
         startActivity(myIntent);
 

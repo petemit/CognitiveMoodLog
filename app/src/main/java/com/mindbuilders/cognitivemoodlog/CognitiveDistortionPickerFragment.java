@@ -88,22 +88,29 @@ public class CognitiveDistortionPickerFragment extends Fragment {
                     spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            if (selectedid != -1) {
 
                                 CognitiveDistortionobj cogobj = (CognitiveDistortionobj) ((Spinner) parent).getItemAtPosition(position);
                                 TextView desc = (TextView) rootView.findViewById((int) parent.getTag());
                                 desc.setText(cogobj.getDescription());
-                                thought_cognitivedistortionobj tcog=new thought_cognitivedistortionobj();
-                                tcog.setThoughtid((int)parent.getTag());
-                                tcog.setCognitivedistortionid(cogobj.getId());
-                                tcog.setId(tcogincrementor);
-                                tcogincrementor++;
-                                thought_cognitivedistortionList.add(tcog);
-                                mCogDistPickListener.updateThought_CognitiveDistortionList(thought_cognitivedistortionList);
 
+                                if(cogobj.getId()!=-1) {
+                                    thought_cognitivedistortionobj tcog=new thought_cognitivedistortionobj();
+                                    tcog.setThoughtid((int) parent.getTag());
+                                    tcog.setCognitivedistortionid(cogobj.getId());
+                                    tcog.setId(tcogincrementor);
+                                    tcogincrementor++;
+                                    thought_cognitivedistortionList.add(tcog);
+                                    mCogDistPickListener.updateThought_CognitiveDistortionList(thought_cognitivedistortionList);
 
-                            }
-                            selectedid = 0;
+                                    int index=0;
+                                    for (thought_cognitivedistortionobj tcdo : thought_cognitivedistortionList) {
+                                        if (tcdo.getThoughtid()==(int)parent.getTag()){
+                                            thought_cognitivedistortionList.set(index,tcog);
+                                        }
+                                        index++;
+                                    }
+
+                                }
                         }
 
                         @Override

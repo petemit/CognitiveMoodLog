@@ -33,7 +33,6 @@ public class ReviewActivity extends AppCompatActivity {
     private List<thought_cognitivedistortionobj> thought_cognitivedistortionobjsList;
     private CogMoodLogDatabaseHelper dbHelper;
     private List<CognitiveDistortionobj> cogobjs;
-    private TextView results;
     private ViewGroup vg;
     private Button editbutton;
     private Button deletebutton;
@@ -98,10 +97,10 @@ public class ReviewActivity extends AppCompatActivity {
         savebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper.saveLogEntry(emotionobjList,thought_cognitivedistortionobjsList,thoughtobjList, situation);
-                Toast.makeText(ReviewActivity.this,"Logentry Saved",Toast.LENGTH_LONG);
-                Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
-                startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+               dbHelper.saveLogEntry(emotionobjList,thought_cognitivedistortionobjsList,thoughtobjList, situation);
+               Toast.makeText(ReviewActivity.this,"Logentry Saved",Toast.LENGTH_LONG).show();
+               Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
+               startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
 

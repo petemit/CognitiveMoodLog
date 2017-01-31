@@ -24,6 +24,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Review" />
         <activity android:name=".ReviewActivity" />
+        <activity android:name=".OpenPreviousLogs"></activity>
     </application>
 
 </manifest>

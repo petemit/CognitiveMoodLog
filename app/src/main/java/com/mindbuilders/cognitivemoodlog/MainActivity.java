@@ -21,7 +21,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.facebook.stetho.Stetho;
+//import com.facebook.stetho.Stetho;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         dbHelper =new CogMoodLogDatabaseHelper(getBaseContext());
         setSupportActionBar(toolbar);
-        Stetho.initializeWithDefaults(this);
+        //Fantastic way to browse your database when the app is running.
+        // Stetho.initializeWithDefaults(this);
         if (!FIRSTLOAD){
 
             try {
@@ -128,6 +129,13 @@ if (FIRSTLOAD){
       //  EditText editText = (EditText) findViewById(R.id.editMessage1);
       //  String message = editText.getText().toString();
        // intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+
+
+    }
+
+    public void openPreviousLogs(View view) {
+        Intent intent = new Intent(this, OpenPreviousLogs.class);
         startActivity(intent);
 
 

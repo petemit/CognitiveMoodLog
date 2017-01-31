@@ -1,6 +1,7 @@
 package com.mindbuilders.cognitivemoodlog;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Peter on 1/5/2017.
@@ -8,12 +9,14 @@ import java.io.Serializable;
 
 public class thoughtobj implements Serializable{
     private int id;
+    private int logentryid;
     private String negativethought;
     private int negativebeliefBefore;
     private int negativebeliefAfter;
     private String positivethought;
     private int positivebeliefbefore;
     private int positivebeliefafter;
+    private List<thought_cognitivedistortionobj> thought_cognitivedistortionobjList;
     private boolean isaddedToCogPicker=false;
     private boolean isaddedToPosThoughtAdd=false;
     private boolean isnegthoughtreviewdone=false;
@@ -94,5 +97,21 @@ public class thoughtobj implements Serializable{
 
     public void setIsNegThoughtReviewDone(boolean isnegthoughtreviewdone) {
         this.isnegthoughtreviewdone = isnegthoughtreviewdone;
+    }
+
+    public int getLogentryid() {
+        return logentryid;
+    }
+
+    public void setLogentryid(int logentryid) {
+        this.logentryid = logentryid;
+    }
+
+    public List<thought_cognitivedistortionobj> getThought_cognitivedistortionobjList() {
+        return thought_cognitivedistortionobjList;
+    }
+
+    public void setThought_cognitivedistortionobjList(List<thought_cognitivedistortionobj> thought_cognitivedistortionobjList) {
+        this.thought_cognitivedistortionobjList = thought_cognitivedistortionobjList;
     }
 }

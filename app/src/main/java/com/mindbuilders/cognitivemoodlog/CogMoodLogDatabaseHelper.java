@@ -40,7 +40,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         try {
             db.rawQuery("select * from logentry", null);
         }
-        catch (SQLException s){
+        catch (SQLException s) {
             Log.i("dbhelper", "creating new db");
             createDb(db);
         }
@@ -212,6 +212,236 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         return cogobjs;
     }
 
+    public List getLogEntryList(){
+        List<logentryobj> logobjs=new ArrayList<logentryobj>();
+        /* Use CogMoodLogDatabaseHelper to get access to a readable database */
+        db = this.getReadableDatabase();
+        //   db=dbHelper.getReadableDatabase();
+        String[] projection = {
+                "rowid",
+                logentry.COLUMN_TIMESTAMP,
+                logentry.COLUMN_LOGENTRY
+        };
+
+        String sortOrder =
+                logentry.COLUMN_TIMESTAMP + " DESC";
+
+        Cursor cursor = db.query(
+                logentry.TABLE_NAME,                     // The table to query
+                projection,                               // The columns to return
+                null,                                // The columns for the WHERE clause
+                null,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                sortOrder                                 // The sort order
+        );
+        //Populate the name of the list
+
+        //TODO 2nd time I'm doing this.  make this a string resource... maybe make a cleaner way to do this?
+        logentryobj firstobj =new logentryobj();
+        firstobj.setLogid(-1);
+        firstobj.setSituation("Please select a previous log entry");
+        firstobj.setTimestamp("");
+        logobjs.add(firstobj);
+        while (cursor.moveToNext()) {
+            logentryobj obj =new logentryobj();
+            obj.setLogid(Integer.parseInt(cursor.getString(cursor.getColumnIndex("rowid"))));
+            obj.setSituation(cursor.getString(cursor.getColumnIndex("logentry")));
+            obj.setTimestamp(cursor.getString(cursor.getColumnIndex("timestamp")));
+            logobjs.add(obj);
+        }
+        db.close();
+
+        return logobjs;
+    }
+
+    public List<emotionobj> getEmotionObjListByLogid(int logid){
+        ArrayList<emotionobj> emotionobjList=new ArrayList<emotionobj>();
+
+        db = this.getReadableDatabase();
+
+
+        String[] projection = {
+                "rowid",
+                emotion_logentry_belief.COLUMN_BELIEFBEFORE,
+                emotion_logentry_belief.COLUMN_BELIEFAFTER,
+                emotion_logentry_belief.COLUMN_EMOTION_ID,
+                emotion_logentry_belief.COLUMN_LOGENTRY_ID,
+        };
+        String [] whereargs={Integer.toString(logid)};
+
+        Cursor cursor = db.query(
+                emotion_logentry_belief.TABLE_NAME,                     // The table to query
+                projection,                               // The columns to return
+                emotion_logentry_belief.COLUMN_LOGENTRY_ID+"=?",                                // The columns for the WHERE clause
+                whereargs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null // The sort order
+        );
+        while (cursor.moveToNext()) {
+            emotionobj obj =new emotionobj();
+
+            obj.setGetFeelingstrengthAfter(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
+                    emotion_logentry_belief.COLUMN_BELIEFAFTER
+            ))));
+            obj.setFeelingstrengthBefore(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
+                    emotion_logentry_belief.COLUMN_BELIEFBEFORE
+            ))));
+
+            obj.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
+                    emotion_logentry_belief.COLUMN_EMOTION_ID
+            ))));
+            obj.setLogentryid(Integer.parseInt(cursor.getString(cursor.getColumnIndex
+                    (emotion_logentry_belief.COLUMN_LOGENTRY_ID))));
+
+            //Now get the emotion names
+
+
+            String[] secondprojection = {
+                    "rowid",
+                    emotion.COLUMN_NAME,
+                    emotion.COLUMN_EMOTIONCATEGORY_ID,
+            };
+
+            String sortOrder =
+                    "rowid"+ " DESC";
+            String [] secondwhereargs={Integer.toString(obj.getId())};
+            Cursor secondcursor = db.query(
+                    emotion.TABLE_NAME,                     // The table to query
+                    secondprojection,                               // The columns to return
+                    "rowid"+"=?",                                // The columns for the WHERE clause
+                    secondwhereargs,                            // The values for the WHERE clause
+                    null,                                     // don't group the rows
+                    null,                                     // don't filter by row groups
+                    sortOrder                                 // The sort order
+            );
+            //Populate the name of the list
+
+            while (secondcursor.moveToNext()) {
+                obj.setName(secondcursor.getString(secondcursor.getColumnIndex(
+                        emotion.COLUMN_NAME
+                )));
+                obj.setEmotioncategoryid(Integer.parseInt(secondcursor.getString(secondcursor.getColumnIndex(
+                        emotion.COLUMN_EMOTIONCATEGORY_ID
+                ))));
+            }//end while
+            emotionobjList.add(obj);
+        }//end while
+
+        db.close();
+
+        return emotionobjList;
+    }
+
+    public List<thoughtobj> getThoughtListByLogId(int logid){
+        ArrayList<thoughtobj> thoughtobjList=new ArrayList<thoughtobj>();
+
+        db = this.getReadableDatabase();
+
+        String[] projection = {
+                "rowid",
+                thought.COLUMN_NEGATIVETHOUGHT,
+                thought.COLUMN_POSITIVETHOUGHT,
+                thought.COLUMN_POSITIVEBELIEFBEFORE,
+                thought.COLUMN_NEGATIVEBELIEFBEFORE,
+                thought.COLUMN_NEGATIVEBELIEFAFTER,
+                thought.COLUMN_LOGENTRY_ID,
+        };
+        String [] whereargs={Integer.toString(logid)};
+
+        Cursor cursor = db.query(
+                thought.TABLE_NAME,                     // The table to query
+                projection,                               // The columns to return
+                thought.COLUMN_LOGENTRY_ID+"=?",                                // The columns for the WHERE clause
+                whereargs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null // The sort order
+        );
+        while (cursor.moveToNext()) {
+            thoughtobj obj =new thoughtobj();
+
+            obj.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
+                    "rowid"
+            ))));
+            obj.setPositivebeliefbefore(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
+                    thought.COLUMN_POSITIVEBELIEFBEFORE
+            ))));
+
+            obj.setNegativebeliefBefore(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
+                    thought.COLUMN_NEGATIVEBELIEFBEFORE
+            ))));
+            obj.setNegativebeliefAfter(Integer.parseInt(cursor.getString(cursor.getColumnIndex
+                    (thought.COLUMN_NEGATIVEBELIEFAFTER))));
+
+            obj.setPositivethought((cursor.getString(cursor.getColumnIndex(
+                    thought.COLUMN_POSITIVETHOUGHT
+            ))));
+
+            obj.setNegativethought((cursor.getString(cursor.getColumnIndex(
+                    thought.COLUMN_NEGATIVETHOUGHT
+            ))));
+            obj.setLogentryid(Integer.parseInt(cursor.getString(cursor.getColumnIndex
+                    (thought.COLUMN_LOGENTRY_ID))));
+
+            thoughtobjList.add(obj);
+        }//end while
+
+        db.close();
+
+        return thoughtobjList;
+    }
+
+    public List<thought_cognitivedistortionobj> getThought_cognitivedistortionListByThoughtId(int thoughtid){
+        ArrayList<thought_cognitivedistortionobj> thought_cognitivedistortionobjList=new ArrayList<thought_cognitivedistortionobj>();
+
+        db = this.getReadableDatabase();
+
+        String[] projection = {
+                "rowid",
+                thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID,
+                thought_cognitivedistortion.COLUMN_THOUGHT_ID
+        };
+        String [] whereargs={Integer.toString(thoughtid)};
+
+        Cursor cursor = db.query(
+                thought_cognitivedistortion.TABLE_NAME,                     // The table to query
+                projection,                               // The columns to return
+                thought_cognitivedistortion.COLUMN_THOUGHT_ID+"=?",                                // The columns for the WHERE clause
+                whereargs,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null // The sort order
+        );
+        while (cursor.moveToNext()) {
+            thought_cognitivedistortionobj obj =new thought_cognitivedistortionobj();
+
+            obj.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
+                    "rowid"
+            ))));
+            obj.setCognitivedistortionid(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
+                    thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID
+            ))));
+
+            obj.setThoughtid(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
+                    thought_cognitivedistortion.COLUMN_THOUGHT_ID
+            ))));
+
+            thought_cognitivedistortionobjList.add(obj);
+        }//end while
+
+        db.close();
+
+        return thought_cognitivedistortionobjList;
+    }
+
+
+
+
+
+
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -219,7 +449,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
     private String getDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                "yyyy-MM-dd h:mm a", Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
     }

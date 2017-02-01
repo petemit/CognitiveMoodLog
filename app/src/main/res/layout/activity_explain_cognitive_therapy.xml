@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_explain_cognitive_therapy"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.mindbuilders.cognitivemoodlog.ExplainCognitiveTherapy">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:text="Our thoughts affect our feelings and emotions.  Sometimes, unchecked, our thoughts can be self-sabotaging, and cause us to sink deeper into feelings of depression and sadness."/>
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:text="The purpose of Cognitive Behavioral Therapy is to empower you by helping you identify any cognitive distortions that may be involved with your negative thoughts.  Once you find clear, rational, and even positive arguments to replace your negative thoughts, your emotions will improve."/>
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:text="The therapy method in this app as well as several of the descriptions were developed by Dr. David D. Burns"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/feelinggoodlink"
+        android:paddingBottom="50dp"
+        android:autoLink="web"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="Return"
+        android:id="@+id/returnbutton_explaincognitivetherapy"/>
+</LinearLayout>

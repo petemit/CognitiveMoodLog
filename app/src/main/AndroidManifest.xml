@@ -4,7 +4,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/book"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -22,9 +22,10 @@
             android:name=".CreateNewLogEntry"
             android:label="@string/title_activity_create_new_log_entry"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Review" />
         <activity android:name=".ReviewActivity" />
-        <activity android:name=".OpenPreviousLogs"></activity>
+        <activity android:name=".OpenPreviousLogs" />
+        <activity android:name=".TroubleshootEntry" />
+        <activity android:name=".ExplainCognitiveTherapy"></activity>
     </application>
 
 </manifest>

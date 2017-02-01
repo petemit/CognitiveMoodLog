@@ -255,6 +255,45 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         return logobjs;
     }
 
+    public List<troubleshootingobj> getTroubleshootingObj(){
+        ArrayList<troubleshootingobj> troubleshootingList=new ArrayList<troubleshootingobj>();
+
+        db=this.getReadableDatabase();
+
+        String[] projection = {
+                "rowid",
+                troubleshootingguidelines.COLUMN_EXPLANATION,
+                troubleshootingguidelines.COLUMN_QUESTION
+        };
+        String sortOrder =
+                troubleshootingguidelines.COLUMN_QUESTION + " DESC";
+        Cursor cursor = db.query(
+                troubleshootingguidelines.TABLE_NAME,                     // The table to query
+                projection,                               // The columns to return
+                null,                                // The columns for the WHERE clause
+                null,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                sortOrder // The sort order
+        );
+        while (cursor.moveToNext()) {
+            troubleshootingobj obj = new troubleshootingobj();
+
+            obj.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
+                    "rowid"
+            ))));
+            obj.setAnswer(cursor.getString(cursor.getColumnIndex(
+                    troubleshootingguidelines.COLUMN_EXPLANATION
+            )));
+
+            obj.setQuestion(cursor.getString(cursor.getColumnIndex(
+                    troubleshootingguidelines.COLUMN_QUESTION
+            )));
+        troubleshootingList.add(obj);
+        }
+        return troubleshootingList;
+    }
+
     public List<emotionobj> getEmotionObjListByLogid(int logid){
         ArrayList<emotionobj> emotionobjList=new ArrayList<emotionobj>();
 

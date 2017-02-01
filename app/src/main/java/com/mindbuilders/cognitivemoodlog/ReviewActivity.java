@@ -161,7 +161,20 @@ public class ReviewActivity extends AppCompatActivity {
 
         }
         LayoutInflater dividerinflater= LayoutInflater.from(vg.getContext());
+        View troubleshootingbuttonview=dividerinflater.inflate(R.layout.troubleshooting_button,vg,false);
         View dividerline=dividerinflater.inflate(R.layout.dividerline,vg,false);
+        Button troubleshootbutton = (Button)troubleshootingbuttonview.findViewById(R.id.troubleshootingbutton);
+        troubleshootbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ReviewActivity.this, TroubleshootEntry.class);
+
+                startActivity(intent);
+
+            }
+        });
+
+        vg.addView(troubleshootingbuttonview);
         vg.addView(dividerline);
         TextView thought_tv=new TextView(this.getBaseContext());
         thought_tv.setText("Negative and Positive Thought Review:");

@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Cognitive Mood Log");
+
         dbHelper =new CogMoodLogDatabaseHelper(getBaseContext());
         setSupportActionBar(toolbar);
         //Fantastic way to browse your database when the app is running.
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             }
             catch (SQLException s){
                 FIRSTLOAD=true;
-                Log.e("mainactivity","db doesn't exist, man");
+                Log.i("mainactivity","db doesn't exist");
             }
         }
 if (FIRSTLOAD){
@@ -115,11 +117,11 @@ if (FIRSTLOAD){
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+     /*   //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
+*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -129,6 +131,16 @@ if (FIRSTLOAD){
       //  EditText editText = (EditText) findViewById(R.id.editMessage1);
       //  String message = editText.getText().toString();
        // intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+
+
+    }
+
+    public void OpenExplainCognitiveTherapy(View view) {
+        Intent intent = new Intent(this, ExplainCognitiveTherapy.class);
+        //  EditText editText = (EditText) findViewById(R.id.editMessage1);
+        //  String message = editText.getText().toString();
+        // intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
 
 
@@ -169,7 +181,6 @@ if (FIRSTLOAD){
                     String[] columns= line.split(",");
                     if (columns.length != 2)
                     {
-                        Log.e("MainActivity", "bad csv, skipping");
                         continue;
                     }
                     ContentValues cv = new ContentValues();
@@ -206,7 +217,7 @@ if (FIRSTLOAD){
                 String[] columns= line.split(",");
                 if (columns.length != 2)
                 {
-                    Log.e("MainActivity", "bad csv, skipping");
+
                     continue;
                 }
                 ContentValues cv = new ContentValues();
@@ -240,7 +251,7 @@ if (FIRSTLOAD){
                 String[] columns= line.split(",");
                 if (columns.length != 1)
                 {
-                    Log.e("MainActivity", "bad csv, skipping");
+
                     continue;
                 }
                 ContentValues cv = new ContentValues();
@@ -273,7 +284,7 @@ if (FIRSTLOAD){
                 String[] columns= line.split(",");
                 if (columns.length != 2)
                 {
-                    Log.e("MainActivity", "bad csv, skipping");
+
                     continue;
                 }
                 ContentValues cv = new ContentValues();

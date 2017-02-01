@@ -15,7 +15,7 @@
                 android:layout_height="match_parent"
                 android:textStyle="bold"
                 android:id="@+id/emotioncategoryitem"
-
+                android:paddingLeft="5dp"
                 android:hint='"test"'
                 android:gravity="center|left"
                 />

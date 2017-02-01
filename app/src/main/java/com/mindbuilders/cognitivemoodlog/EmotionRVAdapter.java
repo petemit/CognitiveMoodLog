@@ -94,6 +94,7 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
             listItemRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    //todo link this to the emotion category so if you get another click in the same category it doesn't add it twice.
                     emotionobj emo = new emotionobj();
                     emo.setId(checkedId);
                     emo.setName(((RadioButton)(group.findViewById(group.getCheckedRadioButtonId()))).getText().toString());

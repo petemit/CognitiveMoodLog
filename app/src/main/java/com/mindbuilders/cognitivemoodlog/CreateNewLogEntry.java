@@ -1,10 +1,13 @@
 package com.mindbuilders.cognitivemoodlog;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -14,7 +17,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,7 +38,7 @@ import java.util.List;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 
-public class CreateNewLogEntry extends FragmentActivity implements DescribeSituationFragment.DescribeSituationFragmentListener, ThoughtAddFragment.ThoughtAddFragmentListener,EmotionRVAdapter.EmotionRVAdapterListener, CognitiveDistortionPickerFragment.CognitiveDistortionPickerListener{
+public class CreateNewLogEntry extends AppCompatActivity implements DescribeSituationFragment.DescribeSituationFragmentListener, ThoughtAddFragment.ThoughtAddFragmentListener,EmotionRVAdapter.EmotionRVAdapterListener, CognitiveDistortionPickerFragment.CognitiveDistortionPickerListener{
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
@@ -64,6 +71,17 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
         setContentView(R.layout.activity_create_new_log_entry);
         emotionobjList=new ArrayList<emotionobj>();
         mPager = (ViewPager) findViewById(R.id.viewpager);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Cognitive Mood Log");
+       // toolbar.setTitleTextColor(Color.WHITE);
+    /*    toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return false;
+            }
+        });*/
+        setSupportActionBar(toolbar);
+
 
         //TODO this is gross still.. probably should use a fragment, but actually... not a bad solution to just get the text from the parent activity, you need to make the situation description its own fragment that you can nest inside the child fragments
         mPager.setOffscreenPageLimit(10);
@@ -77,6 +95,50 @@ public class CreateNewLogEntry extends FragmentActivity implements DescribeSitua
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.delete_log_entry_menuitem:
+                // 1. Instantiate an AlertDialog.Builder with its constructor
+                AlertDialog.Builder builder = new AlertDialog.Builder(CreateNewLogEntry.this);
+
+// 2. Chain together various setter methods to set the dialog characteristics
+                builder.setMessage("If you delete this entry, all your entered data will be lost!")
+                        .setTitle("Are you sure?");
+
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(CreateNewLogEntry.this, MainActivity.class);
+                        startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+// 3. Get the AlertDialog from create()
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                return true;
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_create_new_log_entry, menu);
+        return true;
+    }
 
 
 

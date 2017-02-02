@@ -156,149 +156,141 @@ if (FIRSTLOAD){
 
     private void PopulateCogMoodLogDatabase(SQLiteDatabase db)
     {
-        String cognitivedistortioncsv = "undistort_table_cognitivedistortion.csv";
-        String emotioncsv = "undistort_table_emotion.csv";
-        String emotioncategorycsv = "undistort_table_emotioncategory.csv";
-        String troubleshootingguidelinescsv = "undistort_table_troubleshootingguidelines.csv";
-        AssetManager manager = getBaseContext().getAssets();
-        InputStream inStream = null;
+        Cursor cursor=db.rawQuery("select * from emotion",null);
+        if(cursor.getCount()<1) {
 
-        //populate db from cognitivedistortion csv.
-        //columns are name, description in that order
+            String cognitivedistortioncsv = "undistort_table_cognitivedistortion.csv";
+            String emotioncsv = "undistort_table_emotion.csv";
+            String emotioncategorycsv = "undistort_table_emotioncategory.csv";
+            String troubleshootingguidelinescsv = "undistort_table_troubleshootingguidelines.csv";
+            AssetManager manager = getBaseContext().getAssets();
+            InputStream inStream = null;
 
-        try {
-            inStream=manager.open(cognitivedistortioncsv);
+            //populate db from cognitivedistortion csv.
+            //columns are name, description in that order
 
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+            try {
+                inStream = manager.open(cognitivedistortioncsv);
 
-        BufferedReader buffer = new BufferedReader(new InputStreamReader(inStream));
-        String line = "";
-        db.beginTransaction();
-            try{
-                while ((line = buffer.readLine()) != null){
-                    String[] columns= line.split(";");
-                    if (columns.length != 2)
-                    {
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            BufferedReader buffer = new BufferedReader(new InputStreamReader(inStream));
+            String line = "";
+            db.beginTransaction();
+            try {
+                while ((line = buffer.readLine()) != null) {
+                    String[] columns = line.split(";");
+                    if (columns.length != 2) {
                         continue;
                     }
                     ContentValues cv = new ContentValues();
                     cv.put(CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_NAME, columns[0].trim());
-                    cv.put(CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_DESCRIPTION,columns[1].trim());
-                    db.insert(CogMoodLogDatabaseContract.cognitivedistortion.TABLE_NAME,null,cv);
+                    cv.put(CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_DESCRIPTION, columns[1].trim());
+                    db.insert(CogMoodLogDatabaseContract.cognitivedistortion.TABLE_NAME, null, cv);
                 }
-            }
-            catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-        db.setTransactionSuccessful();
-        db.endTransaction();
+            db.setTransactionSuccessful();
+            db.endTransaction();
 
 
-        //populate db from emotion csv.
-        //columns are emotioncategory_id, name in that order
+            //populate db from emotion csv.
+            //columns are emotioncategory_id, name in that order
 
-        try {
-            inStream=manager.open(emotioncsv);
-            buffer.close();
+            try {
+                inStream = manager.open(emotioncsv);
+                buffer.close();
 
-        }
-        catch (IOException e) {
+            } catch (IOException e) {
 
-            e.printStackTrace();
-        }
-
-        buffer = new BufferedReader(new InputStreamReader(inStream));
-        line = "";
-        db.beginTransaction();
-        try{
-            while ((line = buffer.readLine()) != null){
-                String[] columns= line.split(";");
-                if (columns.length != 2)
-                {
-
-                    continue;
-                }
-                ContentValues cv = new ContentValues();
-                cv.put(CogMoodLogDatabaseContract.emotion.COLUMN_EMOTIONCATEGORY_ID, columns[0].trim());
-                cv.put(CogMoodLogDatabaseContract.emotion.COLUMN_NAME,columns[1].trim());
-                db.insert(CogMoodLogDatabaseContract.emotion.TABLE_NAME,null,cv);
+                e.printStackTrace();
             }
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-        db.setTransactionSuccessful();
-        db.endTransaction();
 
-        //populate db from emotioncategory csv.
-        //columns are just "name"
+            buffer = new BufferedReader(new InputStreamReader(inStream));
+            line = "";
+            db.beginTransaction();
+            try {
+                while ((line = buffer.readLine()) != null) {
+                    String[] columns = line.split(";");
+                    if (columns.length != 2) {
 
-        try {
-            buffer.close();
-            inStream=manager.open(emotioncategorycsv);
-
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        buffer = new BufferedReader(new InputStreamReader(inStream));
-        line = "";
-        db.beginTransaction();
-        try{
-            while ((line = buffer.readLine()) != null){
-                String[] columns= line.split(";");
-                if (columns.length != 1)
-                {
-
-                    continue;
+                        continue;
+                    }
+                    ContentValues cv = new ContentValues();
+                    cv.put(CogMoodLogDatabaseContract.emotion.COLUMN_EMOTIONCATEGORY_ID, columns[0].trim());
+                    cv.put(CogMoodLogDatabaseContract.emotion.COLUMN_NAME, columns[1].trim());
+                    db.insert(CogMoodLogDatabaseContract.emotion.TABLE_NAME, null, cv);
                 }
-                ContentValues cv = new ContentValues();
-                cv.put(CogMoodLogDatabaseContract.emotioncategory.COLUMN_NAME, columns[0].trim());
-                db.insert(CogMoodLogDatabaseContract.emotioncategory.TABLE_NAME,null,cv);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-        db.setTransactionSuccessful();
-        db.endTransaction();
+            db.setTransactionSuccessful();
+            db.endTransaction();
 
-        //populate db from troubleshootingguidelines csv.
-        //columns are question, explanation in that order
+            //populate db from emotioncategory csv.
+            //columns are just "name"
 
-        try {
-            inStream=manager.open(troubleshootingguidelinescsv);
+            try {
+                buffer.close();
+                inStream = manager.open(emotioncategorycsv);
 
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            buffer = new BufferedReader(new InputStreamReader(inStream));
+            line = "";
+            db.beginTransaction();
+            try {
+                while ((line = buffer.readLine()) != null) {
+                    String[] columns = line.split(";");
+                    if (columns.length != 1) {
 
-        buffer = new BufferedReader(new InputStreamReader(inStream));
-        line = "";
-        db.beginTransaction();
-        try{
-            while ((line = buffer.readLine()) != null){
-                String[] columns= line.split(";");
-                if (columns.length != 2)
-                {
-
-                    continue;
+                        continue;
+                    }
+                    ContentValues cv = new ContentValues();
+                    cv.put(CogMoodLogDatabaseContract.emotioncategory.COLUMN_NAME, columns[0].trim());
+                    db.insert(CogMoodLogDatabaseContract.emotioncategory.TABLE_NAME, null, cv);
                 }
-                ContentValues cv = new ContentValues();
-                cv.put(CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_QUESTION, columns[0].trim());
-                cv.put(CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_EXPLANATION,columns[1].trim());
-                db.insert(CogMoodLogDatabaseContract.troubleshootingguidelines.TABLE_NAME,null,cv);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+
+            //populate db from troubleshootingguidelines csv.
+            //columns are question, explanation in that order
+
+            try {
+                inStream = manager.open(troubleshootingguidelinescsv);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            buffer = new BufferedReader(new InputStreamReader(inStream));
+            line = "";
+            db.beginTransaction();
+            try {
+                while ((line = buffer.readLine()) != null) {
+                    String[] columns = line.split(";");
+                    if (columns.length != 2) {
+
+                        continue;
+                    }
+                    ContentValues cv = new ContentValues();
+                    cv.put(CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_QUESTION, columns[0].trim());
+                    cv.put(CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_EXPLANATION, columns[1].trim());
+                    db.insert(CogMoodLogDatabaseContract.troubleshootingguidelines.TABLE_NAME, null, cv);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
         }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-        db.setTransactionSuccessful();
-        db.endTransaction();
     }
 
     @Override

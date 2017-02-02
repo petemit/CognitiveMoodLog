@@ -84,7 +84,7 @@ public class CreateNewLogEntry extends AppCompatActivity implements DescribeSitu
 
 
         //TODO this is gross still.. probably should use a fragment, but actually... not a bad solution to just get the text from the parent activity, you need to make the situation description its own fragment that you can nest inside the child fragments
-        mPager.setOffscreenPageLimit(10);
+        mPager.setOffscreenPageLimit(7);
 
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);

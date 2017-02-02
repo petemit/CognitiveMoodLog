@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Cognitive Mood Log");
+//delete the DB on startup so we can make sure it's created right.
+ //       getBaseContext().deleteDatabase("CognitiveMoodLog.db");
 
         dbHelper =new CogMoodLogDatabaseHelper(getBaseContext());
         setSupportActionBar(toolbar);
@@ -73,8 +75,7 @@ if (FIRSTLOAD){
 
     try {
 
-        //delete the DB on startup so we can make sure it's created right.
-        //getBaseContext().deleteDatabase("CognitiveMoodLog.db");
+
 
 
 

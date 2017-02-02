@@ -34,7 +34,7 @@ public class OpenPreviousLogs extends AppCompatActivity {
         util=new utilities(OpenPreviousLogs.this);
         getSupportActionBar().setTitle("Cognitive Mood Log");
 
-
+//todo need to add headings to the two sections
         logobjs=dbHelper.getLogEntryList();
         Spinner spin = (Spinner)findViewById(R.id.select_previous_entry_spinner);
 

@@ -178,7 +178,7 @@ if (FIRSTLOAD){
         db.beginTransaction();
             try{
                 while ((line = buffer.readLine()) != null){
-                    String[] columns= line.split(",");
+                    String[] columns= line.split(";");
                     if (columns.length != 2)
                     {
                         continue;
@@ -214,7 +214,7 @@ if (FIRSTLOAD){
         db.beginTransaction();
         try{
             while ((line = buffer.readLine()) != null){
-                String[] columns= line.split(",");
+                String[] columns= line.split(";");
                 if (columns.length != 2)
                 {
 
@@ -248,7 +248,7 @@ if (FIRSTLOAD){
         db.beginTransaction();
         try{
             while ((line = buffer.readLine()) != null){
-                String[] columns= line.split(",");
+                String[] columns= line.split(";");
                 if (columns.length != 1)
                 {
 
@@ -281,7 +281,7 @@ if (FIRSTLOAD){
         db.beginTransaction();
         try{
             while ((line = buffer.readLine()) != null){
-                String[] columns= line.split(",");
+                String[] columns= line.split(";");
                 if (columns.length != 2)
                 {
 

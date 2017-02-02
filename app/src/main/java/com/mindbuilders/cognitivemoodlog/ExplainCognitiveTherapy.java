@@ -18,6 +18,7 @@ public class ExplainCognitiveTherapy extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        getSupportActionBar().setTitle("Cognitive Mood Log");
 
     }
 }

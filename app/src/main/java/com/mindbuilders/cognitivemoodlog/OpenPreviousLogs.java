@@ -32,6 +32,7 @@ public class OpenPreviousLogs extends AppCompatActivity {
         dbHelper=new CogMoodLogDatabaseHelper(OpenPreviousLogs.this);
         cogobjs=dbHelper.getCognitiveDistortionNameList();
         util=new utilities(OpenPreviousLogs.this);
+        getSupportActionBar().setTitle("Cognitive Mood Log");
 
 
         logobjs=dbHelper.getLogEntryList();

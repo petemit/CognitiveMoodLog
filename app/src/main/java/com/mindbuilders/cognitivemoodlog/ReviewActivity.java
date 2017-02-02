@@ -45,6 +45,7 @@ public class ReviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_review);
         // getIntent() is a method from the started activity
         Intent myIntent = getIntent(); // gets the previously created intent
+        getSupportActionBar().setTitle("Cognitive Mood Log");
 
         emotionobjList = (ArrayList<emotionobj>) myIntent.getSerializableExtra("emotionobjList"); // will return "FirstKeyValue"
         thoughtobjList = (ArrayList<thoughtobj>) myIntent.getSerializableExtra("thoughtobjList");

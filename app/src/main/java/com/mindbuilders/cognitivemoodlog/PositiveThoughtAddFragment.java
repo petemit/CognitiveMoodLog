@@ -72,6 +72,7 @@ public class PositiveThoughtAddFragment extends Fragment {
                     SeekBar seekbar = (SeekBar) tv.findViewById(R.id.posthought_sb);
                     seekbar.setTag(tob.getId());
                     TextView thought = (TextView) tv.findViewById(R.id.posthoughtadder_negthought_tv);
+                    thought.setText("");
                     thought.setText(tob.getNegativethought());
                     thought.setTag(tob.getId()+"thought_tv");
                     EditText posthought_et=(EditText)tv.findViewById(R.id.posthought_et);

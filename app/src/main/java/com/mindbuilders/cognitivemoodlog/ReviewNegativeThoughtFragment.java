@@ -60,6 +60,7 @@ public class ReviewNegativeThoughtFragment extends Fragment {
                     SeekBar seekbar = (SeekBar) tv.findViewById(R.id.negthoughtreview_sb);
                     seekbar.setTag(tob.getId());
                     TextView negthought = (TextView) tv.findViewById(R.id.negthoughtreview_tv);
+                    negthought.setText("");
                     negthought.setText(tob.getNegativethought());
                     negthought.setTag(tob.getId()+"negthought_tv");
                     TextView posthought=(TextView) tv.findViewById(R.id.posthoughtreview_tv);

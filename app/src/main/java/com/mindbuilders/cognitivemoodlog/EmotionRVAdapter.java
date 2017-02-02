@@ -97,11 +97,34 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
                     //todo link this to the emotion category so if you get another click in the same category it doesn't add it twice.
                     emotionobj emo = new emotionobj();
                     emo.setId(checkedId);
-                    emo.setName(((RadioButton)(group.findViewById(group.getCheckedRadioButtonId()))).getText().toString());
-
-
+                    emo.setName(((RadioButton) (group.findViewById(group.getCheckedRadioButtonId()))).getText().toString());
+                    emo.setEmotioncategoryid((Integer) ((RadioButton) (group.findViewById(group.getCheckedRadioButtonId()))).getTag());
                     seekbar.setTag(checkedId);
-                    getEmotionList().add(emo);
+
+                    if (getEmotionList().isEmpty())
+                    {
+                        getEmotionList().add(emo);
+                    }
+                    int index=0;
+                    ArrayList<emotionobj> replacementlist = new ArrayList<emotionobj>(getEmotionList());
+                    RadioButton tagbutton= ((RadioButton) (group.findViewById(group.getCheckedRadioButtonId())));
+                    int tagint = (Integer)tagbutton.getTag();
+                    for (emotionobj emoobj: replacementlist) {
+                    if(emoobj.getEmotioncategoryid()==tagint){
+                        getEmotionList().set(index,emo);
+                        emo.setIsaddedtoreview(true);
+
+                    }
+                        else{
+                        //getEmotionList().add(emo);
+                    }
+                        index++;
+                   }
+                    if (!emo.getIsaddedtoreview()){
+                        getEmotionList().add(emo);
+                    }
+
+
 
                 }
             });
@@ -169,6 +192,7 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
                         rb.setText(groupcursor.getString(groupcursor.getColumnIndex("name")));
                         if ( groupcursor.getString(groupcursor.getColumnIndex("rowid")) != null) {
                             rb.setId(Integer.parseInt(groupcursor.getString(groupcursor.getColumnIndex("rowid"))));
+                            rb.setTag(Integer.parseInt(groupcursor.getString(groupcursor.getColumnIndex(CogMoodLogDatabaseContract.emotion.COLUMN_EMOTIONCATEGORY_ID))));
                         }
                         listItemRadioGroup.addView(rb);
                     }

@@ -23,6 +23,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -54,6 +56,8 @@ public class CreateNewLogEntry extends AppCompatActivity implements DescribeSitu
     String logentry="";
     boolean isfinished;
     Timestamp timestamp;
+    ImageView leftNav;
+    ImageView rightNav;
     private List<thought_cognitivedistortionobj> thought_cognitivedistortionobjs;
     private static final String[] CONTENT = new String[] { "Situation", "Emotions", "Negative Thoughts", "Cognitive Distortions", "Positive Thoughts", "Review Thoughts", "Review Emotions" };
 
@@ -69,6 +73,8 @@ public class CreateNewLogEntry extends AppCompatActivity implements DescribeSitu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_log_entry);
+        leftNav = (ImageView) findViewById(R.id.left_nav);
+        rightNav = (ImageView)findViewById(R.id.right_nav);
         emotionobjList=new ArrayList<emotionobj>();
         mPager = (ViewPager) findViewById(R.id.viewpager);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -92,6 +98,33 @@ public class CreateNewLogEntry extends AppCompatActivity implements DescribeSitu
 //        //Binding the title view pager indicator
         TabPageIndicator2 tabPageIndicator2 = (TabPageIndicator2) findViewById(R.id.vpi);
         tabPageIndicator2.setViewPager(mPager);
+
+
+
+        leftNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int tab = mPager.getCurrentItem();
+                if (tab > 0) {
+                    tab--;
+                    mPager.setCurrentItem(tab);
+                } else if (tab == 0) {
+                    mPager.setCurrentItem(tab);
+                }
+
+            }
+        });
+
+        rightNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int tab = mPager.getCurrentItem();
+                tab++;
+                mPager.setCurrentItem(tab);
+
+            }
+        });
+
 
     }
 
@@ -205,8 +238,10 @@ public class CreateNewLogEntry extends AppCompatActivity implements DescribeSitu
         public Fragment getItem(int position) {
             switch(position){
                 case 0:
-                        return new DescribeSituationFragment();
+
+                    return new DescribeSituationFragment();
                 case 1:
+
                         return new EmotionPickerFragment();
                 case 2:
                         return new ThoughtAddFragment();
@@ -247,6 +282,22 @@ public class CreateNewLogEntry extends AppCompatActivity implements DescribeSitu
 
         startActivity(myIntent);
 
+    }
+
+    public void setLeftNavInvisible(){
+        leftNav.setVisibility(View.INVISIBLE);
+    }
+
+    public void setLeftNavVisible(){
+        leftNav.setVisibility(View.VISIBLE);
+    }
+
+    public void setRightNavInvisible(){
+        rightNav.setVisibility(View.INVISIBLE);
+    }
+
+    public void setRightNavVisible(){
+        rightNav.setVisibility(View.VISIBLE);
     }
 
 }

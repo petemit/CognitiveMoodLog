@@ -32,6 +32,7 @@ public class EmotionPickerFragment extends Fragment {
     SQLiteDatabase db;
     RecyclerView emotionlist;
     EmotionRVAdapter rvAdapter;
+    private CreateNewLogEntry parent;
 
 
     @Override
@@ -39,6 +40,7 @@ public class EmotionPickerFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_emotion_picker, container, false);
+        parent=(CreateNewLogEntry)getActivity();
         situationDescription = (TextView) rootView.findViewById(R.id.SituationDescription);
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
         emotionlist=(RecyclerView)rootView.findViewById(R.id.rv_emotions);
@@ -82,6 +84,16 @@ public class EmotionPickerFragment extends Fragment {
 
         return rootView;
 
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser && parent !=null){
+            parent.setLeftNavVisible();
+        }
     }
 
     @Override

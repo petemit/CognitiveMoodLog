@@ -28,6 +28,7 @@ public class DescribeSituationFragment extends Fragment {
     private static EditText DescribeSituation;
     DescribeSituationFragmentListener activityCommander;
     utilities util;
+    private CreateNewLogEntry parent;
 
 
     @Override
@@ -47,9 +48,11 @@ public class DescribeSituationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         util=new utilities(this.getContext());
+
         final ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_describe_situation, container, false);
-
+        parent=(CreateNewLogEntry)getActivity();
+        parent.setLeftNavInvisible();
         DescribeSituation=(EditText) rootView.findViewById(R.id.DescribeSituationTextBox);
 
         //todo Not quite satisfied with this method of forcing the text box to be multiline
@@ -96,6 +99,15 @@ public class DescribeSituationFragment extends Fragment {
         }
     };
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (isVisibleToUser && parent !=null){
+            parent.setLeftNavInvisible();
+        }
+    }
 
     public void textChanged(TextView view) {
    //     activityCommander.updateSituation(view.getText().toString());

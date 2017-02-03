@@ -90,6 +90,7 @@ public class ReviewEmotionFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
 
         if (isVisibleToUser && ((CreateNewLogEntry)getActivity()).getEmotionobjList()!=null) {
+            ((CreateNewLogEntry)getActivity()).setRightNavInvisible();
             emotionobjList=((CreateNewLogEntry)getActivity()).getEmotionobjList();
             emotionReviewList.removeAllViews();
             for (emotionobj emo: emotionobjList) {

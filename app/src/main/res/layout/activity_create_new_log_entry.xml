@@ -26,6 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/vpi"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <android.support.v4.view.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
@@ -33,6 +36,22 @@
 
     </android.support.v4.view.ViewPager>
 
+        <ImageView
+            android:id="@+id/left_nav"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|left"
+            android:src="@drawable/newleftarrow" />
+
+
+        <ImageView
+            android:id="@+id/right_nav"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|right"
+            android:src="@drawable/newrightarrow" />
+
+    </FrameLayout>
     <FrameLayout
         android:id="@+id/ReviewFragment"
         android:layout_width="match_parent"

@@ -24,17 +24,18 @@
 
     <EditText
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
+        android:layout_height="123dp"
+        android:inputType="textCapSentences|textImeMultiLine"
         android:height="123dp"
+        android:scrollHorizontally="false"
+        android:maxLines="4"
         android:width="300dp"
-        android:ems="10"
         android:hint="type here..."
         android:layout_marginTop="92dp"
         android:id="@+id/DescribeSituationTextBox"
         android:gravity="top"
         android:textAlignment="gravity"
-        android:background="@drawable/border"
+    android:background="@drawable/border"
         android:layout_alignTop="@+id/DescribeYourSituationLabel"
         android:layout_centerHorizontal="true" />
 

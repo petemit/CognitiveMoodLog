@@ -53,6 +53,8 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
         negThoughtEditText=(EditText)rootView.findViewById(R.id.addnegthoughtedittext);
         negthoughtlistview=(ViewGroup)rootView.findViewById(R.id.negthoughtlist);
         situationDescription.setText(((CreateNewLogEntry)getActivity()).getSituation());
+        negThoughtEditText.setHorizontallyScrolling(false);
+        negThoughtEditText.setMaxLines(4);
         negThoughtEditText.setOnFocusChangeListener(new View.OnFocusChangeListener(){
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -95,7 +97,18 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
 
 // fill in any details dynamically here
             TextView textView = (TextView) tv.findViewById(R.id.negthoughtlistitem);
+            tv.setTag(Integer.toString(thoughtincrementor)+"tv");
             SeekBar seekbar = (SeekBar) tv.findViewById(R.id.negthoughtseekbar);
+            View removebutton=(View) tv.findViewById(R.id.removenegthoughtbutton);
+            removebutton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    negthoughtlistview.removeView(negthoughtlistview.findViewWithTag(Integer.toString(thoughtincrementor-1)+"tv"));
+                    thoughtobjList.remove(thoughtincrementor-2);
+                    thoughtincrementor--;
+
+                }
+            });
             textView.setTag(thoughtincrementor);
             textView.setText(negThoughtEditText.getText());
             negThoughtEditText.setText("");

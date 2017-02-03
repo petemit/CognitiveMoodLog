@@ -68,14 +68,16 @@ public class CognitiveDistortionPickerFragment extends Fragment {
 
         if (isVisibleToUser && ((CreateNewLogEntry)getActivity()).getThoughtobjList()!=null) {
             thoughtobjList=((CreateNewLogEntry)getActivity()).getThoughtobjList();
+            negThoughtListCogDistortion.removeAllViews();
             for (thoughtobj tob: thoughtobjList) {
-                if (!tob.getisIsaddedToCogPicker()) {
+           //     if (!tob.getisIsaddedToCogPicker()) {
                     LayoutInflater inflater = LayoutInflater.from(rootView.getContext());
                     View tv = inflater.inflate(R.layout.negthought_listitem, rootView, false);
 
                     TextView thought = (TextView) tv.findViewById(R.id.negthoughtcogdistlistitem_tv);
                     Spinner spin = (Spinner) tv.findViewById(R.id.cogdistortion_spinner);
                     TextView desc = (TextView) tv.findViewById(R.id.cogdescription);
+
                     desc.setId(tob.getId());
                     spin.setTag(desc.getId());
                     thought.setText(tob.getNegativethought());
@@ -96,6 +98,13 @@ public class CognitiveDistortionPickerFragment extends Fragment {
                                 if(cogobj.getId()!=-1) {
                                     thought_cognitivedistortionobj tcog=new thought_cognitivedistortionobj();
                                     tcog.setThoughtid((int) parent.getTag());
+                                    thoughtobj tob=new thoughtobj();
+                                    for (thoughtobj inntob: thoughtobjList){
+                                        if (inntob.getId()==(Integer)parent.getTag()) {
+                                            tob = inntob;
+                                        }
+                                    }
+                                    tob.setSelectCogPosition(position);
                                     tcog.setCognitivedistortionid(cogobj.getId());
                                     tcog.setId(tcogincrementor);
                                     tcogincrementor++;
@@ -118,11 +127,11 @@ public class CognitiveDistortionPickerFragment extends Fragment {
 
                         }
                     });
-
+                    spin.setSelection(tob.getSelectCogPosition());
                     desc.setText(((CognitiveDistortionobj) spin.getSelectedItem()).getDescription());
                     negThoughtListCogDistortion.addView(tv);
                     tob.setisIsaddedToCogPicker(true);
-                }
+           //     }  If is added to thingy
 
 
             }

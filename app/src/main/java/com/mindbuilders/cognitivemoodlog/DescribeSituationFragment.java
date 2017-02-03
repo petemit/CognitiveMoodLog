@@ -52,6 +52,12 @@ public class DescribeSituationFragment extends Fragment {
 
         DescribeSituation=(EditText) rootView.findViewById(R.id.DescribeSituationTextBox);
 
+        //todo Not quite satisfied with this method of forcing the text box to be multiline
+        if (DescribeSituation!= null)
+        {
+            DescribeSituation.setHorizontallyScrolling(false);
+            DescribeSituation.setMaxLines(4);
+        }
         //todo remove the textwatcher
         DescribeSituation.addTextChangedListener(textWatcher);
         DescribeSituation.setOnFocusChangeListener(new View.OnFocusChangeListener(){

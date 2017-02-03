@@ -112,20 +112,6 @@ public class ReviewActivity extends AppCompatActivity {
         TextView emo_tv=new TextView(this.getBaseContext());
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         emo_tv.setText("Emotion Review:");
         emo_tv.setTypeface(Typeface.DEFAULT_BOLD);
         emo_tv.setPadding(15,20,0,20);

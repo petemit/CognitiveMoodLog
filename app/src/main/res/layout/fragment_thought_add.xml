@@ -45,8 +45,11 @@
     <EditText
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        android:inputType="textCapSentences"
+        android:inputType="textCapSentences|textImeMultiLine"
+        android:scrollHorizontally="false"
+        android:maxLines="4"
         android:hint="Negative Thought..."
+
         android:textSize="16sp"
         android:padding="10dp"
         android:id="@+id/addnegthoughtedittext" />

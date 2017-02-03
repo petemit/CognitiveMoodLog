@@ -52,8 +52,9 @@ public class ReviewNegativeThoughtFragment extends Fragment {
         if (isVisibleToUser && ((CreateNewLogEntry)getActivity()).getThoughtobjList()!=null &&
                 ((CreateNewLogEntry)getActivity()).getThought_cognitivedistortionobjs()!=null) {
             thoughtobjList=((CreateNewLogEntry)getActivity()).getThoughtobjList();
+            negThoughtReviewList.removeAllViews();
             for (thoughtobj tob: thoughtobjList) {
-                if (!tob.getIsNegThoughtReviewDone()){
+             /*   if (!tob.getIsNegThoughtReviewDone()){*/
 
                     LayoutInflater inflater = LayoutInflater.from(rootView.getContext());
                     View tv = inflater.inflate(R.layout.review_negthought_listitem, rootView, false);
@@ -65,6 +66,7 @@ public class ReviewNegativeThoughtFragment extends Fragment {
                     negthought.setTag(tob.getId()+"negthought_tv");
                     TextView posthought=(TextView) tv.findViewById(R.id.posthoughtreview_tv);
                     posthought.setText(tob.getPositivethought());
+                    seekbar.setProgress(tob.getNegativebeliefAfter());
                     thought_cognitivedistortionList=((CreateNewLogEntry)this.getActivity()).getThought_cognitivedistortionobjs();
                     //todo probably be better to convert these to hashtables or something...
 
@@ -100,6 +102,7 @@ public class ReviewNegativeThoughtFragment extends Fragment {
                             for (CognitiveDistortionobj cog : cogobjs) {
                                 if (cog.getId() == cid && cog.getId()>0) {
                                     //This appends the cognitive distortion to the Negative Thought Text
+                                    if (!negthought.getText().toString().contains(cog.getName()))
                                     negthought.append("   (" + cog.getName() + ")");
                                 }
                             }
@@ -108,8 +111,8 @@ public class ReviewNegativeThoughtFragment extends Fragment {
 
                     negThoughtReviewList.addView(tv);
 
-                }
-                else{
+                /*}//endif tob is added*/
+             /*   else{
                     TextView textview= (TextView)rootView.findViewWithTag(tob.getId()+"negthought_tv");
 
 
@@ -128,7 +131,7 @@ public class ReviewNegativeThoughtFragment extends Fragment {
                     }
 
                 }
-                tob.setIsNegThoughtReviewDone(true);
+                tob.setIsNegThoughtReviewDone(true);*/
             }
         }//end if
 

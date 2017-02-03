@@ -1,12 +1,17 @@
 package com.mindbuilders.cognitivemoodlog;
 
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -33,7 +38,7 @@ public class OpenPreviousLogs extends AppCompatActivity {
         cogobjs=dbHelper.getCognitiveDistortionNameList();
         util=new utilities(OpenPreviousLogs.this);
         getSupportActionBar().setTitle("Cognitive Mood Log");
-
+//todo fix sort so spinner goes by date.
 //todo need to add headings to the two sections
         logobjs=dbHelper.getLogEntryList();
         Spinner spin = (Spinner)findViewById(R.id.select_previous_entry_spinner);
@@ -60,6 +65,16 @@ public class OpenPreviousLogs extends AppCompatActivity {
                     //vg.addView();
 
                     //todo this is duplicate code... need to make a method
+                    TextView emo_tv=new TextView(OpenPreviousLogs.this);
+
+
+                    emo_tv.setText("Emotion Review:");
+                    emo_tv.setTypeface(Typeface.DEFAULT_BOLD);
+                    emo_tv.setPadding(15,20,0,20);
+                    emo_tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.lastTextSize));
+                    emo_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+                    vg.addView(emo_tv);
+
                     for (emotionobj emo : emotionobjList){
                         LayoutInflater inflater = LayoutInflater.from(vg.getContext());
                         View tv = inflater.inflate(R.layout.emorow_listitem, vg, false);
@@ -88,6 +103,17 @@ public class OpenPreviousLogs extends AppCompatActivity {
                         vg.addView(tv);
 
                     }//end for
+
+                    LayoutInflater dividerinflater= LayoutInflater.from(vg.getContext());
+                    View dividerline=dividerinflater.inflate(R.layout.dividerline,vg,false);
+                    vg.addView(dividerline);
+                    TextView thought_tv=new TextView(OpenPreviousLogs.this);
+                    thought_tv.setText("Negative and Positive Thought Review:");
+                    thought_tv.setTypeface(Typeface.DEFAULT_BOLD);
+                    thought_tv.setPadding(15,20,0,20);
+                    thought_tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.lastTextSize));
+                    thought_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+                    vg.addView(thought_tv);
 
                     thoughtobjList=dbHelper.getThoughtListByLogId(logobj.getLogid());
 

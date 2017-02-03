@@ -64,8 +64,9 @@ public class PositiveThoughtAddFragment extends Fragment {
 
         if (isVisibleToUser && ((CreateNewLogEntry)getActivity()).getThoughtobjList()!=null &&((CreateNewLogEntry)getActivity()).getThought_cognitivedistortionobjs()!=null) {
             thoughtobjList=((CreateNewLogEntry)getActivity()).getThoughtobjList();
+            posThoughtAdderList.removeAllViews();
             for (thoughtobj tob: thoughtobjList) {
-                if (!tob.getIsIsaddedToPosThoughtAdd()){
+               /* if (!tob.getIsIsaddedToPosThoughtAdd()){*/
 
                     LayoutInflater inflater = LayoutInflater.from(rootView.getContext());
                     View tv = inflater.inflate(R.layout.positive_thought_adder_listitem, rootView, false);
@@ -76,7 +77,11 @@ public class PositiveThoughtAddFragment extends Fragment {
                     thought.setText(tob.getNegativethought());
                     thought.setTag(tob.getId()+"thought_tv");
                     EditText posthought_et=(EditText)tv.findViewById(R.id.posthought_et);
+                    posthought_et.setMaxLines(4);
+                    posthought_et.setHorizontallyScrolling(false);
                     posthought_et.setTag(tob.getId());
+                    posthought_et.setText(tob.getPositivethought());
+                    seekbar.setProgress(tob.getPositivebeliefbefore());
                     thought_cognitivedistortionList=((CreateNewLogEntry)this.getActivity()).getThought_cognitivedistortionobjs();
                     //todo probably be better to convert these to hashtables or something...
 
@@ -129,6 +134,7 @@ public class PositiveThoughtAddFragment extends Fragment {
                             for (CognitiveDistortionobj cog : cogobjs) {
                                 if (cog.getId() == cid && cog.getId()>0) {
                                     //This appends the cognitive distortion to the Negative Thought Text
+                                    if (!thought.getText().toString().contains(cog.getName()))
                                     thought.append("   (" + cog.getName() + ")");
                                 }
                             }
@@ -137,8 +143,8 @@ public class PositiveThoughtAddFragment extends Fragment {
 
                         posThoughtAdderList.addView(tv);
 
-                }//end if isaddedtoposthoughtadd
-                else{
+             /*   }//end if isaddedtoposthoughtadd*/
+                /*else{
                   TextView textview= (TextView)rootView.findViewWithTag(tob.getId()+"thought_tv");
 
 
@@ -156,8 +162,8 @@ public class PositiveThoughtAddFragment extends Fragment {
                         }
                     }
 
-                }
-                tob.setIsIsaddedToPosThoughtAdd(true);
+                }*/
+             //   tob.setIsIsaddedToPosThoughtAdd(true);
 
             }
         }//end if

@@ -20,6 +20,7 @@ public class thoughtobj implements Serializable{
     private boolean isaddedToCogPicker=false;
     private boolean isaddedToPosThoughtAdd=false;
     private boolean isnegthoughtreviewdone=false;
+    private int selectCogPosition;
 
     public int getId() {
         return id;
@@ -113,5 +114,13 @@ public class thoughtobj implements Serializable{
 
     public void setThought_cognitivedistortionobjList(List<thought_cognitivedistortionobj> thought_cognitivedistortionobjList) {
         this.thought_cognitivedistortionobjList = thought_cognitivedistortionobjList;
+    }
+
+    public int getSelectCogPosition() {
+        return selectCogPosition;
+    }
+
+    public void setSelectCogPosition(int selectCogPosition) {
+        this.selectCogPosition = selectCogPosition;
     }
 }

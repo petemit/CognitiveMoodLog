@@ -9,6 +9,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,12 +24,17 @@ import android.widget.TextView;
 
 //import com.facebook.stetho.Stetho;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.google.android.gms.ads.AdRequest.DEVICE_ID_EMULATOR;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     Button openOldEntry;
     TextView qotd;
     static boolean FIRSTLOAD=false;
+    private AdView mAdView;
 
     private final Context mContext =getBaseContext();
     /* Class reference to help load the constructor on runtime */
@@ -49,7 +56,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Cognitive Mood Log");
+        String android_id = Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ANDROID_ID);
 
+
+        mAdView=(AdView) findViewById(R.id.main_adView);
+        AdRequest adRequest = new AdRequest.Builder()
+              /*  .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .addTestDevice("21252E303478C18E96B3BE3FA71F9980")
+                .addTestDevice("D3447DD8C1737937917E0FE59A012CC0")*/
+                .build();
+        mAdView.loadAd(adRequest);
         dbHelper =new CogMoodLogDatabaseHelper(getBaseContext());
         setSupportActionBar(toolbar);
         //Fantastic way to browse your database when the app is running.

@@ -13,12 +13,14 @@ public class CogMoodLogDatabaseContract {
 
     public static final class cognitivedistortion implements BaseColumns{
         public static String TABLE_NAME="cognitivedistortion";
+        public static String COLUMN_COGID="cogid";
         public static String COLUMN_NAME="name";
         public static String COLUMN_DESCRIPTION="description";
     }
 
     public static final class emotion implements BaseColumns {
         public static String TABLE_NAME="emotion";
+        public static String COLUMN_EMOID="emoid";
         public static String COLUMN_NAME="name";
         public static String COLUMN_EMOTIONCATEGORY_ID="emotioncategory_id";
     }
@@ -34,6 +36,7 @@ public class CogMoodLogDatabaseContract {
 
     public static final class emotioncategory implements  BaseColumns {
         public static String TABLE_NAME = "emotioncategory";
+        public static String COLUMN_EMOCATID="emocatid";
         public static String COLUMN_NAME ="name";
     }
 
@@ -64,6 +67,7 @@ public class CogMoodLogDatabaseContract {
 
     public static final class troubleshootingguidelines implements BaseColumns{
         public static String TABLE_NAME="troubleshootingguidelines";
+        public static String COLUMN_TROUBLESHOOTID="troubleshootid";
         public static String COLUMN_QUESTION="question";
         public static String COLUMN_EXPLANATION="explanation";
     }

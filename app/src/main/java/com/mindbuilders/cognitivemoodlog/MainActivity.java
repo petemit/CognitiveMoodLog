@@ -182,12 +182,13 @@ if (FIRSTLOAD){
             try {
                 while ((line = buffer.readLine()) != null) {
                     String[] columns = line.split(";");
-                    if (columns.length != 2) {
+                    if (columns.length != 3) {
                         continue;
                     }
                     ContentValues cv = new ContentValues();
-                    cv.put(CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_NAME, columns[0].trim());
-                    cv.put(CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_DESCRIPTION, columns[1].trim());
+                    cv.put(CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_COGID, columns[0].trim());
+                    cv.put(CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_NAME, columns[1].trim());
+                    cv.put(CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_DESCRIPTION, columns[2].trim());
                     db.insert(CogMoodLogDatabaseContract.cognitivedistortion.TABLE_NAME, null, cv);
                 }
             } catch (IOException e) {
@@ -215,13 +216,14 @@ if (FIRSTLOAD){
             try {
                 while ((line = buffer.readLine()) != null) {
                     String[] columns = line.split(";");
-                    if (columns.length != 2) {
+                    if (columns.length != 3) {
 
                         continue;
                     }
                     ContentValues cv = new ContentValues();
-                    cv.put(CogMoodLogDatabaseContract.emotion.COLUMN_EMOTIONCATEGORY_ID, columns[0].trim());
-                    cv.put(CogMoodLogDatabaseContract.emotion.COLUMN_NAME, columns[1].trim());
+                    cv.put(CogMoodLogDatabaseContract.emotion.COLUMN_EMOID, columns[0].trim());
+                    cv.put(CogMoodLogDatabaseContract.emotion.COLUMN_EMOTIONCATEGORY_ID, columns[1].trim());
+                    cv.put(CogMoodLogDatabaseContract.emotion.COLUMN_NAME, columns[2].trim());
                     db.insert(CogMoodLogDatabaseContract.emotion.TABLE_NAME, null, cv);
                 }
             } catch (IOException e) {
@@ -246,12 +248,13 @@ if (FIRSTLOAD){
             try {
                 while ((line = buffer.readLine()) != null) {
                     String[] columns = line.split(";");
-                    if (columns.length != 1) {
+                    if (columns.length != 2) {
 
                         continue;
                     }
                     ContentValues cv = new ContentValues();
-                    cv.put(CogMoodLogDatabaseContract.emotioncategory.COLUMN_NAME, columns[0].trim());
+                    cv.put(CogMoodLogDatabaseContract.emotioncategory.COLUMN_EMOCATID, columns[0].trim());
+                    cv.put(CogMoodLogDatabaseContract.emotioncategory.COLUMN_NAME, columns[1].trim());
                     db.insert(CogMoodLogDatabaseContract.emotioncategory.TABLE_NAME, null, cv);
                 }
             } catch (IOException e) {
@@ -276,13 +279,14 @@ if (FIRSTLOAD){
             try {
                 while ((line = buffer.readLine()) != null) {
                     String[] columns = line.split(";");
-                    if (columns.length != 2) {
+                    if (columns.length != 3) {
 
                         continue;
                     }
                     ContentValues cv = new ContentValues();
-                    cv.put(CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_QUESTION, columns[0].trim());
-                    cv.put(CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_EXPLANATION, columns[1].trim());
+                    cv.put(CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_TROUBLESHOOTID, columns[0].trim());
+                    cv.put(CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_QUESTION, columns[1].trim());
+                    cv.put(CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_EXPLANATION, columns[2].trim());
                     db.insert(CogMoodLogDatabaseContract.troubleshootingguidelines.TABLE_NAME, null, cv);
                 }
             } catch (IOException e) {

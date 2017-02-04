@@ -18,6 +18,7 @@ public class TroubleshootEntry extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_troubleshoot_entry);
+        getSupportActionBar().setTitle("Cognitive Mood Log");
         dbhelper=new CogMoodLogDatabaseHelper(TroubleshootEntry.this);
         troubleshootinglist=(ViewGroup)findViewById(R.id.troubleshootentry_list);
         Button returnbutton=(Button)findViewById(R.id.returnbutton);

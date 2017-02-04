@@ -48,11 +48,13 @@ public class ReviewNegativeThoughtFragment extends Fragment {
     public void setUserVisibleHint(boolean isVisibleToUser) {
 
         super.setUserVisibleHint(isVisibleToUser);
-
+        if (isVisibleToUser){
+            ((CreateNewLogEntry)getActivity()).setRightNavVisible();
+        }
         if (isVisibleToUser && ((CreateNewLogEntry)getActivity()).getThoughtobjList()!=null &&
                 ((CreateNewLogEntry)getActivity()).getThought_cognitivedistortionobjs()!=null) {
             thoughtobjList=((CreateNewLogEntry)getActivity()).getThoughtobjList();
-            ((CreateNewLogEntry)getActivity()).setRightNavVisible();
+
             negThoughtReviewList.removeAllViews();
             for (thoughtobj tob: thoughtobjList) {
              /*   if (!tob.getIsNegThoughtReviewDone()){*/

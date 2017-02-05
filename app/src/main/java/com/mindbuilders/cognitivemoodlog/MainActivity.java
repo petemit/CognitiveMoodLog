@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         dbHelper =new CogMoodLogDatabaseHelper(getBaseContext());
         setSupportActionBar(toolbar);
         //Fantastic way to browse your database when the app is running.
-        // Stetho.initializeWithDefaults(this);
+       // Stetho.initializeWithDefaults(this);
         if (!FIRSTLOAD){
 
             try {

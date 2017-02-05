@@ -38,9 +38,9 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
-            db.rawQuery("select * from logentry", null);
+           db.rawQuery("select * from logentry", null);
         }
-        catch (SQLException s) {
+        catch (Exception e) {
             Log.i("dbhelper", "creating new db");
             createDb(db);
         }
@@ -52,14 +52,17 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         final String SQL_CREATE_COGNITIVEDISTORTION_TABLE =
                 "CREATE TABLE " + cognitivedistortion.TABLE_NAME +" (" +
                         // cognitivedistortion._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        cognitivedistortion.COLUMN_DESCRIPTION + " TEXT, " +
-                        cognitivedistortion.COLUMN_NAME + " TEXT " +
+                        cognitivedistortion.COLUMN_COGID + " INTEGER, " +
+                        cognitivedistortion.COLUMN_NAME + " TEXT, " +
+                        cognitivedistortion.COLUMN_DESCRIPTION + " TEXT " +
+
                         ");";
         db.execSQL(SQL_CREATE_COGNITIVEDISTORTION_TABLE);
 
         final String SQL_CREATE_EMOTION_TABLE =
                 "CREATE TABLE " + emotion.TABLE_NAME +" (" +
                         //   emotion._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        emotion.COLUMN_EMOID + " INTEGER, " +
                         emotion.COLUMN_EMOTIONCATEGORY_ID + " INTEGER, " +
                         emotion.COLUMN_NAME + " TEXT " +
                         ");";
@@ -78,6 +81,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         final String SQL_CREATE_EMOTIONCATEGORY_TABLE =
                 "CREATE TABLE " + emotioncategory.TABLE_NAME +" (" +
                         //      emotioncategory._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        emotioncategory.COLUMN_EMOCATID + " INTEGER, " +
                         emotioncategory.COLUMN_NAME + " TEXT " +
                         ");";
         db.execSQL(SQL_CREATE_EMOTIONCATEGORY_TABLE);
@@ -116,6 +120,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         final String SQL_CREATE_TROUBLESHOOTINGGUIDELINES_TABLE =
                 "CREATE TABLE " + troubleshootingguidelines.TABLE_NAME +" (" +
                         //  troubleshootingguidelines._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        troubleshootingguidelines.COLUMN_TROUBLESHOOTID + " INTEGER, " +
                         troubleshootingguidelines.COLUMN_QUESTION + " TEXT, " +
                         troubleshootingguidelines.COLUMN_EXPLANATION + " TEXT " +
                         ");";

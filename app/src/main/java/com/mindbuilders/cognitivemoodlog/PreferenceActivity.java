@@ -13,13 +13,13 @@ public class PreferenceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preference);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.preferences_toolbar);
-
-        setSupportActionBar(toolbar);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.preference_container, new SettingsFragment())
-                .commit();
+//
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.preferences_toolbar);
+//
+//        setSupportActionBar(toolbar);
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.preference_container, new SettingsFragment())
+//                .commit();
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();

@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog;
+package com.mindbuilders.cognitivemoodlog.ui;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

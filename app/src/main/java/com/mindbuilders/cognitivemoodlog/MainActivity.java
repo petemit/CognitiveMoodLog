@@ -9,8 +9,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,17 +16,17 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 //import com.facebook.stetho.Stetho;
+
+import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseContract;
+import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -128,7 +126,7 @@ if (FIRSTLOAD){
 
 
     public void openCreateNewLogEntry(View view) {
-        Intent intent = new Intent(this, CreateNewLogEntry.class);
+        Intent intent = new Intent(this, CreateNewLogEntryActivity.class);
       //  EditText editText = (EditText) findViewById(R.id.editMessage1);
       //  String message = editText.getText().toString();
        // intent.putExtra(EXTRA_MESSAGE, message);
@@ -138,7 +136,7 @@ if (FIRSTLOAD){
     }
 
     public void OpenExplainCognitiveTherapy(View view) {
-        Intent intent = new Intent(this, ExplainCognitiveTherapy.class);
+        Intent intent = new Intent(this, ExplainCognitiveTherapyActivity.class);
         //  EditText editText = (EditText) findViewById(R.id.editMessage1);
         //  String message = editText.getText().toString();
         // intent.putExtra(EXTRA_MESSAGE, message);
@@ -148,7 +146,7 @@ if (FIRSTLOAD){
     }
 
     public void openPreviousLogs(View view) {
-        Intent intent = new Intent(this, OpenPreviousLogs.class);
+        Intent intent = new Intent(this, OpenPreviousLogsActivity.class);
         startActivity(intent);
 
 

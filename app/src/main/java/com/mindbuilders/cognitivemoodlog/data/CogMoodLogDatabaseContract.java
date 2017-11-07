@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog;
+package com.mindbuilders.cognitivemoodlog.data;
 
 import android.provider.BaseColumns;
 

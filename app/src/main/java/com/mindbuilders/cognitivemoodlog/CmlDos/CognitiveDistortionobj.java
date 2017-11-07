@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog;
+package com.mindbuilders.cognitivemoodlog.CmlDos;
 
 /**
  * Created by Peter on 1/18/2017.

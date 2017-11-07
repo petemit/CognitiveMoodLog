@@ -7,14 +7,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.mindbuilders.cognitivemoodlog.CmlDos.CognitiveDistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
+import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
+import com.mindbuilders.cognitivemoodlog.util.utilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +63,8 @@ public class PositiveThoughtAddFragment extends Fragment {
 
         super.setUserVisibleHint(isVisibleToUser);
 
-        if (isVisibleToUser && ((CreateNewLogEntry)getActivity()).getThoughtobjList()!=null &&((CreateNewLogEntry)getActivity()).getThought_cognitivedistortionobjs()!=null) {
-            thoughtobjList=((CreateNewLogEntry)getActivity()).getThoughtobjList();
+        if (isVisibleToUser && ((CreateNewLogEntryActivity)getActivity()).getThoughtobjList()!=null &&((CreateNewLogEntryActivity)getActivity()).getThought_cognitivedistortionobjs()!=null) {
+            thoughtobjList=((CreateNewLogEntryActivity)getActivity()).getThoughtobjList();
             posThoughtAdderList.removeAllViews();
             for (thoughtobj tob: thoughtobjList) {
                /* if (!tob.getIsIsaddedToPosThoughtAdd()){*/
@@ -82,7 +83,7 @@ public class PositiveThoughtAddFragment extends Fragment {
                     posthought_et.setTag(tob.getId());
                     posthought_et.setText(tob.getPositivethought());
                     seekbar.setProgress(tob.getPositivebeliefbefore());
-                    thought_cognitivedistortionList=((CreateNewLogEntry)this.getActivity()).getThought_cognitivedistortionobjs();
+                    thought_cognitivedistortionList=((CreateNewLogEntryActivity)this.getActivity()).getThought_cognitivedistortionobjs();
                     //todo probably be better to convert these to hashtables or something...
 
                     posthought_et.setOnFocusChangeListener(new View.OnFocusChangeListener(){

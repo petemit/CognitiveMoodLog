@@ -1,46 +1,32 @@
 package com.mindbuilders.cognitivemoodlog;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
-import com.viewpagerindicator.CirclePageIndicator;
-import com.viewpagerindicator.LinePageIndicator;
-import com.viewpagerindicator.TabPageIndicator;
+import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
+import com.mindbuilders.cognitivemoodlog.ui.EmotionRVAdapter;
+import com.mindbuilders.cognitivemoodlog.ui.SmartFragmentStatePagerAdapter;
+import com.mindbuilders.cognitivemoodlog.ui.TabPageIndicator2;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-
-public class CreateNewLogEntry extends AppCompatActivity implements DescribeSituationFragment.DescribeSituationFragmentListener, ThoughtAddFragment.ThoughtAddFragmentListener,EmotionRVAdapter.EmotionRVAdapterListener, CognitiveDistortionPickerFragment.CognitiveDistortionPickerListener{
+public class CreateNewLogEntryActivity extends AppCompatActivity implements DescribeSituationFragment.DescribeSituationFragmentListener, ThoughtAddFragment.ThoughtAddFragmentListener,EmotionRVAdapter.EmotionRVAdapterListener, CognitiveDistortionPickerFragment.CognitiveDistortionPickerListener{
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
@@ -133,7 +119,7 @@ public class CreateNewLogEntry extends AppCompatActivity implements DescribeSitu
         switch (item.getItemId()) {
             case R.id.delete_log_entry_menuitem:
                 // 1. Instantiate an AlertDialog.Builder with its constructor
-                AlertDialog.Builder builder = new AlertDialog.Builder(CreateNewLogEntry.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(CreateNewLogEntryActivity.this);
 
 // 2. Chain together various setter methods to set the dialog characteristics
                 builder.setMessage("If you delete this entry, all your entered data will be lost!")
@@ -141,7 +127,7 @@ public class CreateNewLogEntry extends AppCompatActivity implements DescribeSitu
 
                 builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(CreateNewLogEntry.this, MainActivity.class);
+                        Intent intent = new Intent(CreateNewLogEntryActivity.this, MainActivity.class);
                         startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
                     }

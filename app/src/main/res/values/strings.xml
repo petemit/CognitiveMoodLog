@@ -7,9 +7,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="describe_your_situation_that_made_you_feel_upset">Describe your situation that made you feel upset:</string>
     <string name="feelinggoodlink"><a href="http://www.feelinggood.com">feelinggood.com</a></string>
-<!-- Test id-->
+    <!-- Test id-->
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/630097811</string>
+    <string name="preferences">Preferences</string>
     <!-- my id-->
-  <!--  <string name="banner_ad_unit_id">ca-app-pub-0694347371071565/6137388488</string>-->
+    <!--  <string name="banner_ad_unit_id">ca-app-pub-0694347371071565/6137388488</string>-->
 
 </resources>

@@ -1,19 +1,18 @@
 package com.mindbuilders.cognitivemoodlog;
 
 import android.app.Activity;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
+import com.mindbuilders.cognitivemoodlog.util.utilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +51,7 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
         addThoughtButton.setOnClickListener(this);
         negThoughtEditText=(EditText)rootView.findViewById(R.id.addnegthoughtedittext);
         negthoughtlistview=(ViewGroup)rootView.findViewById(R.id.negthoughtlist);
-        situationDescription.setText(((CreateNewLogEntry)getActivity()).getSituation());
+        situationDescription.setText(((CreateNewLogEntryActivity)getActivity()).getSituation());
         negThoughtEditText.setHorizontallyScrolling(false);
         negThoughtEditText.setMaxLines(4);
         negThoughtEditText.setOnFocusChangeListener(new View.OnFocusChangeListener(){
@@ -71,7 +70,7 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onResume() {
-        situationDescription.setText(((CreateNewLogEntry)getActivity()).getSituation());
+        situationDescription.setText(((CreateNewLogEntryActivity)getActivity()).getSituation());
         super.onResume();
     }
 

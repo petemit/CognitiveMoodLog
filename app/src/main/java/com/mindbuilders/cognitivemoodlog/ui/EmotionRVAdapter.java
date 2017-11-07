@@ -1,11 +1,10 @@
-package com.mindbuilders.cognitivemoodlog;
+package com.mindbuilders.cognitivemoodlog.ui;
 
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +13,12 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
+import com.mindbuilders.cognitivemoodlog.CreateNewLogEntryActivity;
+import com.mindbuilders.cognitivemoodlog.R;
+import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseContract;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -49,7 +52,7 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.emotion_listitem,parent,false);
         EmotionViewHolder viewHolder=new EmotionViewHolder(view);
-        setEmotionList(((CreateNewLogEntry)activity).getEmotionobjList());
+        setEmotionList(((CreateNewLogEntryActivity)activity).getEmotionobjList());
         try {
             mEmotionAddListener = (EmotionRVAdapterListener) context;
 

@@ -1,6 +1,5 @@
 package com.mindbuilders.cognitivemoodlog;
 
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,15 +10,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.mindbuilders.cognitivemoodlog.CmlDos.CognitiveDistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.logentryobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
+import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
+import com.mindbuilders.cognitivemoodlog.util.utilities;
+
 import java.util.List;
 
-public class OpenPreviousLogs extends AppCompatActivity {
+public class OpenPreviousLogsActivity extends AppCompatActivity {
     private List<emotionobj> emotionobjList;
     private List<thoughtobj> thoughtobjList;
     private List<thought_cognitivedistortionobj> thought_cognitivedistortionobjsList;
@@ -34,9 +39,9 @@ public class OpenPreviousLogs extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_previous_logs);
         vg=(ViewGroup)findViewById(R.id.previouslogList);
-        dbHelper=new CogMoodLogDatabaseHelper(OpenPreviousLogs.this);
+        dbHelper=new CogMoodLogDatabaseHelper(OpenPreviousLogsActivity.this);
         cogobjs=dbHelper.getCognitiveDistortionNameList();
-        util=new utilities(OpenPreviousLogs.this);
+        util=new utilities(OpenPreviousLogsActivity.this);
         getSupportActionBar().setTitle("Cognitive Mood Log");
 //todo fix sort so spinner goes by date.
 //todo need to add headings to the two sections
@@ -44,7 +49,7 @@ public class OpenPreviousLogs extends AppCompatActivity {
         Spinner spin = (Spinner)findViewById(R.id.select_previous_entry_spinner);
 
         ArrayAdapter<logentryobj> adapter = new ArrayAdapter<logentryobj>(
-                OpenPreviousLogs.this, android.R.layout.simple_spinner_item, logobjs);
+                OpenPreviousLogsActivity.this, android.R.layout.simple_spinner_item, logobjs);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin.setAdapter(adapter);
 
@@ -65,7 +70,7 @@ public class OpenPreviousLogs extends AppCompatActivity {
                     //vg.addView();
 
                     //todo this is duplicate code... need to make a method
-                    TextView emo_tv=new TextView(OpenPreviousLogs.this);
+                    TextView emo_tv=new TextView(OpenPreviousLogsActivity.this);
 
 
                     emo_tv.setText("Emotion Review:");
@@ -107,7 +112,7 @@ public class OpenPreviousLogs extends AppCompatActivity {
                     LayoutInflater dividerinflater= LayoutInflater.from(vg.getContext());
                     View dividerline=dividerinflater.inflate(R.layout.dividerline,vg,false);
                     vg.addView(dividerline);
-                    TextView thought_tv=new TextView(OpenPreviousLogs.this);
+                    TextView thought_tv=new TextView(OpenPreviousLogsActivity.this);
                     thought_tv.setText("Negative and Positive Thought Review:");
                     thought_tv.setTypeface(Typeface.DEFAULT_BOLD);
                     thought_tv.setPadding(15,20,0,20);

@@ -1,28 +1,27 @@
 package com.mindbuilders.cognitivemoodlog;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v7.app.ActionBar;
 import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import com.mindbuilders.cognitivemoodlog.CmlDos.CognitiveDistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
+import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,7 +153,7 @@ public class ReviewActivity extends AppCompatActivity {
         troubleshootbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ReviewActivity.this, TroubleshootEntry.class);
+                Intent intent = new Intent(ReviewActivity.this, TroubleshootEntryActivity.class);
 
                 startActivity(intent);
 

@@ -1,6 +1,5 @@
 package com.mindbuilders.cognitivemoodlog;
 
-import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -8,18 +7,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.content.Context;
 
-import java.io.IOException;
-import java.util.List;
+import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseContract;
+import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
+import com.mindbuilders.cognitivemoodlog.ui.EmotionRVAdapter;
 
 
 public class EmotionPickerFragment extends Fragment {
@@ -32,7 +27,7 @@ public class EmotionPickerFragment extends Fragment {
     SQLiteDatabase db;
     RecyclerView emotionlist;
     EmotionRVAdapter rvAdapter;
-    private CreateNewLogEntry parent;
+    private CreateNewLogEntryActivity parent;
 
 
     @Override
@@ -40,7 +35,7 @@ public class EmotionPickerFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_emotion_picker, container, false);
-        parent=(CreateNewLogEntry)getActivity();
+        parent=(CreateNewLogEntryActivity)getActivity();
         situationDescription = (TextView) rootView.findViewById(R.id.SituationDescription);
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
         emotionlist=(RecyclerView)rootView.findViewById(R.id.rv_emotions);
@@ -98,13 +93,13 @@ public class EmotionPickerFragment extends Fragment {
 
     @Override
     public void onStart() {
-        situationDescription.setText(((CreateNewLogEntry)getActivity()).getSituation());
+        situationDescription.setText(((CreateNewLogEntryActivity)getActivity()).getSituation());
         super.onStart();
     }
 
     @Override
     public void onResume() {
-        situationDescription.setText(((CreateNewLogEntry)getActivity()).getSituation());
+        situationDescription.setText(((CreateNewLogEntryActivity)getActivity()).getSituation());
         super.onResume();
     }
 

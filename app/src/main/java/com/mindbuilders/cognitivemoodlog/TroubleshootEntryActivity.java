@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.mindbuilders.cognitivemoodlog.CmlDos.troubleshootingobj;
+import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 
-public class TroubleshootEntry extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class TroubleshootEntryActivity extends AppCompatActivity {
     private CogMoodLogDatabaseHelper dbhelper;
     private ViewGroup troubleshootinglist;
     @Override
@@ -19,7 +21,7 @@ public class TroubleshootEntry extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_troubleshoot_entry);
         getSupportActionBar().setTitle("Cognitive Mood Log");
-        dbhelper=new CogMoodLogDatabaseHelper(TroubleshootEntry.this);
+        dbhelper=new CogMoodLogDatabaseHelper(TroubleshootEntryActivity.this);
         troubleshootinglist=(ViewGroup)findViewById(R.id.troubleshootentry_list);
         Button returnbutton=(Button)findViewById(R.id.returnbutton);
         returnbutton.setOnClickListener(new View.OnClickListener() {

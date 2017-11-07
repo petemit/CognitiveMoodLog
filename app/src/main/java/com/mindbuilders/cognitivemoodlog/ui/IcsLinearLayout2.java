@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog;
+package com.mindbuilders.cognitivemoodlog.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;

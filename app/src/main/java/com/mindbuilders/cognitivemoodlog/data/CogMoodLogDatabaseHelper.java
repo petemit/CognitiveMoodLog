@@ -1,18 +1,19 @@
-package com.mindbuilders.cognitivemoodlog;
+package com.mindbuilders.cognitivemoodlog.data;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.mindbuilders.cognitivemoodlog.CogMoodLogDatabaseContract.*;
+import com.mindbuilders.cognitivemoodlog.CmlDos.CognitiveDistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.logentryobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.troubleshootingobj;
 
-import java.lang.reflect.Array;
-import java.security.Timestamp;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,104 +51,104 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     public void createDb(SQLiteDatabase db)
     {
         final String SQL_CREATE_COGNITIVEDISTORTION_TABLE =
-                "CREATE TABLE " + cognitivedistortion.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.cognitivedistortion.TABLE_NAME +" (" +
                         // cognitivedistortion._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        cognitivedistortion.COLUMN_COGID + " INTEGER, " +
-                        cognitivedistortion.COLUMN_NAME + " TEXT, " +
-                        cognitivedistortion.COLUMN_DESCRIPTION + " TEXT " +
+                        CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_COGID + " INTEGER, " +
+                        CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_NAME + " TEXT, " +
+                        CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_DESCRIPTION + " TEXT " +
 
                         ");";
         db.execSQL(SQL_CREATE_COGNITIVEDISTORTION_TABLE);
 
         final String SQL_CREATE_EMOTION_TABLE =
-                "CREATE TABLE " + emotion.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.emotion.TABLE_NAME +" (" +
                         //   emotion._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        emotion.COLUMN_EMOID + " INTEGER, " +
-                        emotion.COLUMN_EMOTIONCATEGORY_ID + " INTEGER, " +
-                        emotion.COLUMN_NAME + " TEXT " +
+                        CogMoodLogDatabaseContract.emotion.COLUMN_EMOID + " INTEGER, " +
+                        CogMoodLogDatabaseContract.emotion.COLUMN_EMOTIONCATEGORY_ID + " INTEGER, " +
+                        CogMoodLogDatabaseContract.emotion.COLUMN_NAME + " TEXT " +
                         ");";
         db.execSQL(SQL_CREATE_EMOTION_TABLE);
 
         final String SQL_CREATE_EMOTION_LOGENTRY_BELIEF_TABLE =
-                "CREATE TABLE " + emotion_logentry_belief.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.emotion_logentry_belief.TABLE_NAME +" (" +
                         //        emotion_logentry_belief._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        emotion_logentry_belief.COLUMN_EMOTION_ID + " INTEGER, " +
-                        emotion_logentry_belief.COLUMN_LOGENTRY_ID + " INTEGER, " +
-                        emotion_logentry_belief.COLUMN_BELIEFBEFORE + " INTEGER, " +
-                        emotion_logentry_belief.COLUMN_BELIEFAFTER + " INTEGER " +
+                        CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_EMOTION_ID + " INTEGER, " +
+                        CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_LOGENTRY_ID + " INTEGER, " +
+                        CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFBEFORE + " INTEGER, " +
+                        CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFAFTER + " INTEGER " +
                         ");";
         db.execSQL(SQL_CREATE_EMOTION_LOGENTRY_BELIEF_TABLE);
 
         final String SQL_CREATE_EMOTIONCATEGORY_TABLE =
-                "CREATE TABLE " + emotioncategory.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.emotioncategory.TABLE_NAME +" (" +
                         //      emotioncategory._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        emotioncategory.COLUMN_EMOCATID + " INTEGER, " +
-                        emotioncategory.COLUMN_NAME + " TEXT " +
+                        CogMoodLogDatabaseContract.emotioncategory.COLUMN_EMOCATID + " INTEGER, " +
+                        CogMoodLogDatabaseContract.emotioncategory.COLUMN_NAME + " TEXT " +
                         ");";
         db.execSQL(SQL_CREATE_EMOTIONCATEGORY_TABLE);
 
         final String SQL_CREATE_LOGENTRY_TABLE =
-                "CREATE TABLE " + logentry.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.logentry.TABLE_NAME +" (" +
                         //    logentry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        logentry.COLUMN_LOGENTRY + " TEXT, " +
-                        logentry.COLUMN_USER_ID+ " INTEGER, " +
-                        logentry.COLUMN_ISFINISHED + " BOOLEAN, " +
-                        logentry.COLUMN_TIMESTAMP + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP " +
+                        CogMoodLogDatabaseContract.logentry.COLUMN_LOGENTRY + " TEXT, " +
+                        CogMoodLogDatabaseContract.logentry.COLUMN_USER_ID+ " INTEGER, " +
+                        CogMoodLogDatabaseContract.logentry.COLUMN_ISFINISHED + " BOOLEAN, " +
+                        CogMoodLogDatabaseContract.logentry.COLUMN_TIMESTAMP + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP " +
                         ");";
         db.execSQL(SQL_CREATE_LOGENTRY_TABLE);
 
         final String SQL_CREATE_THOUGHT_TABLE =
-                "CREATE TABLE " + thought.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.thought.TABLE_NAME +" (" +
                         //  thought._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        thought.COLUMN_NEGATIVETHOUGHT + " TEXT, " +
-                        thought.COLUMN_POSITIVETHOUGHT + " TEXT, " +
-                        thought.COLUMN_LOGENTRY_ID + " INTEGER, " +
-                        thought.COLUMN_NEGATIVEBELIEFBEFORE + " INTEGER, " +
-                        thought.COLUMN_NEGATIVEBELIEFAFTER + " INTEGER, " +
-                        thought.COLUMN_POSITIVEBELIEFBEFORE + " INTEGER, " +
-                        thought.COLUMN_POSITIVEBELIEFAFTER + " INTEGER " +
+                        CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVETHOUGHT + " TEXT, " +
+                        CogMoodLogDatabaseContract.thought.COLUMN_POSITIVETHOUGHT + " TEXT, " +
+                        CogMoodLogDatabaseContract.thought.COLUMN_LOGENTRY_ID + " INTEGER, " +
+                        CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFBEFORE + " INTEGER, " +
+                        CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFAFTER + " INTEGER, " +
+                        CogMoodLogDatabaseContract.thought.COLUMN_POSITIVEBELIEFBEFORE + " INTEGER, " +
+                        CogMoodLogDatabaseContract.thought.COLUMN_POSITIVEBELIEFAFTER + " INTEGER " +
                         ");";
         db.execSQL(SQL_CREATE_THOUGHT_TABLE);
 
         final String SQL_CREATE_THOUGHT_COGNITIVEDISTORTION_TABLE =
-                "CREATE TABLE " + thought_cognitivedistortion.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.thought_cognitivedistortion.TABLE_NAME +" (" +
                         //  thought_cognitivedistortion._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        thought_cognitivedistortion.COLUMN_THOUGHT_ID + " INTEGER, " +
-                        thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID + " INTEGER " +
+                        CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_THOUGHT_ID + " INTEGER, " +
+                        CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID + " INTEGER " +
                         ");";
         db.execSQL(SQL_CREATE_THOUGHT_COGNITIVEDISTORTION_TABLE);
 
         final String SQL_CREATE_TROUBLESHOOTINGGUIDELINES_TABLE =
-                "CREATE TABLE " + troubleshootingguidelines.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.troubleshootingguidelines.TABLE_NAME +" (" +
                         //  troubleshootingguidelines._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        troubleshootingguidelines.COLUMN_TROUBLESHOOTID + " INTEGER, " +
-                        troubleshootingguidelines.COLUMN_QUESTION + " TEXT, " +
-                        troubleshootingguidelines.COLUMN_EXPLANATION + " TEXT " +
+                        CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_TROUBLESHOOTID + " INTEGER, " +
+                        CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_QUESTION + " TEXT, " +
+                        CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_EXPLANATION + " TEXT " +
                         ");";
         db.execSQL(SQL_CREATE_TROUBLESHOOTINGGUIDELINES_TABLE);
 
     }
 
-    public String saveLogEntry(List<emotionobj> emotionobjList,List<thought_cognitivedistortionobj> thought_cognitivedistortionobjList ,List<thoughtobj> thoughtobjList, String situation) {
+    public String saveLogEntry(List<emotionobj> emotionobjList, List<thought_cognitivedistortionobj> thought_cognitivedistortionobjList , List<thoughtobj> thoughtobjList, String situation) {
 
         db = this.getWritableDatabase();
         //Input the situation
         ContentValues cv = new ContentValues();
-        cv.put(logentry.COLUMN_LOGENTRY,situation.trim());
-        cv.put(logentry.COLUMN_TIMESTAMP,getDateTime());
-        long logid=db.insert(logentry.TABLE_NAME,null,cv);
+        cv.put(CogMoodLogDatabaseContract.logentry.COLUMN_LOGENTRY,situation.trim());
+        cv.put(CogMoodLogDatabaseContract.logentry.COLUMN_TIMESTAMP,getDateTime());
+        long logid=db.insert(CogMoodLogDatabaseContract.logentry.TABLE_NAME,null,cv);
 
         //input the thoughts associated
         for (thoughtobj tob : thoughtobjList){
             ContentValues tobcv = new ContentValues();
-            tobcv.put(thought.COLUMN_LOGENTRY_ID,logid);
-            tobcv.put(thought.COLUMN_NEGATIVEBELIEFAFTER,tob.getNegativebeliefAfter());
-            tobcv.put(thought.COLUMN_NEGATIVEBELIEFBEFORE,tob.getNegativebeliefBefore());
-            tobcv.put(thought.COLUMN_NEGATIVETHOUGHT,tob.getNegativethought());
-            tobcv.put(thought.COLUMN_POSITIVEBELIEFBEFORE,tob.getPositivebeliefbefore());
-            tobcv.put(thought.COLUMN_POSITIVETHOUGHT,tob.getPositivethought());
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_LOGENTRY_ID,logid);
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFAFTER,tob.getNegativebeliefAfter());
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFBEFORE,tob.getNegativebeliefBefore());
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVETHOUGHT,tob.getNegativethought());
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_POSITIVEBELIEFBEFORE,tob.getPositivebeliefbefore());
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_POSITIVETHOUGHT,tob.getPositivethought());
             //add the thought to the db
-            long tobDbId= db.insert(thought.TABLE_NAME,null,tobcv);
+            long tobDbId= db.insert(CogMoodLogDatabaseContract.thought.TABLE_NAME,null,tobcv);
 
             //add the cognitive distortion linked to the thought
 
@@ -155,21 +156,21 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
                 if (tcdo.getThoughtid()==tob.getId())
                 {
                     ContentValues tcdo_cv = new ContentValues();
-                    tcdo_cv.put(thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID
+                    tcdo_cv.put(CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID
                             ,tcdo.getCognitivedistortionid());
-                    tcdo_cv.put(thought_cognitivedistortion.COLUMN_THOUGHT_ID,tobDbId);
-                    db.insert(thought_cognitivedistortion.TABLE_NAME,null,tcdo_cv);
+                    tcdo_cv.put(CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_THOUGHT_ID,tobDbId);
+                    db.insert(CogMoodLogDatabaseContract.thought_cognitivedistortion.TABLE_NAME,null,tcdo_cv);
                 }
             }
 
         }//end tob for
         for (emotionobj emo : emotionobjList){
             ContentValues emocv=new ContentValues();
-            emocv.put(emotion_logentry_belief.COLUMN_LOGENTRY_ID,logid);
-            emocv.put(emotion_logentry_belief.COLUMN_BELIEFAFTER,emo.getFeelingStrengthBefore());
-            emocv.put(emotion_logentry_belief.COLUMN_BELIEFBEFORE,emo.getGetFeelingstrengthAfter());
-            emocv.put(emotion_logentry_belief.COLUMN_EMOTION_ID,emo.getId());
-            db.insert(emotion_logentry_belief.TABLE_NAME,null,emocv);
+            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_LOGENTRY_ID,logid);
+            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFAFTER,emo.getFeelingStrengthBefore());
+            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFBEFORE,emo.getGetFeelingstrengthAfter());
+            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_EMOTION_ID,emo.getId());
+            db.insert(CogMoodLogDatabaseContract.emotion_logentry_belief.TABLE_NAME,null,emocv);
         }
         return null;
     }
@@ -224,15 +225,15 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         //   db=dbHelper.getReadableDatabase();
         String[] projection = {
                 "rowid",
-                logentry.COLUMN_TIMESTAMP,
-                logentry.COLUMN_LOGENTRY
+                CogMoodLogDatabaseContract.logentry.COLUMN_TIMESTAMP,
+                CogMoodLogDatabaseContract.logentry.COLUMN_LOGENTRY
         };
 
         String sortOrder =
-                logentry.COLUMN_TIMESTAMP + " DESC";
+                CogMoodLogDatabaseContract.logentry.COLUMN_TIMESTAMP + " DESC";
 
         Cursor cursor = db.query(
-                logentry.TABLE_NAME,                     // The table to query
+                CogMoodLogDatabaseContract.logentry.TABLE_NAME,                     // The table to query
                 projection,                               // The columns to return
                 null,                                // The columns for the WHERE clause
                 null,                            // The values for the WHERE clause
@@ -267,13 +268,13 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
         String[] projection = {
                 "rowid",
-                troubleshootingguidelines.COLUMN_EXPLANATION,
-                troubleshootingguidelines.COLUMN_QUESTION
+                CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_EXPLANATION,
+                CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_QUESTION
         };
         String sortOrder =
-                troubleshootingguidelines.COLUMN_QUESTION + " DESC";
+                CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_QUESTION + " DESC";
         Cursor cursor = db.query(
-                troubleshootingguidelines.TABLE_NAME,                     // The table to query
+                CogMoodLogDatabaseContract.troubleshootingguidelines.TABLE_NAME,                     // The table to query
                 projection,                               // The columns to return
                 null,                                // The columns for the WHERE clause
                 null,                            // The values for the WHERE clause
@@ -288,11 +289,11 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
                     "rowid"
             ))));
             obj.setAnswer(cursor.getString(cursor.getColumnIndex(
-                    troubleshootingguidelines.COLUMN_EXPLANATION
+                    CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_EXPLANATION
             )));
 
             obj.setQuestion(cursor.getString(cursor.getColumnIndex(
-                    troubleshootingguidelines.COLUMN_QUESTION
+                    CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_QUESTION
             )));
         troubleshootingList.add(obj);
         }
@@ -307,17 +308,17 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
         String[] projection = {
                 "rowid",
-                emotion_logentry_belief.COLUMN_BELIEFBEFORE,
-                emotion_logentry_belief.COLUMN_BELIEFAFTER,
-                emotion_logentry_belief.COLUMN_EMOTION_ID,
-                emotion_logentry_belief.COLUMN_LOGENTRY_ID,
+                CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFBEFORE,
+                CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFAFTER,
+                CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_EMOTION_ID,
+                CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_LOGENTRY_ID,
         };
         String [] whereargs={Integer.toString(logid)};
 
         Cursor cursor = db.query(
-                emotion_logentry_belief.TABLE_NAME,                     // The table to query
+                CogMoodLogDatabaseContract.emotion_logentry_belief.TABLE_NAME,                     // The table to query
                 projection,                               // The columns to return
-                emotion_logentry_belief.COLUMN_LOGENTRY_ID+"=?",                                // The columns for the WHERE clause
+                CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_LOGENTRY_ID+"=?",                                // The columns for the WHERE clause
                 whereargs,                            // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
@@ -327,32 +328,32 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
             emotionobj obj =new emotionobj();
 
             obj.setGetFeelingstrengthAfter(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
-                    emotion_logentry_belief.COLUMN_BELIEFAFTER
+                    CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFAFTER
             ))));
             obj.setFeelingstrengthBefore(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
-                    emotion_logentry_belief.COLUMN_BELIEFBEFORE
+                    CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFBEFORE
             ))));
 
             obj.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
-                    emotion_logentry_belief.COLUMN_EMOTION_ID
+                    CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_EMOTION_ID
             ))));
             obj.setLogentryid(Integer.parseInt(cursor.getString(cursor.getColumnIndex
-                    (emotion_logentry_belief.COLUMN_LOGENTRY_ID))));
+                    (CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_LOGENTRY_ID))));
 
             //Now get the emotion names
 
 
             String[] secondprojection = {
                     "rowid",
-                    emotion.COLUMN_NAME,
-                    emotion.COLUMN_EMOTIONCATEGORY_ID,
+                    CogMoodLogDatabaseContract.emotion.COLUMN_NAME,
+                    CogMoodLogDatabaseContract.emotion.COLUMN_EMOTIONCATEGORY_ID,
             };
 
             String sortOrder =
                     "rowid"+ " DESC";
             String [] secondwhereargs={Integer.toString(obj.getId())};
             Cursor secondcursor = db.query(
-                    emotion.TABLE_NAME,                     // The table to query
+                    CogMoodLogDatabaseContract.emotion.TABLE_NAME,                     // The table to query
                     secondprojection,                               // The columns to return
                     "rowid"+"=?",                                // The columns for the WHERE clause
                     secondwhereargs,                            // The values for the WHERE clause
@@ -364,10 +365,10 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
             while (secondcursor.moveToNext()) {
                 obj.setName(secondcursor.getString(secondcursor.getColumnIndex(
-                        emotion.COLUMN_NAME
+                        CogMoodLogDatabaseContract.emotion.COLUMN_NAME
                 )));
                 obj.setEmotioncategoryid(Integer.parseInt(secondcursor.getString(secondcursor.getColumnIndex(
-                        emotion.COLUMN_EMOTIONCATEGORY_ID
+                        CogMoodLogDatabaseContract.emotion.COLUMN_EMOTIONCATEGORY_ID
                 ))));
             }//end while
             emotionobjList.add(obj);
@@ -385,19 +386,19 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
         String[] projection = {
                 "rowid",
-                thought.COLUMN_NEGATIVETHOUGHT,
-                thought.COLUMN_POSITIVETHOUGHT,
-                thought.COLUMN_POSITIVEBELIEFBEFORE,
-                thought.COLUMN_NEGATIVEBELIEFBEFORE,
-                thought.COLUMN_NEGATIVEBELIEFAFTER,
-                thought.COLUMN_LOGENTRY_ID,
+                CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVETHOUGHT,
+                CogMoodLogDatabaseContract.thought.COLUMN_POSITIVETHOUGHT,
+                CogMoodLogDatabaseContract.thought.COLUMN_POSITIVEBELIEFBEFORE,
+                CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFBEFORE,
+                CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFAFTER,
+                CogMoodLogDatabaseContract.thought.COLUMN_LOGENTRY_ID,
         };
         String [] whereargs={Integer.toString(logid)};
 
         Cursor cursor = db.query(
-                thought.TABLE_NAME,                     // The table to query
+                CogMoodLogDatabaseContract.thought.TABLE_NAME,                     // The table to query
                 projection,                               // The columns to return
-                thought.COLUMN_LOGENTRY_ID+"=?",                                // The columns for the WHERE clause
+                CogMoodLogDatabaseContract.thought.COLUMN_LOGENTRY_ID+"=?",                                // The columns for the WHERE clause
                 whereargs,                            // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
@@ -410,24 +411,24 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
                     "rowid"
             ))));
             obj.setPositivebeliefbefore(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
-                    thought.COLUMN_POSITIVEBELIEFBEFORE
+                    CogMoodLogDatabaseContract.thought.COLUMN_POSITIVEBELIEFBEFORE
             ))));
 
             obj.setNegativebeliefBefore(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
-                    thought.COLUMN_NEGATIVEBELIEFBEFORE
+                    CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFBEFORE
             ))));
             obj.setNegativebeliefAfter(Integer.parseInt(cursor.getString(cursor.getColumnIndex
-                    (thought.COLUMN_NEGATIVEBELIEFAFTER))));
+                    (CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFAFTER))));
 
             obj.setPositivethought((cursor.getString(cursor.getColumnIndex(
-                    thought.COLUMN_POSITIVETHOUGHT
+                    CogMoodLogDatabaseContract.thought.COLUMN_POSITIVETHOUGHT
             ))));
 
             obj.setNegativethought((cursor.getString(cursor.getColumnIndex(
-                    thought.COLUMN_NEGATIVETHOUGHT
+                    CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVETHOUGHT
             ))));
             obj.setLogentryid(Integer.parseInt(cursor.getString(cursor.getColumnIndex
-                    (thought.COLUMN_LOGENTRY_ID))));
+                    (CogMoodLogDatabaseContract.thought.COLUMN_LOGENTRY_ID))));
 
             thoughtobjList.add(obj);
         }//end while
@@ -444,15 +445,15 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
         String[] projection = {
                 "rowid",
-                thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID,
-                thought_cognitivedistortion.COLUMN_THOUGHT_ID
+                CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID,
+                CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_THOUGHT_ID
         };
         String [] whereargs={Integer.toString(thoughtid)};
 
         Cursor cursor = db.query(
-                thought_cognitivedistortion.TABLE_NAME,                     // The table to query
+                CogMoodLogDatabaseContract.thought_cognitivedistortion.TABLE_NAME,                     // The table to query
                 projection,                               // The columns to return
-                thought_cognitivedistortion.COLUMN_THOUGHT_ID+"=?",                                // The columns for the WHERE clause
+                CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_THOUGHT_ID+"=?",                                // The columns for the WHERE clause
                 whereargs,                            // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
@@ -465,11 +466,11 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
                     "rowid"
             ))));
             obj.setCognitivedistortionid(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
-                    thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID
+                    CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID
             ))));
 
             obj.setThoughtid(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
-                    thought_cognitivedistortion.COLUMN_THOUGHT_ID
+                    CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_THOUGHT_ID
             ))));
 
             thought_cognitivedistortionobjList.add(obj);

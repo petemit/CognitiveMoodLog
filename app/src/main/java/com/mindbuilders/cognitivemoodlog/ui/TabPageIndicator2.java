@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mindbuilders.cognitivemoodlog;
+package com.mindbuilders.cognitivemoodlog.ui;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -27,6 +27,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mindbuilders.cognitivemoodlog.R;
 import com.viewpagerindicator.IconPagerAdapter;
 import com.viewpagerindicator.PageIndicator;
 

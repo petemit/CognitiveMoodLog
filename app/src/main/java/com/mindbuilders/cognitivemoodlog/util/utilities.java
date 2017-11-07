@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog;
+package com.mindbuilders.cognitivemoodlog.util;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +8,11 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.mindbuilders.cognitivemoodlog.CmlDos.CognitiveDistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
+import com.mindbuilders.cognitivemoodlog.R;
 
 import java.util.ArrayList;
 import java.util.List;

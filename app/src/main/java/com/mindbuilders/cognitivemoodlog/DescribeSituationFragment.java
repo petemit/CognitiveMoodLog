@@ -1,25 +1,17 @@
 package com.mindbuilders.cognitivemoodlog;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.app.Activity;
 import android.widget.TextView;
+
+import com.mindbuilders.cognitivemoodlog.util.utilities;
 
 
 public class DescribeSituationFragment extends Fragment {
@@ -28,7 +20,7 @@ public class DescribeSituationFragment extends Fragment {
     private static EditText DescribeSituation;
     DescribeSituationFragmentListener activityCommander;
     utilities util;
-    private CreateNewLogEntry parent;
+    private CreateNewLogEntryActivity parent;
 
 
     @Override
@@ -51,7 +43,7 @@ public class DescribeSituationFragment extends Fragment {
 
         final ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_describe_situation, container, false);
-        parent=(CreateNewLogEntry)getActivity();
+        parent=(CreateNewLogEntryActivity)getActivity();
         parent.setLeftNavInvisible();
         DescribeSituation=(EditText) rootView.findViewById(R.id.DescribeSituationTextBox);
 

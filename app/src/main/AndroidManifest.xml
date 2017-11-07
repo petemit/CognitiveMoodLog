@@ -19,13 +19,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CreateNewLogEntry"
+            android:name=".CreateNewLogEntryActivity"
             android:label="@string/title_activity_create_new_log_entry"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ReviewActivity" />
-        <activity android:name=".OpenPreviousLogs" />
-        <activity android:name=".TroubleshootEntry" />
-        <activity android:name=".ExplainCognitiveTherapy"></activity>
+        <activity android:name=".OpenPreviousLogsActivity" />
+        <activity android:name=".TroubleshootEntryActivity" />
+        <activity android:name=".ExplainCognitiveTherapyActivity" />
+        <activity android:name=".PreferenceActivity"></activity>
     </application>
 
 </manifest>

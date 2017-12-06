@@ -1,8 +1,6 @@
 package com.mindbuilders.cognitivemoodlog;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,8 +21,8 @@ public class EmotionPickerFragment extends Fragment {
     private static final String Title = "Describe the Situation you would like to Capture";
     TextView situationDescription;
 
-    SQLiteOpenHelper dbHelper;
-    SQLiteDatabase db;
+    net.sqlcipher.database.SQLiteOpenHelper dbHelper;
+    net.sqlcipher.database.SQLiteDatabase db;
     RecyclerView emotionlist;
     EmotionRVAdapter rvAdapter;
     private CreateNewLogEntryActivity parent;
@@ -46,7 +44,7 @@ public class EmotionPickerFragment extends Fragment {
         dbHelper = new CogMoodLogDatabaseHelper(getContext());
 
         /* Use CogMoodLogDatabaseHelper to get access to a readable database */
-        db = dbHelper.getReadableDatabase();
+        db = dbHelper.getReadableDatabase(BaseApplication.passwordHash);
         //   db=dbHelper.getReadableDatabase();
         String[] projection = {
                 "rowid",

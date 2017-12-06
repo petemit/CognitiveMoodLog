@@ -6,8 +6,7 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +21,8 @@ import android.widget.TextView;
 
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseContract;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
+
+import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     private final Context mContext =getBaseContext();
     /* Class reference to help load the constructor on runtime */
-    private SQLiteOpenHelper dbHelper;
     private SQLiteDatabase db;
 
     @Override
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 //delete the DB on startup so we can make sure it's created right.
  //       getBaseContext().deleteDatabase("CognitiveMoodLog.db");
 
-        dbHelper =new CogMoodLogDatabaseHelper(getBaseContext());
+
         setSupportActionBar(toolbar);
         //Fantastic way to browse your database when the app is running.
        // Stetho.initializeWithDefaults(this);
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
 
-                db=dbHelper.getReadableDatabase();
+                db=BaseApplication.getDbHelper().getReadableDatabase(BaseApplication.passwordHash);
                 Cursor cursor=db.rawQuery("select * from emotion",null);
                 if(cursor.getCount()<1){
                     FIRSTLOAD=true;
@@ -78,7 +78,7 @@ if (FIRSTLOAD){
 
 
         /* Use CogMoodLogDatabaseHelper to get access to a writable database */
-        db = dbHelper.getWritableDatabase();
+        db = BaseApplication.getDbHelper().getWritableDatabase(BaseApplication.passwordHash);
 
         PopulateCogMoodLogDatabase(db);
         db.close();
@@ -298,7 +298,7 @@ if (FIRSTLOAD){
 
     @Override
     protected void onDestroy(){
-        dbHelper.close();
+        BaseApplication.getDbHelper().close();
 
         super.onDestroy();
     }

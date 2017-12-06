@@ -3,17 +3,20 @@ package com.mindbuilders.cognitivemoodlog.data;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.mindbuilders.cognitivemoodlog.BaseApplication;
 import com.mindbuilders.cognitivemoodlog.CmlDos.CognitiveDistortionobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.logentryobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.troubleshootingobj;
+import com.mindbuilders.cognitivemoodlog.MainActivity;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +29,7 @@ import java.util.Locale;
 
 public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     public final static String DATABASE_NAME="CognitiveMoodLog.db";
+    public final static String DATABASE_NAME_CN="CognitiveMoodLog";
     public final static int DATABASE_VERSION=1;
 
     private Cursor cursor;
@@ -34,10 +38,12 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
     public CogMoodLogDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        SQLiteDatabase.loadLibs(context);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         try {
            db.rawQuery("select * from logentry", null);
         }
@@ -45,6 +51,34 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
             Log.i("dbhelper", "creating new db");
             createDb(db);
         }
+
+    }
+
+    public static void passwordProtectDb(boolean result, Context context, String key){
+
+
+        SQLiteDatabase db = BaseApplication.getDbHelper().getWritableDatabase("");
+        File encryptedDbFile = new File((context.getDatabasePath("a").getParentFile()),"encrypted.db");
+        File unencryptedFile = new File(db.getPath());
+
+
+        if (result) {
+            BaseApplication.passwordHash = key;
+            String sql = String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'",encryptedDbFile, BaseApplication.passwordHash);
+            db.rawExecSQL(sql);
+            db.rawExecSQL("SELECT sqlcipher_export('encrypted')");
+            db.rawExecSQL("DETACH DATABASE encrypted");
+            db.close();
+            unencryptedFile.delete();
+            encryptedDbFile.renameTo(unencryptedFile);
+
+        }
+        else {
+            db.rawExecSQL("PRAGMA key = \"" +BaseApplication.passwordHash +"\";");
+            String pass = "password";
+            db.rawExecSQL("PRAGMA rekey = \"\";");
+        }
+        db.close();
 
     }
 
@@ -131,7 +165,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
     public String saveLogEntry(List<emotionobj> emotionobjList, List<thought_cognitivedistortionobj> thought_cognitivedistortionobjList , List<thoughtobj> thoughtobjList, String situation) {
 
-        db = this.getWritableDatabase();
+        db = this.getWritableDatabase(BaseApplication.passwordHash);
         //Input the situation
         ContentValues cv = new ContentValues();
         cv.put(CogMoodLogDatabaseContract.logentry.COLUMN_LOGENTRY,situation.trim());
@@ -178,7 +212,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     public List<CognitiveDistortionobj> getCognitiveDistortionNameList(){
         List<CognitiveDistortionobj> cogobjs=new ArrayList<CognitiveDistortionobj>();
         /* Use CogMoodLogDatabaseHelper to get access to a readable database */
-        db = this.getReadableDatabase();
+        db = this.getReadableDatabase(BaseApplication.passwordHash);
         //   db=dbHelper.getReadableDatabase();
         String[] projection = {
                 "rowid",
@@ -221,7 +255,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     public List getLogEntryList(){
         List<logentryobj> logobjs=new ArrayList<logentryobj>();
         /* Use CogMoodLogDatabaseHelper to get access to a readable database */
-        db = this.getReadableDatabase();
+        db = this.getReadableDatabase(BaseApplication.passwordHash);
         //   db=dbHelper.getReadableDatabase();
         String[] projection = {
                 "rowid",
@@ -264,7 +298,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     public List<troubleshootingobj> getTroubleshootingObj(){
         ArrayList<troubleshootingobj> troubleshootingList=new ArrayList<troubleshootingobj>();
 
-        db=this.getReadableDatabase();
+        db=this.getReadableDatabase(BaseApplication.passwordHash);
 
         String[] projection = {
                 "rowid",
@@ -303,7 +337,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     public List<emotionobj> getEmotionObjListByLogid(int logid){
         ArrayList<emotionobj> emotionobjList=new ArrayList<emotionobj>();
 
-        db = this.getReadableDatabase();
+        db = this.getReadableDatabase(BaseApplication.passwordHash);
 
 
         String[] projection = {
@@ -382,7 +416,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     public List<thoughtobj> getThoughtListByLogId(int logid){
         ArrayList<thoughtobj> thoughtobjList=new ArrayList<thoughtobj>();
 
-        db = this.getReadableDatabase();
+        db = this.getReadableDatabase(BaseApplication.passwordHash);
 
         String[] projection = {
                 "rowid",
@@ -441,7 +475,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     public List<thought_cognitivedistortionobj> getThought_cognitivedistortionListByThoughtId(int thoughtid){
         ArrayList<thought_cognitivedistortionobj> thought_cognitivedistortionobjList=new ArrayList<thought_cognitivedistortionobj>();
 
-        db = this.getReadableDatabase();
+        db = this.getReadableDatabase(BaseApplication.passwordHash);
 
         String[] projection = {
                 "rowid",

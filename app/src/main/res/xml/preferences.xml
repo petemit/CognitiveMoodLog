@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/password_protect_key"
+        android:summary="Encrypt and protect your logentries with a password"
+        android:title="Protect Log Entries" />
 </PreferenceScreen>

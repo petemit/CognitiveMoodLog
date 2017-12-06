@@ -29,13 +29,13 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
 
     private int emotioncategorycount=0;
     private Cursor cursor;
-    SQLiteDatabase db;
+    net.sqlcipher.database.SQLiteDatabase db;
     private Context context;
     private List<emotionobj> emotionList;
     EmotionRVAdapterListener mEmotionAddListener;
     Activity activity;
 
-    public EmotionRVAdapter (int i, Cursor cursor, SQLiteDatabase db, Activity activity){
+    public EmotionRVAdapter (int i, Cursor cursor, net.sqlcipher.database.SQLiteDatabase db, Activity activity){
         this.cursor=cursor;
         this.db =db;
         this.activity=activity;

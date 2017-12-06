@@ -17,9 +17,9 @@ public class PreferenceActivity extends AppCompatActivity {
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.preferences_toolbar);
 //
 //        setSupportActionBar(toolbar);
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.preference_container, new SettingsFragment())
-//                .commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.preference_container, new SettingsFragment())
+                .commit();
 
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();

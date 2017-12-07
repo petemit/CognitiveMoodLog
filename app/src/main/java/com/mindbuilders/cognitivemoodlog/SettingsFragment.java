@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
-
+import com.mindbuilders.cognitivemoodlog.util.utilities;
 
 
 /**
@@ -50,9 +50,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 password=userInput.getText().toString();
-                                byte[] encodeValue = Base64.encode(password.getBytes(), Base64.DEFAULT);
-                                key = encodeValue.toString();
-
+                                String key = utilities.getSha1Hex(password);
                                 CogMoodLogDatabaseHelper.passwordProtectDb(result, preference.getContext(), key);
                             }
                         })

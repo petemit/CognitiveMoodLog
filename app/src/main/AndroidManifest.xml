@@ -26,6 +26,7 @@
             android:label="@string/title_activity_create_new_log_entry"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ReviewActivity" />
+        <activity android:name=".PasswordActivity"/>
         <activity android:name=".OpenPreviousLogsActivity" />
         <activity android:name=".TroubleshootEntryActivity" />
         <activity android:name=".ExplainCognitiveTherapyActivity" />

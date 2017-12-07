@@ -1,33 +1,41 @@
 package com.mindbuilders.cognitivemoodlog;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.SQLException;
-
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
-import android.view.View;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
-
-//import com.facebook.stetho.Stetho;
+import android.widget.Toast;
 
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseContract;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
+import com.mindbuilders.cognitivemoodlog.util.utilities;
 
 import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+//import com.facebook.stetho.Stetho;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,9 +43,10 @@ public class MainActivity extends AppCompatActivity {
     Button explainCognitiveTherapyButton;
     Button openOldEntry;
     TextView qotd;
-    static boolean FIRSTLOAD=false;
+    static boolean FIRSTLOAD = false;
+    Context context;
 
-    private final Context mContext =getBaseContext();
+    private final Context mContext = getBaseContext();
     /* Class reference to help load the constructor on runtime */
     private SQLiteDatabase db;
 
@@ -45,51 +54,117 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.context = this;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Cognitive Mood Log");
 //delete the DB on startup so we can make sure it's created right.
- //       getBaseContext().deleteDatabase("CognitiveMoodLog.db");
+        //       getBaseContext().deleteDatabase("CognitiveMoodLog.db");
 
 
         setSupportActionBar(toolbar);
         //Fantastic way to browse your database when the app is running.
-       // Stetho.initializeWithDefaults(this);
-        if (!FIRSTLOAD){
+        // Stetho.initializeWithDefaults(this);
+        if (!FIRSTLOAD) {
 
             try {
-
-                db=BaseApplication.getDbHelper().getReadableDatabase(BaseApplication.passwordHash);
-                Cursor cursor=db.rawQuery("select * from emotion",null);
-                if(cursor.getCount()<1){
-                    FIRSTLOAD=true;
+                try {
+                    db = BaseApplication.getDbHelper().getReadableDatabase(BaseApplication.passwordHash);
+                    Cursor cursor = db.rawQuery("select * from emotion", null);
+                    if (cursor.getCount() < 1) {
+                        FIRSTLOAD = true;
+                    }
+                } catch (SQLException s) {
+                    FIRSTLOAD = true;
+                    Log.i("mainactivity", "db doesn't exist");
                 }
-            }
-            catch (SQLException s){
-                FIRSTLOAD=true;
-                Log.i("mainactivity","db doesn't exist");
-            }
-        }
-if (FIRSTLOAD){
+                } catch (SQLiteException e) {
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                    View passwordView = LayoutInflater.from(this).inflate(R.layout.password_prompt, null);
+                    alertDialogBuilder.setView(passwordView);
 
-    try {
+                    final EditText userInput = (EditText) passwordView.findViewById(R.id.password_editTextDialogUserInput);
+                    alertDialogBuilder
+                            .setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    String password = userInput.getText().toString();
+
+                                    String key = utilities.getSha1Hex(password);
+
+                                    BaseApplication.passwordHash = key;
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.cancel();
+                                    Toast.makeText(getBaseContext(),
+                                            "You must use the password you set up earlier, or delete everything and start over",
+                                            Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
+                            })
+                            .setNeutralButton("Delete Everything", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    dialogInterface.cancel();
+                                    AlertDialog.Builder areYouSureDialogBuilder = new AlertDialog.Builder(context);
+                                    View areYouSureView = LayoutInflater.from(context).inflate(R.layout.are_you_sure, null);
+                                    areYouSureDialogBuilder.setView(areYouSureView);
+
+                                    areYouSureDialogBuilder
+                                            .setCancelable(false)
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    CogMoodLogDatabaseHelper.deleteDatabase(context);
+                                                }
+                                            })
+                                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    dialogInterface.cancel();
+                                                    Toast.makeText(getBaseContext(),
+                                                            "You must use the password you set up earlier, or delete everything and start over",
+                                                            Toast.LENGTH_LONG).show();
+                                                    finish();
+                                                }
+                                            });
+                                    AlertDialog areYouSureAlertDialog = areYouSureDialogBuilder.create();
+                                    areYouSureAlertDialog.show();
+
+                                }
+                    });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+
+
+                }
+
+
+        }
+        if (FIRSTLOAD) {
+
+            try {
 
 
 
 
 
         /* Use CogMoodLogDatabaseHelper to get access to a writable database */
-        db = BaseApplication.getDbHelper().getWritableDatabase(BaseApplication.passwordHash);
+                db = BaseApplication.getDbHelper().getWritableDatabase(BaseApplication.passwordHash);
 
-        PopulateCogMoodLogDatabase(db);
-        db.close();
+                PopulateCogMoodLogDatabase(db);
+                db.close();
 
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-    }
-    catch (Exception e)
-    {e.printStackTrace();}
-
-}
+        }
     /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -128,9 +203,9 @@ if (FIRSTLOAD){
 
     public void openCreateNewLogEntry(View view) {
         Intent intent = new Intent(this, CreateNewLogEntryActivity.class);
-      //  EditText editText = (EditText) findViewById(R.id.editMessage1);
-      //  String message = editText.getText().toString();
-       // intent.putExtra(EXTRA_MESSAGE, message);
+        //  EditText editText = (EditText) findViewById(R.id.editMessage1);
+        //  String message = editText.getText().toString();
+        // intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
 
 
@@ -153,10 +228,9 @@ if (FIRSTLOAD){
 
     }
 
-    private void PopulateCogMoodLogDatabase(SQLiteDatabase db)
-    {
-        Cursor cursor=db.rawQuery("select * from emotion",null);
-        if(cursor.getCount()<1) {
+    private void PopulateCogMoodLogDatabase(SQLiteDatabase db) {
+        Cursor cursor = db.rawQuery("select * from emotion", null);
+        if (cursor.getCount() < 1) {
 
             String cognitivedistortioncsv = "undistort_table_cognitivedistortion.csv";
             String emotioncsv = "undistort_table_emotion.csv";
@@ -297,7 +371,7 @@ if (FIRSTLOAD){
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         BaseApplication.getDbHelper().close();
 
         super.onDestroy();

@@ -1,5 +1,6 @@
 package com.mindbuilders.cognitivemoodlog.data;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -57,7 +58,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     public static void passwordProtectDb(boolean result, Context context, String key){
 
 
-        SQLiteDatabase db = BaseApplication.getDbHelper().getWritableDatabase("");
+        SQLiteDatabase db = BaseApplication.getDbHelper().getWritableDatabase(BaseApplication.passwordHash);
         File encryptedDbFile = new File((context.getDatabasePath("a").getParentFile()),"encrypted.db");
         File unencryptedFile = new File(db.getPath());
 
@@ -517,7 +518,11 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
 
 
-
+    public static void deleteDatabase(Context context) {
+        File encryptedDbFile = new File((context.getDatabasePath("a").getParentFile()),DATABASE_NAME);
+        encryptedDbFile.delete();
+        ((Activity)context).recreate();
+    }
 
 
 

@@ -75,9 +75,16 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
         }
         else {
-            db.rawExecSQL("PRAGMA key = \"" +BaseApplication.passwordHash +"\";");
-            String pass = "password";
-            db.rawExecSQL("PRAGMA rekey = \"\";");
+            //key is blank.. sqlCipher defaults to NO encryption
+            BaseApplication.passwordHash = "";
+            String sql = String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'",encryptedDbFile, "");
+            db.rawExecSQL(sql);
+            //I'm being lazy, but this is actually rewriting the unencrypted database over the encrypted database
+            db.rawExecSQL("SELECT sqlcipher_export('encrypted')");
+            db.rawExecSQL("DETACH DATABASE encrypted");
+            db.close();
+            unencryptedFile.delete();
+            encryptedDbFile.renameTo(unencryptedFile);
         }
         db.close();
 

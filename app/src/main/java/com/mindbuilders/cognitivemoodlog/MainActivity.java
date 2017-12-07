@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -157,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
                 db = BaseApplication.getDbHelper().getWritableDatabase(BaseApplication.passwordHash);
 
                 PopulateCogMoodLogDatabase(db);
+                SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(context);
+                sp.edit().putBoolean(getString(R.string.password_protect_key),false).commit();
                 db.close();
 
 

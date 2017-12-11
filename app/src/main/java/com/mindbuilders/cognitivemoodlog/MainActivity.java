@@ -94,6 +94,21 @@ public class MainActivity extends AppCompatActivity {
                                     String key = utilities.getSha1Hex(password);
 
                                     BaseApplication.passwordHash = key;
+                                    //test password
+
+                                    try {
+                                        db = BaseApplication.getDbHelper().getReadableDatabase(BaseApplication.passwordHash);
+                                        Cursor cursor = db.rawQuery("select * from emotion", null);
+                                    } catch (SQLiteException s) {
+                                        Toast.makeText(getBaseContext(),
+                                                "You must use the password you set up earlier, or delete everything and start over",
+                                                Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }
+
+
+
+
                                 }
                             })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

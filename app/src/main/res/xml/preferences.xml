@@ -4,6 +4,16 @@
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/password_protect_key"
-        android:summary="Encrypt and protect your logentries with a password"
+        android:summary="Encrypt and protect your log entries with a password"
         android:title="Protect Log Entries" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/drive_backup_key"
+        android:summary="Backup current and future log entries using Google Drive account"
+        android:title="Backup Log Entries" />
+    <Preference
+        android:key="checkfilelist"
+        android:summary="Check file list"
+        android:title="Check file list"
+        />
 </PreferenceScreen>

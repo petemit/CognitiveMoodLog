@@ -1,19 +1,43 @@
 package com.mindbuilders.cognitivemoodlog;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.MetadataBuffer;
+import com.google.android.gms.drive.query.Filters;
+import com.google.android.gms.drive.query.Query;
+import com.google.android.gms.drive.query.SearchableField;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 import com.mindbuilders.cognitivemoodlog.util.utilities;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static android.app.Activity.RESULT_OK;
 
 
 /**
@@ -25,6 +49,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private String password = "";
     private String key = "";
     boolean changeResult = true;
+    CheckBoxPreference googleDrivePref;
+    /**
+     * Request code for google sign-in
+     */
+    protected static final int REQUEST_CODE_SIGN_IN = 0;
+
+    /**
+     * Request code for the Drive picker
+     */
+    protected static final int REQUEST_CODE_OPEN_ITEM = 1;
+
 
     public SettingsFragment() {
 
@@ -35,8 +70,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
-        final CheckBoxPreference pref = (CheckBoxPreference)findPreference(getString(R.string.password_protect_key));
-        pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        final CheckBoxPreference passwordPref = (CheckBoxPreference) findPreference(getString(R.string.password_protect_key));
+        passwordPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(final Preference preference, Object o) {
                 final boolean result = (boolean) o;
@@ -61,16 +96,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                         Toast.makeText(getContext(),
                                                 "Database Encrypted and Password Protected!",
                                                 Toast.LENGTH_LONG).show();
-                                        changeResult=true;
-                                        pref.setChecked(true);
-                                    }
-                                    else {
+                                        changeResult = true;
+                                        passwordPref.setChecked(true);
+                                    } else {
                                         Toast.makeText(getContext(),
                                                 "Password must not be empty and must contain non-space characters",
                                                 Toast.LENGTH_LONG).show();
-                                        changeResult=false;
+                                        changeResult = false;
                                     }
-                                }})
+                                }
+                            })
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -85,20 +120,145 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 } else {
                     CogMoodLogDatabaseHelper.passwordProtectDb(result, preference.getContext(), key);
                     changeResult = true;
-                    pref.setChecked(false);
+                    passwordPref.setChecked(false);
                 }
 
                 return changeResult;
             }
         });
 
+        googleDrivePref = (CheckBoxPreference) findPreference(getString(R.string.drive_backup_key));
+        googleDrivePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                if ((boolean) newValue){
+                    signIn();
+                }
+                else {
+                    googleDrivePref.setChecked(false);
+                    // disable backup
+                    signOut();
+                }
+                    return false;
+            }
+        });
 
+
+
+        Preference checkFileListPref = (Preference) findPreference("checkfilelist");
+        checkFileListPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Query query = new Query.Builder()
+                        .addFilter(Filters.eq(SearchableField.TITLE, CogMoodLogDatabaseHelper.DATABASE_NAME)).build();
+                        Task task = BaseApplication.getDriveResourceClient().getAppFolder();
+                        task.getResult();
+               Task<MetadataBuffer> queryTask = BaseApplication.getDriveResourceClient().queryChildren((DriveFolder)task.getResult(),query);
+            Log.e("stuff", queryTask.getResult().toString());
+               return true;
+            }
+        });
     }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_CODE_SIGN_IN:
+                if (resultCode != RESULT_OK) {
+                    Toast.makeText(getContext(), "Must be signed in correctly to Google " +
+                                    "to backup data. Do you have a Google account?",
+                            Toast.LENGTH_LONG).show();
+                    googleDrivePref.setChecked(false);
+                    return;
+                }
+
+
+                Task<GoogleSignInAccount> getAccountTask =
+                        GoogleSignIn.getSignedInAccountFromIntent(data);
+                if (getAccountTask.isSuccessful()) {
+                    initializeDriveClient(getAccountTask.getResult());
+                    googleDrivePref.setChecked(true);
+                } else {
+                    Log.e("settingsfragment", "Sign-in failed.");
+                    return;
+                }
+                break;
+        }
+        //Example has this twice, I'm guessing it's a mistake: super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    protected void signIn() {
+        Set<Scope> requiredScopes = new HashSet<>(2);
+        requiredScopes.add(Drive.SCOPE_APPFOLDER);
+      BaseApplication.setGoogleSignInAccount(GoogleSignIn.getLastSignedInAccount(this.getActivity()));
+        if (BaseApplication.getGoogleSignInAccount() != null &&
+                BaseApplication.getGoogleSignInAccount().getGrantedScopes().containsAll(requiredScopes)) {
+            initializeDriveClient(BaseApplication.getGoogleSignInAccount());
+        } else {
+            GoogleSignInOptions signInOptions =
+                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                            .requestScopes(Drive.SCOPE_APPFOLDER)
+                            .build();
+            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this.getActivity(), signInOptions);
+            startActivityForResult(googleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
+        }
+    }
+
+
+    protected void signOut() {
+       if (BaseApplication.getGoogleSignInClient() != null) {
+           BaseApplication.getGoogleSignInClient().signOut();
+       }
+    }
+
+
+    /**
+     * Continues the sign-in process, initializing the Drive clients with the current
+     * user's account.
+     */
+    private void initializeDriveClient(GoogleSignInAccount signInAccount) {
+        BaseApplication.setDriveClient(Drive.getDriveClient(getContext(), signInAccount));
+        BaseApplication.setDriveResourceClient(Drive.getDriveResourceClient(getContext(),
+                signInAccount));
+
+        //Then do something
+        CogMoodLogDatabaseHelper.backupDb(getContext(), BaseApplication.getDriveResourceClient());
+    }
+
+
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
 
     }
+
+    private void updateViewWithGoogleSignInAccountTask(Task<GoogleSignInAccount> task, final Context context) {
+        Log.i("utils", "Update view with sign in account task");
+        task.addOnSuccessListener(
+                new OnSuccessListener<GoogleSignInAccount>() {
+                    @Override
+                    public void onSuccess(GoogleSignInAccount googleSignInAccount) {
+                        Log.i("utils", "Sign in success");
+                        // Build a drive client.
+                        BaseApplication.setDriveClient(Drive.getDriveClient(context, googleSignInAccount));
+                        // Build a drive resource client.
+                        BaseApplication.setDriveResourceClient(Drive.getDriveResourceClient(context,
+                                googleSignInAccount));
+                        // Start camera.
+                    }
+                })
+                .addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("utils", "Sign in failed", e);
+                            }
+                        });
+    }
+
+
 
 
 }

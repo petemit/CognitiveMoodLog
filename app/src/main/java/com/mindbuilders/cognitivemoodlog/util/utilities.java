@@ -2,6 +2,8 @@ package com.mindbuilders.cognitivemoodlog.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,12 +11,29 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFile;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveResourceClient;
+import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.mindbuilders.cognitivemoodlog.BaseApplication;
 import com.mindbuilders.cognitivemoodlog.CmlDos.CognitiveDistortionobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
 import com.mindbuilders.cognitivemoodlog.R;
 
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -26,6 +45,7 @@ import java.util.List;
 
 public class utilities {
     private Context context;
+    private static final int REQUEST_CODE_SIGN_IN = 0;
 
     public utilities(Context context) {
         this.context = context;
@@ -115,6 +135,64 @@ public class utilities {
             return null;
         }
     }
+
+    public static GoogleSignInClient buildGoogleSignInClient(Context context) {
+        GoogleSignInOptions signInOptions =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestScopes(Drive.SCOPE_APPFOLDER)
+                        .build();
+        return GoogleSignIn.getClient(context, signInOptions);
+    }
+
+    /** Start sign in activity. */
+    private void signIn(Activity activity) {
+        Log.i("utils", "Start sign in");
+        BaseApplication.setGoogleSignInClient(buildGoogleSignInClient(context));
+        activity.startActivityForResult(BaseApplication.getGoogleSignInClient().getSignInIntent(),
+                REQUEST_CODE_SIGN_IN);
+    }
+
+//    private void createFileInAppFolder() {
+//        final Task<DriveFolder> appFolderTask = Drive.getDriveResourceClient(context,BaseApplication).getAppFolder();
+//        final Task<DriveContents> createContentsTask = Drive.getDriveResourceClient().createContents();
+//        Tasks.whenAll(appFolderTask, createContentsTask)
+//                .continueWithTask(new Continuation<Void, Task<DriveFile>>() {
+//                    @Override
+//                    public Task<DriveFile> then(@NonNull Task<Void> task) throws Exception {
+//                        DriveFolder parent = appFolderTask.getResult();
+//                        DriveContents contents = createContentsTask.getResult();
+//                        OutputStream outputStream = contents.getOutputStream();
+//                        try (Writer writer = new OutputStreamWriter(outputStream)) {
+//                            writer.write("Hello World!");
+//                        }
+//
+//                        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+//                                .setTitle("New file")
+//                                .setMimeType("text/plain")
+//                                .setStarred(true)
+//                                .build();
+//
+//                        return getDriveResourceClient().createFile(parent, changeSet, contents);
+//                    }
+//                })
+//                .addOnSuccessListener(this,
+//                        new OnSuccessListener<DriveFile>() {
+//                            @Override
+//                            public void onSuccess(DriveFile driveFile) {
+//                                showMessage(getString(R.string.file_created,
+//                                        driveFile.getDriveId().encodeToString()));
+//                                finish();
+//                            }
+//                        })
+//                .addOnFailureListener(this, new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.e(TAG, "Unable to create file", e);
+//                        showMessage(getString(R.string.file_create_error));
+//                        finish();
+//                    }
+//                });
+//    }
 }
 
 

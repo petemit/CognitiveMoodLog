@@ -4,10 +4,21 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import net.sqlcipher.database.SQLiteDatabase;
-import net.sqlcipher.database.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.google.android.gms.drive.DriveClient;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFile;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveResourceClient;
+import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.mindbuilders.cognitivemoodlog.BaseApplication;
 import com.mindbuilders.cognitivemoodlog.CmlDos.CognitiveDistortionobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
@@ -15,9 +26,15 @@ import com.mindbuilders.cognitivemoodlog.CmlDos.logentryobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.troubleshootingobj;
-import com.mindbuilders.cognitivemoodlog.MainActivity;
+
+import net.sqlcipher.database.SQLiteDatabase;
+import net.sqlcipher.database.SQLiteOpenHelper;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,10 +45,11 @@ import java.util.Locale;
  * Created by Peter on 12/30/2016.
  */
 
-public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
-    public final static String DATABASE_NAME="CognitiveMoodLog.db";
-    public final static String DATABASE_NAME_CN="CognitiveMoodLog";
-    public final static int DATABASE_VERSION=1;
+public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper {
+    public final static String DATABASE_NAME = "CognitiveMoodLog.db";
+    public final static String DATABASE_NAME_CN = "CognitiveMoodLog";
+    public final static int DATABASE_VERSION = 1;
+    public static final int REQUEST_CODE_CREATOR = 2;
 
     private Cursor cursor;
     SQLiteDatabase db;
@@ -46,26 +64,25 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
 
         try {
-           db.rawQuery("select * from logentry", null);
-        }
-        catch (Exception e) {
+            db.rawQuery("select * from logentry", null);
+        } catch (Exception e) {
             Log.i("dbhelper", "creating new db");
             createDb(db);
         }
 
     }
 
-    public static void passwordProtectDb(boolean result, Context context, String key){
+    public static void passwordProtectDb(boolean result, Context context, String key) {
 
 
         SQLiteDatabase db = BaseApplication.getDbHelper().getWritableDatabase(BaseApplication.passwordHash);
-        File encryptedDbFile = new File((context.getDatabasePath("a").getParentFile()),"encrypted.db");
+        File encryptedDbFile = new File((context.getDatabasePath("a").getParentFile()), "encrypted.db");
         File unencryptedFile = new File(db.getPath());
 
 
         if (result) {
             BaseApplication.passwordHash = key;
-            String sql = String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'",encryptedDbFile, BaseApplication.passwordHash);
+            String sql = String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'", encryptedDbFile, BaseApplication.passwordHash);
             db.rawExecSQL(sql);
             db.rawExecSQL("SELECT sqlcipher_export('encrypted')");
             db.rawExecSQL("DETACH DATABASE encrypted");
@@ -73,11 +90,10 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
             unencryptedFile.delete();
             encryptedDbFile.renameTo(unencryptedFile);
 
-        }
-        else {
+        } else {
             //key is blank.. sqlCipher defaults to NO encryption
             BaseApplication.passwordHash = "";
-            String sql = String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'",encryptedDbFile, "");
+            String sql = String.format("ATTACH DATABASE '%s' AS encrypted KEY '%s'", encryptedDbFile, "");
             db.rawExecSQL(sql);
             //I'm being lazy, but this is actually rewriting the unencrypted database over the encrypted database
             db.rawExecSQL("SELECT sqlcipher_export('encrypted')");
@@ -90,10 +106,9 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
     }
 
-    public void createDb(SQLiteDatabase db)
-    {
+    public void createDb(SQLiteDatabase db) {
         final String SQL_CREATE_COGNITIVEDISTORTION_TABLE =
-                "CREATE TABLE " + CogMoodLogDatabaseContract.cognitivedistortion.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.cognitivedistortion.TABLE_NAME + " (" +
                         // cognitivedistortion._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_COGID + " INTEGER, " +
                         CogMoodLogDatabaseContract.cognitivedistortion.COLUMN_NAME + " TEXT, " +
@@ -103,7 +118,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_COGNITIVEDISTORTION_TABLE);
 
         final String SQL_CREATE_EMOTION_TABLE =
-                "CREATE TABLE " + CogMoodLogDatabaseContract.emotion.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.emotion.TABLE_NAME + " (" +
                         //   emotion._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         CogMoodLogDatabaseContract.emotion.COLUMN_EMOID + " INTEGER, " +
                         CogMoodLogDatabaseContract.emotion.COLUMN_EMOTIONCATEGORY_ID + " INTEGER, " +
@@ -112,7 +127,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_EMOTION_TABLE);
 
         final String SQL_CREATE_EMOTION_LOGENTRY_BELIEF_TABLE =
-                "CREATE TABLE " + CogMoodLogDatabaseContract.emotion_logentry_belief.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.emotion_logentry_belief.TABLE_NAME + " (" +
                         //        emotion_logentry_belief._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_EMOTION_ID + " INTEGER, " +
                         CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_LOGENTRY_ID + " INTEGER, " +
@@ -122,7 +137,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_EMOTION_LOGENTRY_BELIEF_TABLE);
 
         final String SQL_CREATE_EMOTIONCATEGORY_TABLE =
-                "CREATE TABLE " + CogMoodLogDatabaseContract.emotioncategory.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.emotioncategory.TABLE_NAME + " (" +
                         //      emotioncategory._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         CogMoodLogDatabaseContract.emotioncategory.COLUMN_EMOCATID + " INTEGER, " +
                         CogMoodLogDatabaseContract.emotioncategory.COLUMN_NAME + " TEXT " +
@@ -130,17 +145,17 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_EMOTIONCATEGORY_TABLE);
 
         final String SQL_CREATE_LOGENTRY_TABLE =
-                "CREATE TABLE " + CogMoodLogDatabaseContract.logentry.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.logentry.TABLE_NAME + " (" +
                         //    logentry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         CogMoodLogDatabaseContract.logentry.COLUMN_LOGENTRY + " TEXT, " +
-                        CogMoodLogDatabaseContract.logentry.COLUMN_USER_ID+ " INTEGER, " +
+                        CogMoodLogDatabaseContract.logentry.COLUMN_USER_ID + " INTEGER, " +
                         CogMoodLogDatabaseContract.logentry.COLUMN_ISFINISHED + " BOOLEAN, " +
                         CogMoodLogDatabaseContract.logentry.COLUMN_TIMESTAMP + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP " +
                         ");";
         db.execSQL(SQL_CREATE_LOGENTRY_TABLE);
 
         final String SQL_CREATE_THOUGHT_TABLE =
-                "CREATE TABLE " + CogMoodLogDatabaseContract.thought.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.thought.TABLE_NAME + " (" +
                         //  thought._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVETHOUGHT + " TEXT, " +
                         CogMoodLogDatabaseContract.thought.COLUMN_POSITIVETHOUGHT + " TEXT, " +
@@ -153,7 +168,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_THOUGHT_TABLE);
 
         final String SQL_CREATE_THOUGHT_COGNITIVEDISTORTION_TABLE =
-                "CREATE TABLE " + CogMoodLogDatabaseContract.thought_cognitivedistortion.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.thought_cognitivedistortion.TABLE_NAME + " (" +
                         //  thought_cognitivedistortion._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_THOUGHT_ID + " INTEGER, " +
                         CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID + " INTEGER " +
@@ -161,7 +176,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(SQL_CREATE_THOUGHT_COGNITIVEDISTORTION_TABLE);
 
         final String SQL_CREATE_TROUBLESHOOTINGGUIDELINES_TABLE =
-                "CREATE TABLE " + CogMoodLogDatabaseContract.troubleshootingguidelines.TABLE_NAME +" (" +
+                "CREATE TABLE " + CogMoodLogDatabaseContract.troubleshootingguidelines.TABLE_NAME + " (" +
                         //  troubleshootingguidelines._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                         CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_TROUBLESHOOTID + " INTEGER, " +
                         CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_QUESTION + " TEXT, " +
@@ -171,54 +186,53 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
 
     }
 
-    public String saveLogEntry(List<emotionobj> emotionobjList, List<thought_cognitivedistortionobj> thought_cognitivedistortionobjList , List<thoughtobj> thoughtobjList, String situation) {
+    public String saveLogEntry(List<emotionobj> emotionobjList, List<thought_cognitivedistortionobj> thought_cognitivedistortionobjList, List<thoughtobj> thoughtobjList, String situation) {
 
         db = this.getWritableDatabase(BaseApplication.passwordHash);
         //Input the situation
         ContentValues cv = new ContentValues();
-        cv.put(CogMoodLogDatabaseContract.logentry.COLUMN_LOGENTRY,situation.trim());
-        cv.put(CogMoodLogDatabaseContract.logentry.COLUMN_TIMESTAMP,getDateTime());
-        long logid=db.insert(CogMoodLogDatabaseContract.logentry.TABLE_NAME,null,cv);
+        cv.put(CogMoodLogDatabaseContract.logentry.COLUMN_LOGENTRY, situation.trim());
+        cv.put(CogMoodLogDatabaseContract.logentry.COLUMN_TIMESTAMP, getDateTime());
+        long logid = db.insert(CogMoodLogDatabaseContract.logentry.TABLE_NAME, null, cv);
 
         //input the thoughts associated
-        for (thoughtobj tob : thoughtobjList){
+        for (thoughtobj tob : thoughtobjList) {
             ContentValues tobcv = new ContentValues();
-            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_LOGENTRY_ID,logid);
-            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFAFTER,tob.getNegativebeliefAfter());
-            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFBEFORE,tob.getNegativebeliefBefore());
-            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVETHOUGHT,tob.getNegativethought());
-            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_POSITIVEBELIEFBEFORE,tob.getPositivebeliefbefore());
-            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_POSITIVETHOUGHT,tob.getPositivethought());
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_LOGENTRY_ID, logid);
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFAFTER, tob.getNegativebeliefAfter());
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFBEFORE, tob.getNegativebeliefBefore());
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVETHOUGHT, tob.getNegativethought());
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_POSITIVEBELIEFBEFORE, tob.getPositivebeliefbefore());
+            tobcv.put(CogMoodLogDatabaseContract.thought.COLUMN_POSITIVETHOUGHT, tob.getPositivethought());
             //add the thought to the db
-            long tobDbId= db.insert(CogMoodLogDatabaseContract.thought.TABLE_NAME,null,tobcv);
+            long tobDbId = db.insert(CogMoodLogDatabaseContract.thought.TABLE_NAME, null, tobcv);
 
             //add the cognitive distortion linked to the thought
 
-            for(thought_cognitivedistortionobj tcdo:thought_cognitivedistortionobjList){
-                if (tcdo.getThoughtid()==tob.getId())
-                {
+            for (thought_cognitivedistortionobj tcdo : thought_cognitivedistortionobjList) {
+                if (tcdo.getThoughtid() == tob.getId()) {
                     ContentValues tcdo_cv = new ContentValues();
                     tcdo_cv.put(CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID
-                            ,tcdo.getCognitivedistortionid());
-                    tcdo_cv.put(CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_THOUGHT_ID,tobDbId);
-                    db.insert(CogMoodLogDatabaseContract.thought_cognitivedistortion.TABLE_NAME,null,tcdo_cv);
+                            , tcdo.getCognitivedistortionid());
+                    tcdo_cv.put(CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_THOUGHT_ID, tobDbId);
+                    db.insert(CogMoodLogDatabaseContract.thought_cognitivedistortion.TABLE_NAME, null, tcdo_cv);
                 }
             }
 
         }//end tob for
-        for (emotionobj emo : emotionobjList){
-            ContentValues emocv=new ContentValues();
-            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_LOGENTRY_ID,logid);
-            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFAFTER,emo.getFeelingStrengthBefore());
-            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFBEFORE,emo.getGetFeelingstrengthAfter());
-            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_EMOTION_ID,emo.getId());
-            db.insert(CogMoodLogDatabaseContract.emotion_logentry_belief.TABLE_NAME,null,emocv);
+        for (emotionobj emo : emotionobjList) {
+            ContentValues emocv = new ContentValues();
+            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_LOGENTRY_ID, logid);
+            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFAFTER, emo.getFeelingStrengthBefore());
+            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFBEFORE, emo.getGetFeelingstrengthAfter());
+            emocv.put(CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_EMOTION_ID, emo.getId());
+            db.insert(CogMoodLogDatabaseContract.emotion_logentry_belief.TABLE_NAME, null, emocv);
         }
         return null;
     }
 
-    public List<CognitiveDistortionobj> getCognitiveDistortionNameList(){
-        List<CognitiveDistortionobj> cogobjs=new ArrayList<CognitiveDistortionobj>();
+    public List<CognitiveDistortionobj> getCognitiveDistortionNameList() {
+        List<CognitiveDistortionobj> cogobjs = new ArrayList<CognitiveDistortionobj>();
         /* Use CogMoodLogDatabaseHelper to get access to a readable database */
         db = this.getReadableDatabase(BaseApplication.passwordHash);
         //   db=dbHelper.getReadableDatabase();
@@ -243,13 +257,13 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         //Populate the name of the list
 
         //TODO make this a string resource... maybe make a cleaner way to do this?
-        CognitiveDistortionobj firstobj =new CognitiveDistortionobj();
+        CognitiveDistortionobj firstobj = new CognitiveDistortionobj();
         firstobj.setId(-1);
         firstobj.setDescription("Please select a cognitive distortion");
         firstobj.setName("----");
         cogobjs.add(firstobj);
         while (cursor.moveToNext()) {
-            CognitiveDistortionobj obj =new CognitiveDistortionobj();
+            CognitiveDistortionobj obj = new CognitiveDistortionobj();
             obj.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex("rowid"))));
             obj.setName(cursor.getString(cursor.getColumnIndex("name")));
             obj.setDescription(cursor.getString(cursor.getColumnIndex("description")));
@@ -260,8 +274,8 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         return cogobjs;
     }
 
-    public List getLogEntryList(){
-        List<logentryobj> logobjs=new ArrayList<logentryobj>();
+    public List getLogEntryList() {
+        List<logentryobj> logobjs = new ArrayList<logentryobj>();
         /* Use CogMoodLogDatabaseHelper to get access to a readable database */
         db = this.getReadableDatabase(BaseApplication.passwordHash);
         //   db=dbHelper.getReadableDatabase();
@@ -286,13 +300,13 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         //Populate the name of the list
 
         //TODO 2nd time I'm doing this.  make this a string resource... maybe make a cleaner way to do this?
-        logentryobj firstobj =new logentryobj();
+        logentryobj firstobj = new logentryobj();
         firstobj.setLogid(-1);
         firstobj.setSituation("Please select a previous log entry");
         firstobj.setTimestamp("");
         logobjs.add(firstobj);
         while (cursor.moveToNext()) {
-            logentryobj obj =new logentryobj();
+            logentryobj obj = new logentryobj();
             obj.setLogid(Integer.parseInt(cursor.getString(cursor.getColumnIndex("rowid"))));
             obj.setSituation(cursor.getString(cursor.getColumnIndex("logentry")));
             obj.setTimestamp(cursor.getString(cursor.getColumnIndex("timestamp")));
@@ -303,10 +317,10 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         return logobjs;
     }
 
-    public List<troubleshootingobj> getTroubleshootingObj(){
-        ArrayList<troubleshootingobj> troubleshootingList=new ArrayList<troubleshootingobj>();
+    public List<troubleshootingobj> getTroubleshootingObj() {
+        ArrayList<troubleshootingobj> troubleshootingList = new ArrayList<troubleshootingobj>();
 
-        db=this.getReadableDatabase(BaseApplication.passwordHash);
+        db = this.getReadableDatabase(BaseApplication.passwordHash);
 
         String[] projection = {
                 "rowid",
@@ -337,13 +351,13 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
             obj.setQuestion(cursor.getString(cursor.getColumnIndex(
                     CogMoodLogDatabaseContract.troubleshootingguidelines.COLUMN_QUESTION
             )));
-        troubleshootingList.add(obj);
+            troubleshootingList.add(obj);
         }
         return troubleshootingList;
     }
 
-    public List<emotionobj> getEmotionObjListByLogid(int logid){
-        ArrayList<emotionobj> emotionobjList=new ArrayList<emotionobj>();
+    public List<emotionobj> getEmotionObjListByLogid(int logid) {
+        ArrayList<emotionobj> emotionobjList = new ArrayList<emotionobj>();
 
         db = this.getReadableDatabase(BaseApplication.passwordHash);
 
@@ -355,19 +369,19 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
                 CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_EMOTION_ID,
                 CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_LOGENTRY_ID,
         };
-        String [] whereargs={Integer.toString(logid)};
+        String[] whereargs = {Integer.toString(logid)};
 
         Cursor cursor = db.query(
                 CogMoodLogDatabaseContract.emotion_logentry_belief.TABLE_NAME,                     // The table to query
                 projection,                               // The columns to return
-                CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_LOGENTRY_ID+"=?",                                // The columns for the WHERE clause
+                CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_LOGENTRY_ID + "=?",                                // The columns for the WHERE clause
                 whereargs,                            // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
                 null // The sort order
         );
         while (cursor.moveToNext()) {
-            emotionobj obj =new emotionobj();
+            emotionobj obj = new emotionobj();
 
             obj.setGetFeelingstrengthAfter(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
                     CogMoodLogDatabaseContract.emotion_logentry_belief.COLUMN_BELIEFAFTER
@@ -392,12 +406,12 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
             };
 
             String sortOrder =
-                    "rowid"+ " DESC";
-            String [] secondwhereargs={Integer.toString(obj.getId())};
+                    "rowid" + " DESC";
+            String[] secondwhereargs = {Integer.toString(obj.getId())};
             Cursor secondcursor = db.query(
                     CogMoodLogDatabaseContract.emotion.TABLE_NAME,                     // The table to query
                     secondprojection,                               // The columns to return
-                    "rowid"+"=?",                                // The columns for the WHERE clause
+                    "rowid" + "=?",                                // The columns for the WHERE clause
                     secondwhereargs,                            // The values for the WHERE clause
                     null,                                     // don't group the rows
                     null,                                     // don't filter by row groups
@@ -421,8 +435,8 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         return emotionobjList;
     }
 
-    public List<thoughtobj> getThoughtListByLogId(int logid){
-        ArrayList<thoughtobj> thoughtobjList=new ArrayList<thoughtobj>();
+    public List<thoughtobj> getThoughtListByLogId(int logid) {
+        ArrayList<thoughtobj> thoughtobjList = new ArrayList<thoughtobj>();
 
         db = this.getReadableDatabase(BaseApplication.passwordHash);
 
@@ -435,19 +449,19 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
                 CogMoodLogDatabaseContract.thought.COLUMN_NEGATIVEBELIEFAFTER,
                 CogMoodLogDatabaseContract.thought.COLUMN_LOGENTRY_ID,
         };
-        String [] whereargs={Integer.toString(logid)};
+        String[] whereargs = {Integer.toString(logid)};
 
         Cursor cursor = db.query(
                 CogMoodLogDatabaseContract.thought.TABLE_NAME,                     // The table to query
                 projection,                               // The columns to return
-                CogMoodLogDatabaseContract.thought.COLUMN_LOGENTRY_ID+"=?",                                // The columns for the WHERE clause
+                CogMoodLogDatabaseContract.thought.COLUMN_LOGENTRY_ID + "=?",                                // The columns for the WHERE clause
                 whereargs,                            // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
                 null // The sort order
         );
         while (cursor.moveToNext()) {
-            thoughtobj obj =new thoughtobj();
+            thoughtobj obj = new thoughtobj();
 
             obj.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
                     "rowid"
@@ -480,8 +494,8 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         return thoughtobjList;
     }
 
-    public List<thought_cognitivedistortionobj> getThought_cognitivedistortionListByThoughtId(int thoughtid){
-        ArrayList<thought_cognitivedistortionobj> thought_cognitivedistortionobjList=new ArrayList<thought_cognitivedistortionobj>();
+    public List<thought_cognitivedistortionobj> getThought_cognitivedistortionListByThoughtId(int thoughtid) {
+        ArrayList<thought_cognitivedistortionobj> thought_cognitivedistortionobjList = new ArrayList<thought_cognitivedistortionobj>();
 
         db = this.getReadableDatabase(BaseApplication.passwordHash);
 
@@ -490,19 +504,19 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
                 CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_COGNITIVEDISTORTION_ID,
                 CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_THOUGHT_ID
         };
-        String [] whereargs={Integer.toString(thoughtid)};
+        String[] whereargs = {Integer.toString(thoughtid)};
 
         Cursor cursor = db.query(
                 CogMoodLogDatabaseContract.thought_cognitivedistortion.TABLE_NAME,                     // The table to query
                 projection,                               // The columns to return
-                CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_THOUGHT_ID+"=?",                                // The columns for the WHERE clause
+                CogMoodLogDatabaseContract.thought_cognitivedistortion.COLUMN_THOUGHT_ID + "=?",                                // The columns for the WHERE clause
                 whereargs,                            // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
                 null // The sort order
         );
         while (cursor.moveToNext()) {
-            thought_cognitivedistortionobj obj =new thought_cognitivedistortionobj();
+            thought_cognitivedistortionobj obj = new thought_cognitivedistortionobj();
 
             obj.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(
                     "rowid"
@@ -524,13 +538,11 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
     }
 
 
-
     public static void deleteDatabase(Context context) {
-        File encryptedDbFile = new File((context.getDatabasePath("a").getParentFile()),DATABASE_NAME);
+        File encryptedDbFile = new File((context.getDatabasePath("a").getParentFile()), DATABASE_NAME);
         encryptedDbFile.delete();
-        ((Activity)context).recreate();
+        ((Activity) context).recreate();
     }
-
 
 
     @Override
@@ -544,4 +556,117 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper{
         Date date = new Date();
         return dateFormat.format(date);
     }
+
+    public static void backupDb(final Context context, final DriveResourceClient driveResourceClient) {
+        final File dbFile = new File((context.getDatabasePath("a").getParentFile()), DATABASE_NAME);
+        final Task<DriveFolder> appFolderTask = driveResourceClient.getAppFolder();
+        final Task<DriveContents> createContentsTask = driveResourceClient.createContents();
+        Tasks.whenAll(appFolderTask, createContentsTask)
+                .continueWithTask(new Continuation<Void, Task<DriveFile>>() {
+                    @Override
+                    public Task<DriveFile> then(@NonNull Task<Void> task) throws Exception {
+                        DriveFolder parent = appFolderTask.getResult();
+                        DriveContents contents = createContentsTask.getResult();
+
+                        // Get an output stream for the contents.
+                        OutputStream outputStream = contents.getOutputStream();
+
+                        MetadataChangeSet metadataChangeSet =
+                                new MetadataChangeSet.Builder()
+                                        .setMimeType("application/x-sqlite3")
+                                        .setTitle(DATABASE_NAME)
+                                        .build();
+                        try {
+                            FileInputStream fis = new FileInputStream(dbFile);
+                            byte[] buffer = new byte[1024];
+                            try {
+                                for (int readNum; (readNum = fis.read(buffer)) != -1; ) {
+                                    outputStream.write(buffer, 0, readNum);
+                                }
+                            } catch (IOException e) {
+                                Log.e("dbhelper", "io exception");
+                            }
+                        } catch (FileNotFoundException e) {
+                            Log.e("dbhelper", "File not found exception");
+                        }
+                        return driveResourceClient.createFile(parent, metadataChangeSet, contents);
+                    }
+                })
+                .addOnSuccessListener(new OnSuccessListener<DriveFile>() {
+                    @Override
+                    public void onSuccess(DriveFile driveFile) {
+                        Toast.makeText(context, "file created " + driveFile.getDriveId().encodeToString(), Toast.LENGTH_LONG).show();
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context, "file failed to create", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+//        driveResourceClient
+//                .createContents()
+//                .continueWithTask(
+//                        new Continuation<DriveContents, Task<Void>>() {
+//                            @Override
+//                            public Task<Void> then(@NonNull Task<DriveContents> task) throws Exception {
+//                                return createFileIntentSender(task.getResult(), dbFile);
+//                            }
+//                        })
+//                .addOnFailureListener(
+//                        new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Log.w("dbhelper", "Failed to create new contents.", e);
+//                            }
+//                        });
+    }
+
+//    private static Task<Void> createFileIntentSender(DriveContents result, File dbFile, final Activity activity) {
+//
+//        // Get an output stream for the contents.
+//        OutputStream outputStream = result.getOutputStream();
+//        // Write the bitmap data from it.
+//        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+//
+//        MetadataChangeSet metadataChangeSet =
+//                new MetadataChangeSet.Builder()
+//                        .setMimeType("application/x-sqlite3")
+//                        .setTitle(DATABASE_NAME)
+//                        .build();
+//        try {
+//            FileInputStream fis = new FileInputStream(dbFile);
+//            byte[] buffer = new byte[1024];
+//            try {
+//                for (int readNum; (readNum = fis.read(buffer)) != -1; ) {
+//                    byteArray.write(buffer, 0, readNum);
+//                }
+//            } catch (IOException e) {
+//                Log.e("dbhelper", "io exception");
+//            }
+//        } catch (FileNotFoundException e) {
+//            Log.e("dbhelper", "File not found exception");
+//        }
+//
+//        CreateFileActivityOptions createFileActivityOptions =
+//                new CreateFileActivityOptions.Builder()
+//                        .setInitialMetadata(metadataChangeSet)
+//                        .setInitialDriveContents(result)
+//                        .build();
+//
+//
+//        return BaseApplication.getDriveClient()
+//                .newCreateFileActivityIntentSender(createFileActivityOptions)
+//                .continueWith(
+//                        new Continuation<IntentSender, Void>() {
+//                            @Override
+//                            public Void then(@NonNull Task<IntentSender> task) throws Exception {
+//                                return null;
+//                            }
+//                        }
+//                );
+//    }
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.preference.CheckBoxPreference;
@@ -23,7 +22,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFile;
 import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveResource;
+import com.google.android.gms.drive.Metadata;
 import com.google.android.gms.drive.MetadataBuffer;
 import com.google.android.gms.drive.query.Filters;
 import com.google.android.gms.drive.query.Query;
@@ -34,10 +37,12 @@ import com.google.android.gms.tasks.Task;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 import com.mindbuilders.cognitivemoodlog.util.utilities;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
 import static android.app.Activity.RESULT_OK;
+import static com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper.DATABASE_NAME;
 
 
 /**
@@ -131,35 +136,72 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         googleDrivePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if ((boolean) newValue){
+                if ((boolean) newValue) {
                     signIn();
-                }
-                else {
+                    googleDrivePref.setChecked(true);
+                } else {
                     googleDrivePref.setChecked(false);
                     // disable backup
                     signOut();
                 }
-                    return false;
+                return false;
             }
         });
-
 
 
         Preference checkFileListPref = (Preference) findPreference("checkfilelist");
         checkFileListPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Query query = new Query.Builder()
-                        .addFilter(Filters.eq(SearchableField.TITLE, CogMoodLogDatabaseHelper.DATABASE_NAME)).build();
-                        Task task = BaseApplication.getDriveResourceClient().getAppFolder();
-                        task.getResult();
-               Task<MetadataBuffer> queryTask = BaseApplication.getDriveResourceClient().queryChildren((DriveFolder)task.getResult(),query);
-            Log.e("stuff", queryTask.getResult().toString());
-               return true;
+
+                return true;
             }
         });
     }
 
+    private MetadataBuffer getMetadataBufferList() {
+        MetadataBuffer metadata = null;
+
+        final Query query = new Query.Builder()
+                .addFilter(Filters.eq(SearchableField.TITLE, DATABASE_NAME)).build();
+
+        final Task task = BaseApplication.getDriveResourceClient().getAppFolder();
+            if(task.isSuccessful()) {
+                DriveFolder driveFolder = (DriveFolder) task.getResult();
+                BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
+                Task<MetadataBuffer> queryTask = BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
+                if (queryTask.isSuccessful()) {
+                    metadata = queryTask.getResult();
+                }
+            }
+            return metadata;
+    }
+
+    private void restoreBackup(Metadata md) {
+        DriveFile file = getDriveFile(md);
+        Task<DriveContents> openTask = BaseApplication.getDriveResourceClient().openFile(file, DriveFile.MODE_READ_ONLY);
+    }
+
+    private DriveResource getDriveResource(Metadata md) {
+        if (md != null && md instanceof DriveResource) {
+            return md.getDriveId().asDriveResource();
+
+        }
+        return null;
+    }
+
+    private DriveFile getDriveFile(Metadata md) {
+        if (md != null && md instanceof DriveResource) {
+            return md.getDriveId().asDriveFile();
+        }
+        return null;
+    }
+
+    private void deleteAllBackups(MetadataBuffer buffer) {
+        for (Metadata md: buffer) {
+            BaseApplication.getDriveResourceClient().delete(getDriveResource(md));
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -192,7 +234,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     protected void signIn() {
         Set<Scope> requiredScopes = new HashSet<>(2);
         requiredScopes.add(Drive.SCOPE_APPFOLDER);
-      BaseApplication.setGoogleSignInAccount(GoogleSignIn.getLastSignedInAccount(this.getActivity()));
+        BaseApplication.setGoogleSignInAccount(GoogleSignIn.getLastSignedInAccount(this.getActivity()));
         if (BaseApplication.getGoogleSignInAccount() != null &&
                 BaseApplication.getGoogleSignInAccount().getGrantedScopes().containsAll(requiredScopes)) {
             initializeDriveClient(BaseApplication.getGoogleSignInAccount());
@@ -208,9 +250,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
 
     protected void signOut() {
-       if (BaseApplication.getGoogleSignInClient() != null) {
-           BaseApplication.getGoogleSignInClient().signOut();
-       }
+        if (BaseApplication.getGoogleSignInClient() != null) {
+            BaseApplication.getGoogleSignInClient().signOut();
+        }
     }
 
 
@@ -226,7 +268,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         //Then do something
         CogMoodLogDatabaseHelper.backupDb(getContext(), BaseApplication.getDriveResourceClient());
     }
-
 
 
     @Override
@@ -257,8 +298,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             }
                         });
     }
-
-
 
 
 }

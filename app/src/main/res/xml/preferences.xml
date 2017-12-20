@@ -12,8 +12,8 @@
         android:summary="Backup current and future log entries using Google Drive account"
         android:title="Backup Log Entries" />
     <Preference
-        android:key="checkfilelist"
-        android:summary="Check file list"
-        android:title="Check file list"
+        android:key="restore_from_backup"
+        android:summary="Restore from Google Drive Backup if you've created it previously"
+        android:title="Restore from Backup"
         />
 </PreferenceScreen>

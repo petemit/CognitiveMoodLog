@@ -31,13 +31,18 @@ import com.google.android.gms.drive.MetadataBuffer;
 import com.google.android.gms.drive.query.Filters;
 import com.google.android.gms.drive.query.Query;
 import com.google.android.gms.drive.query.SearchableField;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 import com.mindbuilders.cognitivemoodlog.util.utilities;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -149,11 +154,22 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
 
-        Preference checkFileListPref = (Preference) findPreference("checkfilelist");
-        checkFileListPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        Preference RestoreFromBackup = (Preference) findPreference("restore_from_backup");
+        RestoreFromBackup.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                signIn();
+                MetadataBuffer buffer = getMetadataBufferList();
+                if (buffer != null && buffer.getCount() > 0) {
+                    Metadata md = buffer.get(0);
+                    restoreBackup((md));
+                    Toast.makeText(getContext(), "Backup Restored", Toast.LENGTH_SHORT).show();
 
+                }
+                else {
+                    Toast.makeText(getContext(), "No backup found.", Toast.LENGTH_LONG).show();
+                    return true;
+                }
                 return true;
             }
         });
@@ -161,25 +177,53 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private MetadataBuffer getMetadataBufferList() {
         MetadataBuffer metadata = null;
-
+//todo  I need this to use callbacks because I've got timing issues.
         final Query query = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.TITLE, DATABASE_NAME)).build();
 
         final Task task = BaseApplication.getDriveResourceClient().getAppFolder();
-            if(task.isSuccessful()) {
-                DriveFolder driveFolder = (DriveFolder) task.getResult();
-                BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
-                Task<MetadataBuffer> queryTask = BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
-                if (queryTask.isSuccessful()) {
-                    metadata = queryTask.getResult();
-                }
+        if (task.isSuccessful()) {
+            DriveFolder driveFolder = (DriveFolder) task.getResult();
+            BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
+            Task<MetadataBuffer> queryTask = BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
+            if (queryTask.isSuccessful()) {
+                metadata = queryTask.getResult();
             }
-            return metadata;
+        }
+        return metadata;
     }
 
     private void restoreBackup(Metadata md) {
+        final byte[] buffer = new byte[8 * 1024];
+        final File dbFile = new File((getContext().getDatabasePath("a").getParentFile()), DATABASE_NAME);
+
         DriveFile file = getDriveFile(md);
+
         Task<DriveContents> openTask = BaseApplication.getDriveResourceClient().openFile(file, DriveFile.MODE_READ_ONLY);
+        openTask.continueWithTask(new Continuation<DriveContents, Task<Void>>() {
+            @Override
+            public Task<Void> then(@NonNull Task<DriveContents> task) throws Exception {
+                DriveContents contents = task.getResult();
+                FileOutputStream fos = null;
+                InputStream input = null;
+                try {
+                   input = contents.getInputStream();
+                    fos = new FileOutputStream(dbFile);
+                    int bytesRead;
+                    while ((bytesRead = input.read(buffer)) != -1) {
+                        fos.write(buffer, 0, bytesRead);
+                    }
+                } finally {
+                    if (fos != null) {
+                        fos.close();
+                    }
+                    if (input != null) {
+                        input.close();
+                    }
+                }
+                return null;
+            }
+        });
     }
 
     private DriveResource getDriveResource(Metadata md) {
@@ -198,7 +242,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private void deleteAllBackups(MetadataBuffer buffer) {
-        for (Metadata md: buffer) {
+        for (Metadata md : buffer) {
             BaseApplication.getDriveResourceClient().delete(getDriveResource(md));
         }
     }

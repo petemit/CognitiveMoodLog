@@ -1,10 +1,13 @@
 package com.mindbuilders.cognitivemoodlog;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.preference.CheckBoxPreference;
@@ -38,13 +41,13 @@ import com.google.android.gms.tasks.Task;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 import com.mindbuilders.cognitivemoodlog.util.utilities;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static android.app.Activity.RESULT_OK;
 import static com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper.DATABASE_NAME;
@@ -54,12 +57,15 @@ import static com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper.DA
  * Created by Peter on 11/7/2017.
  */
 
+@SuppressLint("ValidFragment")
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     private String password = "";
     private String key = "";
     boolean changeResult = true;
+    LoadingIndicatorCallback callback;
     CheckBoxPreference googleDrivePref;
+    CountDownLatch latch = new CountDownLatch(1);
     /**
      * Request code for google sign-in
      */
@@ -71,8 +77,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     protected static final int REQUEST_CODE_OPEN_ITEM = 1;
 
 
-    public SettingsFragment() {
-
+    @SuppressLint("ValidFragment")
+    public SettingsFragment(LoadingIndicatorCallback callback) {
+        this.callback = callback;
     }
 
     @Override
@@ -165,8 +172,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     restoreBackup((md));
                     Toast.makeText(getContext(), "Backup Restored", Toast.LENGTH_SHORT).show();
 
-                }
-                else {
+                } else {
                     Toast.makeText(getContext(), "No backup found.", Toast.LENGTH_LONG).show();
                     return true;
                 }
@@ -176,21 +182,64 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private MetadataBuffer getMetadataBufferList() {
+
+        BaseApplication.setMetaDataBuffer(null);
         MetadataBuffer metadata = null;
+
 //todo  I need this to use callbacks because I've got timing issues.
         final Query query = new Query.Builder()
                 .addFilter(Filters.eq(SearchableField.TITLE, DATABASE_NAME)).build();
 
-        final Task task = BaseApplication.getDriveResourceClient().getAppFolder();
-        if (task.isSuccessful()) {
-            DriveFolder driveFolder = (DriveFolder) task.getResult();
-            BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
-            Task<MetadataBuffer> queryTask = BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
-            if (queryTask.isSuccessful()) {
-                metadata = queryTask.getResult();
+        Task<DriveFolder> task = BaseApplication.getDriveResourceClient().getAppFolder();
+        task.addOnSuccessListener(new OnSuccessListener<DriveFolder>() {
+            @Override
+            public void onSuccess(DriveFolder driveFolder) {
+                BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
+                Task<MetadataBuffer> queryTask = BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
+
+                queryTask.addOnSuccessListener(new OnSuccessListener<MetadataBuffer>() {
+                    @Override
+                    public void onSuccess(MetadataBuffer buffer) {
+                        BaseApplication.setMetaDataBuffer(buffer);
+                    }
+                });
             }
+        });
+        callback.showLoading();
+        new myAsyncTask().execute();
+
+        try {
+            latch.await(30, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        return metadata;
+
+        return BaseApplication.getMetaDataBuffer();
+    }
+
+    private class myAsyncTask extends AsyncTask<Void, Void, Void> {
+        final Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (BaseApplication.getMetaDataBuffer() == null) {
+                    handler.postDelayed(this, 1000);
+                }
+            }
+        };
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            handler.postDelayed(runnable, 1000);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            latch.countDown();
+            callback.hideLoading();
+        }
     }
 
     private void restoreBackup(Metadata md) {
@@ -207,7 +256,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 FileOutputStream fos = null;
                 InputStream input = null;
                 try {
-                   input = contents.getInputStream();
+                    input = contents.getInputStream();
                     fos = new FileOutputStream(dbFile);
                     int bytesRead;
                     while ((bytesRead = input.read(buffer)) != -1) {
@@ -341,6 +390,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                                 Log.w("utils", "Sign in failed", e);
                             }
                         });
+    }
+
+    public interface LoadingIndicatorCallback {
+        void showLoading();
+
+        void hideLoading();
     }
 
 

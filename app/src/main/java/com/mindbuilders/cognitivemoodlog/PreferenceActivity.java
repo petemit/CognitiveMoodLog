@@ -4,21 +4,27 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Spinner;
 
-public class PreferenceActivity extends AppCompatActivity {
+public class PreferenceActivity extends AppCompatActivity implements SettingsFragment.LoadingIndicatorCallback {
+    Spinner loadingindicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preference);
+        loadingindicator = (Spinner) findViewById(R.id.loading_indicator);
+        if (loadingindicator != null) {
+            loadingindicator.setVisibility(View.INVISIBLE);
+        }
 //
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.preferences_toolbar);
 //
 //        setSupportActionBar(toolbar);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.preference_container, new SettingsFragment())
+                .replace(R.id.preference_container, new SettingsFragment(this))
                 .commit();
 
         // Show the Up button in the action bar.
@@ -43,4 +49,21 @@ public class PreferenceActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void showLoading() {
+        if (loadingindicator != null) {
+            loadingindicator.setVisibility(View.VISIBLE);
+
+
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        if (loadingindicator != null) {
+            loadingindicator.setVisibility(View.INVISIBLE);
+        }
+    }
+
 }

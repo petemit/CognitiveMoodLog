@@ -57,7 +57,7 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper {
 
     public CogMoodLogDatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        SQLiteDatabase.loadLibs(context);
+
     }
 
     @Override

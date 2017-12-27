@@ -6,11 +6,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.drive.Drive;
 import com.google.android.gms.drive.DriveClient;
 import com.google.android.gms.drive.DriveResourceClient;
+import com.google.android.gms.drive.MetadataBuffer;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
+import net.sqlcipher.database.SQLiteDatabase;
 
 /**
  * Created by Peter on 12/4/2017.
@@ -23,6 +26,7 @@ public class BaseApplication extends Application {
     private static GoogleSignInAccount googleSignInAccount;
     private static DriveClient driveClient;
     private static DriveResourceClient driveResourceClient;
+    private static MetadataBuffer metaDataBuffer;
 
     public static GoogleSignInClient getGoogleSignInClient() {
         return googleSignInClient;
@@ -56,8 +60,17 @@ public class BaseApplication extends Application {
         BaseApplication.driveResourceClient = driveResourceClient;
     }
 
+    public static MetadataBuffer getMetaDataBuffer() {
+        return metaDataBuffer;
+    }
+
+    public static void setMetaDataBuffer(MetadataBuffer metaDataBuffer) {
+        BaseApplication.metaDataBuffer = metaDataBuffer;
+    }
+
     @Override
     public void onCreate() {
+        SQLiteDatabase.loadLibs(getApplicationContext());
         BaseApplication.setDbHelper(new CogMoodLogDatabaseHelper(getBaseContext()));
         super.onCreate();
 

@@ -14,6 +14,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import net.sqlcipher.database.SQLiteDatabase;
+import static net.sqlcipher.database.SQLiteDatabase.loadLibs;
+
 
 /**
  * Created by Peter on 12/4/2017.
@@ -70,7 +72,7 @@ public class BaseApplication extends Application {
 
     @Override
     public void onCreate() {
-        SQLiteDatabase.loadLibs(getApplicationContext());
+        loadLibs(getApplicationContext());
         BaseApplication.setDbHelper(new CogMoodLogDatabaseHelper(getBaseContext()));
         super.onCreate();
 

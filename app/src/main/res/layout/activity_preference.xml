@@ -17,12 +17,17 @@
     <FrameLayout
         android:id="@+id/preference_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <Spinner
+        android:layout_height="match_parent">
+    <ProgressBar
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:id="@+id/loading_indicator"></Spinner>
+        android:layout_gravity="center"
+        android:id="@+id/loading_indicator"></ProgressBar>
+
+    </FrameLayout>
+
+
+
 
 
 </LinearLayout>

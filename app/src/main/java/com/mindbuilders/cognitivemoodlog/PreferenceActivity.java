@@ -6,16 +6,17 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 public class PreferenceActivity extends AppCompatActivity implements SettingsFragment.LoadingIndicatorCallback {
-    Spinner loadingindicator;
+    ProgressBar loadingindicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preference);
-        loadingindicator = (Spinner) findViewById(R.id.loading_indicator);
+        loadingindicator = (ProgressBar) findViewById(R.id.loading_indicator);
         if (loadingindicator != null) {
             loadingindicator.setVisibility(View.INVISIBLE);
         }

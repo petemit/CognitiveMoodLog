@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                     Cursor cursor = db.rawQuery("select * from emotion", null);
                     if (cursor.getCount() < 1) {
                         FIRSTLOAD = true;
+                        cursor.close();
                     }
                 } catch (SQLException s) {
                     FIRSTLOAD = true;
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                                     try {
                                         db = BaseApplication.getDbHelper().getReadableDatabase(BaseApplication.passwordHash);
                                         Cursor cursor = db.rawQuery("select * from emotion", null);
+                                        if (cursor != null) {cursor.close();}
                                     } catch (SQLiteException s) {
                                         Toast.makeText(getBaseContext(),
                                                 "You must use the password you set up earlier, or delete everything and start over",

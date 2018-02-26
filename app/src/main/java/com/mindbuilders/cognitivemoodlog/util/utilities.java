@@ -144,13 +144,13 @@ public class utilities {
         return GoogleSignIn.getClient(context, signInOptions);
     }
 
-    /** Start sign in activity. */
-    private void signIn(Activity activity) {
-        Log.i("utils", "Start sign in");
-        BaseApplication.setGoogleSignInClient(buildGoogleSignInClient(context));
-        activity.startActivityForResult(BaseApplication.getGoogleSignInClient().getSignInIntent(),
-                REQUEST_CODE_SIGN_IN);
-    }
+//    /** Start sign in activity. */
+//    private void signIn(Activity activity) {
+//        Log.i("utils", "Start sign in");
+//        BaseApplication.setGoogleSignInClient(buildGoogleSignInClient(context));
+//        activity.startActivityForResult(BaseApplication.getGoogleSignInClient().getSignInIntent(),
+//                REQUEST_CODE_SIGN_IN);
+//    }
 
 //    private void createFileInAppFolder() {
 //        final Task<DriveFolder> appFolderTask = Drive.getDriveResourceClient(context,BaseApplication).getAppFolder();

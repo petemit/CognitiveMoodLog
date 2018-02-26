@@ -606,6 +606,8 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper {
                     }
                 });
 
+        BaseApplication.getDriveClient().requestSync();
+
 
 //        driveResourceClient
 //                .createContents()

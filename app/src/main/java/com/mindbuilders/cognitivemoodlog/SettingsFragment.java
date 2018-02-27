@@ -1,10 +1,13 @@
 package com.mindbuilders.cognitivemoodlog;
 
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,21 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveContents;
-import com.google.android.gms.drive.DriveFile;
-import com.google.android.gms.drive.DriveFolder;
-import com.google.android.gms.drive.DriveResource;
-import com.google.android.gms.drive.Metadata;
-import com.google.android.gms.drive.MetadataBuffer;
-import com.google.android.gms.drive.query.Filters;
-import com.google.android.gms.drive.query.Query;
-import com.google.android.gms.drive.query.SearchableField;
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 import com.mindbuilders.cognitivemoodlog.util.utilities;
 
@@ -50,6 +39,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static android.app.Activity.RESULT_OK;
+import static com.mindbuilders.cognitivemoodlog.BaseApplication.REQUEST_AUTHORIZATION;
 import static com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper.DATABASE_NAME;
 
 
@@ -166,201 +156,145 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 signIn();
-                MetadataBuffer buffer = getMetadataBufferList();
-                if (buffer != null && buffer.getCount() > 0) {
-                    Metadata md = buffer.get(0);
-                    restoreBackup((md));
+                //MetadataBuffer buffer = getMetadataBufferList();
+  //              if (buffer != null && buffer.getCount() > 0) {
+//                    Metadata md = buffer.get(0);
+                    restoreBackup();
                     Toast.makeText(getContext(), "Backup Restored", Toast.LENGTH_SHORT).show();
 
-                } else {
-                    Toast.makeText(getContext(), "No backup found.", Toast.LENGTH_LONG).show();
-                    return true;
-                }
+                //}
+//                else {
+//                    Toast.makeText(getContext(), "No backup found.", Toast.LENGTH_LONG).show();
+//                    return true;
+//                }
                 return true;
             }
         });
     }
+//
+//    private MetadataBuffer getMetadataBufferList() {
+//
+//        BaseApplication.setMetaDataBuffer(null);
+//        MetadataBuffer metadata = null;
+//
+////todo  I need this to use callbacks because I've got timing issues.
+//        final Query query = new Query.Builder()
+//                .addFilter(Filters.eq(SearchableField.TITLE, DATABASE_NAME)).build();
+//
+//        Task<DriveFolder> task = BaseApplication.getDriveResourceClient().getAppFolder();
+//        task.addOnSuccessListener(new OnSuccessListener<DriveFolder>() {
+//            @Override
+//            public void onSuccess(DriveFolder driveFolder) {
+//                BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
+//                Task<MetadataBuffer> queryTask = BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
+//
+//                queryTask.addOnSuccessListener(new OnSuccessListener<MetadataBuffer>() {
+//                    @Override
+//                    public void onSuccess(MetadataBuffer buffer) {
+//                        BaseApplication.setMetaDataBuffer(buffer);
+//                    }
+//                });
+//            }
+//        });
+//        callback.showLoading();
+//        new myAsyncTask().execute();
+//
+//        try {
+//            latch.await(30, TimeUnit.SECONDS);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return BaseApplication.getMetaDataBuffer();
+//    }
 
-    private MetadataBuffer getMetadataBufferList() {
+//    private class myAsyncTask extends AsyncTask<Void, Void, Void> {
+//        final Handler handler = new Handler();
+//        final Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                if (BaseApplication.getMetaDataBuffer() == null) {
+//                    handler.postDelayed(this, 1000);
+//                }
+//            }
+//        };
+//
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            handler.postDelayed(runnable, 1000);
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            latch.countDown();
+//            callback.hideLoading();
+//        }
+//    }
 
-        BaseApplication.setMetaDataBuffer(null);
-        MetadataBuffer metadata = null;
-
-//todo  I need this to use callbacks because I've got timing issues.
-        final Query query = new Query.Builder()
-                .addFilter(Filters.eq(SearchableField.TITLE, DATABASE_NAME)).build();
-
-        Task<DriveFolder> task = BaseApplication.getDriveResourceClient().getAppFolder();
-        task.addOnSuccessListener(new OnSuccessListener<DriveFolder>() {
-            @Override
-            public void onSuccess(DriveFolder driveFolder) {
-                BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
-                Task<MetadataBuffer> queryTask = BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
-
-                queryTask.addOnSuccessListener(new OnSuccessListener<MetadataBuffer>() {
-                    @Override
-                    public void onSuccess(MetadataBuffer buffer) {
-                        BaseApplication.setMetaDataBuffer(buffer);
-                    }
-                });
-            }
-        });
-        callback.showLoading();
-        new myAsyncTask().execute();
-
-        try {
-            latch.await(30, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        return BaseApplication.getMetaDataBuffer();
+    private void restoreBackup() {
+//        final byte[] buffer = new byte[8 * 1024];
+//        final File dbFile = new File((getContext().getDatabasePath("a").getParentFile()), DATABASE_NAME);
+//
+//        DriveFile file = getDriveFile(md);
+//
+//        Task<DriveContents> openTask = BaseApplication.getDriveResourceClient().openFile(file, DriveFile.MODE_READ_ONLY);
+//        openTask.continueWithTask(new Continuation<DriveContents, Task<Void>>() {
+//            @Override
+//            public Task<Void> then(@NonNull Task<DriveContents> task) throws Exception {
+//                DriveContents contents = task.getResult();
+//                FileOutputStream fos = null;
+//                InputStream input = null;
+//                try {
+//                    input = contents.getInputStream();
+//                    fos = new FileOutputStream(dbFile);
+//                    int bytesRead;
+//                    while ((bytesRead = input.read(buffer)) != -1) {
+//                        fos.write(buffer, 0, bytesRead);
+//                    }
+//                } finally {
+//                    if (fos != null) {
+//                        fos.close();
+//                    }
+//                    if (input != null) {
+//                        input.close();
+//                    }
+//                }
+//                return null;
+//            }
+//        });
     }
 
-    private class myAsyncTask extends AsyncTask<Void, Void, Void> {
-        final Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (BaseApplication.getMetaDataBuffer() == null) {
-                    handler.postDelayed(this, 1000);
-                }
-            }
-        };
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            handler.postDelayed(runnable, 1000);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            latch.countDown();
-            callback.hideLoading();
-        }
-    }
-
-    private void restoreBackup(Metadata md) {
-        final byte[] buffer = new byte[8 * 1024];
-        final File dbFile = new File((getContext().getDatabasePath("a").getParentFile()), DATABASE_NAME);
-
-        DriveFile file = getDriveFile(md);
-
-        Task<DriveContents> openTask = BaseApplication.getDriveResourceClient().openFile(file, DriveFile.MODE_READ_ONLY);
-        openTask.continueWithTask(new Continuation<DriveContents, Task<Void>>() {
-            @Override
-            public Task<Void> then(@NonNull Task<DriveContents> task) throws Exception {
-                DriveContents contents = task.getResult();
-                FileOutputStream fos = null;
-                InputStream input = null;
-                try {
-                    input = contents.getInputStream();
-                    fos = new FileOutputStream(dbFile);
-                    int bytesRead;
-                    while ((bytesRead = input.read(buffer)) != -1) {
-                        fos.write(buffer, 0, bytesRead);
-                    }
-                } finally {
-                    if (fos != null) {
-                        fos.close();
-                    }
-                    if (input != null) {
-                        input.close();
-                    }
-                }
-                return null;
-            }
-        });
-    }
-
-    private DriveResource getDriveResource(Metadata md) {
-        if (md != null && md instanceof DriveResource) {
-            return md.getDriveId().asDriveResource();
-
-        }
-        return null;
-    }
-
-    private DriveFile getDriveFile(Metadata md) {
-        if (md != null && md instanceof DriveResource) {
-            return md.getDriveId().asDriveFile();
-        }
-        return null;
-    }
-
-    private void deleteAllBackups(MetadataBuffer buffer) {
-        for (Metadata md : buffer) {
-            BaseApplication.getDriveResourceClient().delete(getDriveResource(md));
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_CODE_SIGN_IN:
-                if (resultCode != RESULT_OK) {
-                    Toast.makeText(getContext(), "Must be signed in correctly to Google " +
-                                    "to backup data. Do you have a Google account?",
-                            Toast.LENGTH_LONG).show();
-                    googleDrivePref.setChecked(false);
-                    return;
-                }
 
 
-                Task<GoogleSignInAccount> getAccountTask =
-                        GoogleSignIn.getSignedInAccountFromIntent(data);
-                if (getAccountTask.isSuccessful()) {
-                    initializeDriveClient(getAccountTask.getResult());
-                    googleDrivePref.setChecked(true);
-                } else {
-                    Log.e("settingsfragment", "Sign-in failed.");
-                    return;
-                }
-                break;
-        }
-        //Example has this twice, I'm guessing it's a mistake: super.onActivityResult(requestCode, resultCode, data);
-    }
 
     protected void signIn() {
-        Set<Scope> requiredScopes = new HashSet<>(2);
-        requiredScopes.add(Drive.SCOPE_APPFOLDER);
-        BaseApplication.setGoogleSignInAccount(GoogleSignIn.getLastSignedInAccount(this.getActivity()));
-        if (BaseApplication.getGoogleSignInAccount() != null &&
-                BaseApplication.getGoogleSignInAccount().getGrantedScopes().containsAll(requiredScopes)) {
-            initializeDriveClient(BaseApplication.getGoogleSignInAccount());
-        } else {
-            GoogleSignInOptions signInOptions =
-                    new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                            .requestScopes(Drive.SCOPE_APPFOLDER)
-                            .build();
-            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this.getActivity(), signInOptions);
-            startActivityForResult(googleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-        }
+        BaseApplication.initGoogleAccountCredential();
+        BaseApplication.getResultsFromApi(this.getActivity());
+//        Set<Scope> requiredScopes = new HashSet<>(2);
+//            requiredScopes.add(Drive.SCOPE_APPFOLDER);
+//            BaseApplication.setGoogleSignInAccount(GoogleSignIn.getLastSignedInAccount(this.getActivity()));
+//            if (BaseApplication.getGoogleSignInAccount() != null &&
+//                    BaseApplication.getGoogleSignInAccount().getGrantedScopes().containsAll(requiredScopes)) {
+//                initializeDriveClient(BaseApplication.getGoogleSignInAccount());
+//            } else {
+//                GoogleSignInOptions signInOptions =
+//                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                                .requestScopes(Drive.SCOPE_APPFOLDER)
+//                                .build();
+//                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this.getActivity(), signInOptions);
+//                startActivityForResult(googleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
+//        }
     }
 
 
     protected void signOut() {
-        if (BaseApplication.getGoogleSignInClient() != null) {
-            BaseApplication.getGoogleSignInClient().signOut();
-        }
+//        if (BaseApplication.getGoogleSignInClient() != null) {
+//            BaseApplication.getGoogleSignInClient().signOut();
+//        }
     }
 
-
-    /**
-     * Continues the sign-in process, initializing the Drive clients with the current
-     * user's account.
-     */
-    private void initializeDriveClient(GoogleSignInAccount signInAccount) {
-        BaseApplication.setDriveClient(Drive.getDriveClient(getContext(), signInAccount));
-        BaseApplication.setDriveResourceClient(Drive.getDriveResourceClient(getContext(),
-                signInAccount));
-
-        //Then do something
-        CogMoodLogDatabaseHelper.backupDb(getContext(), BaseApplication.getDriveResourceClient());
-    }
 
 
     @Override
@@ -368,29 +302,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     }
 
-    private void updateViewWithGoogleSignInAccountTask(Task<GoogleSignInAccount> task, final Context context) {
-        Log.i("utils", "Update view with sign in account task");
-        task.addOnSuccessListener(
-                new OnSuccessListener<GoogleSignInAccount>() {
-                    @Override
-                    public void onSuccess(GoogleSignInAccount googleSignInAccount) {
-                        Log.i("utils", "Sign in success");
-                        // Build a drive client.
-                        BaseApplication.setDriveClient(Drive.getDriveClient(context, googleSignInAccount));
-                        // Build a drive resource client.
-                        BaseApplication.setDriveResourceClient(Drive.getDriveResourceClient(context,
-                                googleSignInAccount));
-                        // Start camera.
-                    }
-                })
-                .addOnFailureListener(
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.w("utils", "Sign in failed", e);
-                            }
-                        });
-    }
 
     public interface LoadingIndicatorCallback {
         void showLoading();

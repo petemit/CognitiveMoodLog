@@ -30,7 +30,13 @@ dependencies {
     compile "com.android.support:design:$supportLibraryVersion"
     compile "com.android.support:preference-v7:$supportLibraryVersion"
     compile "com.android.support:support-v4:$supportLibraryVersion"
-    compile 'com.google.android.gms:play-services-drive:11.6.0'
+    compile 'pub.devrel:easypermissions:0.3.0'
+    compile('com.google.api-client:google-api-client-android:1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    compile('com.google.apis:google-api-services-drive:v3-rev103-1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
     compile 'com.google.android.gms:play-services-auth:11.6.0'
     compile 'net.zetetic:android-database-sqlcipher:3.5.7@aar'
     debugCompile 'com.facebook.stetho:stetho:1.5.0'

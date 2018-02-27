@@ -15,12 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.drive.Drive;
-import com.google.android.gms.drive.DriveContents;
-import com.google.android.gms.drive.DriveFile;
-import com.google.android.gms.drive.DriveFolder;
-import com.google.android.gms.drive.DriveResourceClient;
-import com.google.android.gms.drive.MetadataChangeSet;
+
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -134,22 +129,6 @@ public class utilities {
             ignored.printStackTrace();
             return null;
         }
-    }
-
-    public static GoogleSignInClient buildGoogleSignInClient(Context context) {
-        GoogleSignInOptions signInOptions =
-                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestScopes(Drive.SCOPE_APPFOLDER)
-                        .build();
-        return GoogleSignIn.getClient(context, signInOptions);
-    }
-
-    /** Start sign in activity. */
-    private void signIn(Activity activity) {
-        Log.i("utils", "Start sign in");
-        BaseApplication.setGoogleSignInClient(buildGoogleSignInClient(context));
-        activity.startActivityForResult(BaseApplication.getGoogleSignInClient().getSignInIntent(),
-                REQUEST_CODE_SIGN_IN);
     }
 
 //    private void createFileInAppFolder() {

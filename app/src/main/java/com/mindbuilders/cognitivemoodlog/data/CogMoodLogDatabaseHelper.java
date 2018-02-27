@@ -8,12 +8,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.drive.DriveClient;
-import com.google.android.gms.drive.DriveContents;
-import com.google.android.gms.drive.DriveFile;
-import com.google.android.gms.drive.DriveFolder;
-import com.google.android.gms.drive.DriveResourceClient;
-import com.google.android.gms.drive.MetadataChangeSet;
+
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -557,54 +552,54 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper {
         return dateFormat.format(date);
     }
 
-    public static void backupDb(final Context context, final DriveResourceClient driveResourceClient) {
-        final File dbFile = new File((context.getDatabasePath("a").getParentFile()), DATABASE_NAME);
-        final Task<DriveFolder> appFolderTask = driveResourceClient.getAppFolder();
-        final Task<DriveContents> createContentsTask = driveResourceClient.createContents();
-        Tasks.whenAll(appFolderTask, createContentsTask)
-                .continueWithTask(new Continuation<Void, Task<DriveFile>>() {
-                    @Override
-                    public Task<DriveFile> then(@NonNull Task<Void> task) throws Exception {
-                        DriveFolder parent = appFolderTask.getResult();
-                        DriveContents contents = createContentsTask.getResult();
-
-                        // Get an output stream for the contents.
-                        OutputStream outputStream = contents.getOutputStream();
-
-                        MetadataChangeSet metadataChangeSet =
-                                new MetadataChangeSet.Builder()
-                                        .setMimeType("application/x-sqlite3")
-                                        .setTitle(DATABASE_NAME)
-                                        .build();
-                        try {
-                            FileInputStream fis = new FileInputStream(dbFile);
-                            byte[] buffer = new byte[1024];
-                            try {
-                                for (int readNum; (readNum = fis.read(buffer)) != -1; ) {
-                                    outputStream.write(buffer, 0, readNum);
-                                }
-                            } catch (IOException e) {
-                                Log.e("dbhelper", "io exception");
-                            }
-                        } catch (FileNotFoundException e) {
-                            Log.e("dbhelper", "File not found exception");
-                        }
-                        return driveResourceClient.createFile(parent, metadataChangeSet, contents);
-                    }
-                })
-                .addOnSuccessListener(new OnSuccessListener<DriveFile>() {
-                    @Override
-                    public void onSuccess(DriveFile driveFile) {
-                        Toast.makeText(context, "file created " + driveFile.getDriveId().encodeToString(), Toast.LENGTH_LONG).show();
-
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(context, "file failed to create", Toast.LENGTH_SHORT).show();
-                    }
-                });
+    public static void backupDb(final Context context) {
+//        final File dbFile = new File((context.getDatabasePath("a").getParentFile()), DATABASE_NAME);
+//        final Task<DriveFolder> appFolderTask = driveResourceClient.getAppFolder();
+//        final Task<DriveContents> createContentsTask = driveResourceClient.createContents();
+//        Tasks.whenAll(appFolderTask, createContentsTask)
+//                .continueWithTask(new Continuation<Void, Task<DriveFile>>() {
+//                    @Override
+//                    public Task<DriveFile> then(@NonNull Task<Void> task) throws Exception {
+//                        DriveFolder parent = appFolderTask.getResult();
+//                        DriveContents contents = createContentsTask.getResult();
+//
+//                        // Get an output stream for the contents.
+//                        OutputStream outputStream = contents.getOutputStream();
+//
+//                        MetadataChangeSet metadataChangeSet =
+//                                new MetadataChangeSet.Builder()
+//                                        .setMimeType("application/x-sqlite3")
+//                                        .setTitle(DATABASE_NAME)
+//                                        .build();
+//                        try {
+//                            FileInputStream fis = new FileInputStream(dbFile);
+//                            byte[] buffer = new byte[1024];
+//                            try {
+//                                for (int readNum; (readNum = fis.read(buffer)) != -1; ) {
+//                                    outputStream.write(buffer, 0, readNum);
+//                                }
+//                            } catch (IOException e) {
+//                                Log.e("dbhelper", "io exception");
+//                            }
+//                        } catch (FileNotFoundException e) {
+//                            Log.e("dbhelper", "File not found exception");
+//                        }
+//                        return driveResourceClient.createFile(parent, metadataChangeSet, contents);
+//                    }
+//                })
+//                .addOnSuccessListener(new OnSuccessListener<DriveFile>() {
+//                    @Override
+//                    public void onSuccess(DriveFile driveFile) {
+//                        Toast.makeText(context, "file created " + driveFile.getDriveId().encodeToString(), Toast.LENGTH_LONG).show();
+//
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Toast.makeText(context, "file failed to create", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
 
 
 //        driveResourceClient

@@ -26,7 +26,9 @@ import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -85,7 +87,11 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
      * Attempt to resolve a missing, out-of-date, invalid or disabled Google
      * Play Services installation via a user dialog, if possible.
      */
-    private static void acquireGooglePlayServices(Activity activity) {
+    private static void acquireGooglePlayServices(WhatToDoTask task) {
+        Activity activity = task.getActivity();
+        if (activity == null) {
+            return;
+        }
         GoogleApiAvailability apiAvailability =
                 GoogleApiAvailability.getInstance();
         final int connectionStatusCode =
@@ -140,15 +146,16 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-    public static void getResultsFromApi(Activity activity) {
-        if (!isGooglePlayServicesAvailable(activity.getBaseContext())) {
-            acquireGooglePlayServices(activity);
+    public static void getResultsFromApi(WhatToDoTask task) {
+        if (task.getActivity() != null && task.getActivity() instanceof Activity)
+        if (!isGooglePlayServicesAvailable(task.getActivity().getBaseContext())) {
+            acquireGooglePlayServices(task);
         } else if (getDriveCredential().getSelectedAccountName() == null) {
-            chooseAccount(activity);
-        } else if (!isDeviceOnline(activity.getBaseContext())) {
+            chooseAccount(task);
+        } else if (!isDeviceOnline(task.getActivity().getBaseContext())) {
 
         } else {
-            new MakeRequestTask(getDriveCredential()).execute(activity);
+            new MakeRequestTask(getDriveCredential()).execute(task);
         }
     }
 
@@ -156,7 +163,7 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
      * An asynchronous task that handles the Drive API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
      */
-    private static class MakeRequestTask extends AsyncTask<Activity, Void, List<String>> {
+    private static class MakeRequestTask extends AsyncTask<WhatToDoTask, Void, List<String>> {
         private com.google.api.services.drive.Drive mService = null;
         private Exception mLastError = null;
         private Activity activity;
@@ -176,12 +183,27 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
          * @param params no parameters needed for this task.
          */
         @Override
-        protected List<String> doInBackground(Activity... params) {
-            if (params[0] instanceof Activity) {
-                this.activity = params[0];
+        protected List<String> doInBackground(WhatToDoTask... params) {
+            if (params[0] != null) {
+                if (params[0] instanceof  WhatToDoTask) {
+                    this.activity = params[0].getActivity();
+                }
+            }
+            else {
+                return null;
             }
             try {
-                return getDataFromApi();
+                switch(params[0].getOp()) {
+                    case "CHECKFORFILE":
+                        return checkForFile();
+                    case "DELETEFILE":
+                        return deleteFiles();
+                    case "DOWNLOADFILE":
+                        return downloadFile();
+                    default:
+                        return null;
+                }
+
             } catch (Exception e) {
                 mLastError = e;
                 cancel(true);
@@ -196,7 +218,7 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
          * found.
          * @throws IOException
          */
-        private List<String> getDataFromApi() throws IOException {
+        private List<String> checkForFile() throws IOException {
             // Get a list of up to 10 files.
             List<String> fileInfo = new ArrayList<String>();
             FileList files = mService.files().list()
@@ -206,8 +228,68 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
                     .execute();
             if (files != null) {
                 for (File file : files.getFiles()) {
-                   fileInfo.add(file.getName() + " " + file.getId());
+                    if (!file.getTrashed()) {
+                        fileInfo.add(file.getName() + " " + file.getId());
+                    }
                 }
+            }
+
+            return fileInfo;
+        }
+
+        private List<String> insertFile() throws IOException {
+            // Get a list of up to 10 files.
+            List<String> fileInfo = new ArrayList<String>();
+            FileList files = mService.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setPageSize(10)
+                    .execute();
+            if (files != null) {
+                for (File file : files.getFiles()) {
+
+                }
+                fileInfo.add("files deleted");
+                return fileInfo;
+            }
+
+            return fileInfo;
+        }
+
+        private List<String> downloadFile() throws IOException {
+            // Get a list of up to 10 files.
+            List<String> fileInfo = new ArrayList<String>();
+            FileList files = mService.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setPageSize(10)
+                    .execute();
+            if (files != null) {
+                if (files.getFiles().get(0).getName().equals(CogMoodLogDatabaseHelper.DATABASE_NAME)) {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    mService.files().get(files.getFiles().get(0).getId()).executeMediaAndDownloadTo(outputStream);
+                    CogMoodLogDatabaseHelper.restoreDb(myContext,outputStream);
+                    fileInfo.add("File Downloaded");
+                    return fileInfo;
+                }
+            }
+            return fileInfo;
+        }
+
+        private List<String> deleteFiles() throws IOException {
+            // Get a list of up to 10 files.
+            List<String> fileInfo = new ArrayList<String>();
+            FileList files = mService.files().list()
+                    .setSpaces("appDataFolder")
+                    .setFields("nextPageToken, files(id, name)")
+                    .setPageSize(10)
+                    .execute();
+            if (files != null) {
+                for (File file : files.getFiles()) {
+                    file.setTrashed(true);
+                }
+                fileInfo.add("files deleted");
+                return fileInfo;
             }
 
             return fileInfo;
@@ -216,19 +298,25 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
 
         @Override
         protected void onPreExecute() {
-//            mOutputText.setText("");
-//            mProgress.show();
+            if (activity instanceof PreferenceActivity) {
+                ((PreferenceActivity) activity).showLoading();
+            }
         }
 
         @Override
         protected void onPostExecute(List<String> output) {
-//            mProgress.hide();
+
+            if (activity instanceof PreferenceActivity) {
+                ((PreferenceActivity) activity).hideLoading();
+            }
+
             if (output == null || output.size() == 0) {
 //                mOutputText.setText("No results returned.");
             } else {
                 output.add(0, "Data retrieved using the Drive API:");
                 Toast.makeText(activity, output.toString(), Toast.LENGTH_SHORT).show();
 //                mOutputText.setText(TextUtils.join("\n", output));
+                activity = null;
             }
         }
 
@@ -255,7 +343,11 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
     }
 
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
-    public static void chooseAccount(Activity activity) {
+    public static void chooseAccount(WhatToDoTask task) {
+        Activity activity = task.getActivity();
+        if (activity == null) {
+            return;
+        }
         if (EasyPermissions.hasPermissions(
                 activity.getBaseContext(), Manifest.permission.GET_ACCOUNTS)) {
 
@@ -263,7 +355,7 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
 
             if (accountName != null) {
                 getDriveCredential().setSelectedAccountName(accountName);
-                getResultsFromApi(activity);
+                getResultsFromApi(task);
             } else {
                 // Start a dialog from which the user can choose an account
                 activity.startActivityForResult(

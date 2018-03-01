@@ -1,46 +1,22 @@
 package com.mindbuilders.cognitivemoodlog;
 
-import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 import com.mindbuilders.cognitivemoodlog.util.utilities;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import static android.app.Activity.RESULT_OK;
-import static com.mindbuilders.cognitivemoodlog.BaseApplication.REQUEST_AUTHORIZATION;
-import static com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper.DATABASE_NAME;
 
 
 /**
@@ -155,18 +131,27 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         RestoreFromBackup.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                signIn();
+                //signIn();
                 //MetadataBuffer buffer = getMetadataBufferList();
-  //              if (buffer != null && buffer.getCount() > 0) {
+                //              if (buffer != null && buffer.getCount() > 0) {
 //                    Metadata md = buffer.get(0);
-                    restoreBackup();
-                    Toast.makeText(getContext(), "Backup Restored", Toast.LENGTH_SHORT).show();
+                restoreBackup();
+              //  Toast.makeText(getContext(), "Backup Restored", Toast.LENGTH_SHORT).show();
 
                 //}
 //                else {
 //                    Toast.makeText(getContext(), "No backup found.", Toast.LENGTH_LONG).show();
 //                    return true;
 //                }
+                return true;
+            }
+        });
+
+        Preference delete = (Preference) findPreference("delete_files");
+        delete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                deleteFiles();
                 return true;
             }
         });
@@ -234,6 +219,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 //    }
 
     private void restoreBackup() {
+        BaseApplication.initGoogleAccountCredential();
+        BaseApplication.getResultsFromApi(new WhatToDoTask(this.getActivity(), String.valueOf(OperationEnum.DOWNLOADFILE)));
 //        final byte[] buffer = new byte[8 * 1024];
 //        final File dbFile = new File((getContext().getDatabasePath("a").getParentFile()), DATABASE_NAME);
 //
@@ -267,11 +254,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
 
-
+    protected void deleteFiles() {
+        BaseApplication.initGoogleAccountCredential();
+        BaseApplication.getResultsFromApi(new WhatToDoTask(this.getActivity(), String.valueOf(OperationEnum.DELETEFILE)));
+    }
 
     protected void signIn() {
         BaseApplication.initGoogleAccountCredential();
-        BaseApplication.getResultsFromApi(this.getActivity());
+        BaseApplication.getResultsFromApi(new WhatToDoTask(this.getActivity(), String.valueOf(OperationEnum.CHECKFORFILE)));
 //        Set<Scope> requiredScopes = new HashSet<>(2);
 //            requiredScopes.add(Drive.SCOPE_APPFOLDER);
 //            BaseApplication.setGoogleSignInAccount(GoogleSignIn.getLastSignedInAccount(this.getActivity()));
@@ -294,7 +284,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 //            BaseApplication.getGoogleSignInClient().signOut();
 //        }
     }
-
 
 
     @Override

@@ -16,4 +16,9 @@
         android:summary="Restore from Google Drive Backup if you've created it previously"
         android:title="Restore from Backup"
         />
+    <Preference
+        android:key="delete_files"
+        android:summary="delete the files"
+        android:title="delete stuff"
+        />
 </PreferenceScreen>

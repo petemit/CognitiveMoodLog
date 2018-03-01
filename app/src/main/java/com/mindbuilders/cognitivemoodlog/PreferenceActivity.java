@@ -83,7 +83,7 @@ public class PreferenceActivity extends AppCompatActivity implements SettingsFra
                     Toast.makeText(this,  "This app requires Google Play Services. Please install " +
                             "Google Play Services on your device and relaunch this app.", Toast.LENGTH_SHORT).show();
                 } else {
-                    BaseApplication.getResultsFromApi(this);
+                    BaseApplication.getResultsFromApi(new WhatToDoTask(this,"logon"));
                 }
                 break;
             case BaseApplication.REQUEST_ACCOUNT_PICKER:
@@ -98,13 +98,13 @@ public class PreferenceActivity extends AppCompatActivity implements SettingsFra
                         editor.putString(BaseApplication.PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
                         BaseApplication.getDriveCredential().setSelectedAccountName(accountName);
-                        BaseApplication.getResultsFromApi(this);
+                        BaseApplication.getResultsFromApi(new WhatToDoTask(this,"logon"));
                     }
                 }
                 break;
             case REQUEST_AUTHORIZATION:
                 if (resultCode == RESULT_OK) {
-                    BaseApplication.getResultsFromApi(this);
+                    BaseApplication.getResultsFromApi(new WhatToDoTask(this,"logon"));
                 }
                 break;
         }

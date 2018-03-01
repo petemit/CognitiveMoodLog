@@ -4,16 +4,8 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
-
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.mindbuilders.cognitivemoodlog.BaseApplication;
 import com.mindbuilders.cognitivemoodlog.CmlDos.CognitiveDistortionobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
@@ -25,11 +17,13 @@ import com.mindbuilders.cognitivemoodlog.CmlDos.troubleshootingobj;
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -550,6 +544,42 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper {
                 "yyyy-MM-dd h:mm a", Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
+    }
+
+    public static void restoreDb(final Context context, ByteArrayOutputStream bos) {
+        final byte[] buffer = new byte[8 * 1024];
+        final File dbFile = new File((context.getDatabasePath("a").getParentFile()), DATABASE_NAME);
+
+
+        FileOutputStream fos = null;
+        InputStream input = null;
+        try {
+            input = new ByteArrayInputStream(bos.toByteArray());
+            fos = new FileOutputStream(dbFile);
+            int bytesRead;
+            while ((bytesRead = input.read(buffer)) != -1) {
+                fos.write(buffer, 0, bytesRead);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (input != null) {
+                try {
+                    input.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public static void backupDb(final Context context) {

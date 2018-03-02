@@ -6,19 +6,13 @@
         android:key="@string/password_protect_key"
         android:summary="Encrypt and protect your log entries with a password"
         android:title="Protect Log Entries" />
-    <CheckBoxPreference
-        android:defaultValue="false"
+    <Preference
         android:key="@string/drive_backup_key"
-        android:summary="Backup current and future log entries using Google Drive account"
+        android:summary="Backup current Log Entries using your Google Drive account (needs Contacts Permissions)"
         android:title="Backup Log Entries" />
     <Preference
         android:key="restore_from_backup"
         android:summary="Restore from Google Drive Backup if you've created it previously"
         android:title="Restore from Backup"
-        />
-    <Preference
-        android:key="delete_files"
-        android:summary="delete the files"
-        android:title="delete stuff"
         />
 </PreferenceScreen>

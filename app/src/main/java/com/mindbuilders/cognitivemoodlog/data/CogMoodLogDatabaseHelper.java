@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -582,92 +583,16 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static void backupDb(final Context context) {
-//        final File dbFile = new File((context.getDatabasePath("a").getParentFile()), DATABASE_NAME);
-//        final Task<DriveFolder> appFolderTask = driveResourceClient.getAppFolder();
-//        final Task<DriveContents> createContentsTask = driveResourceClient.createContents();
-//        Tasks.whenAll(appFolderTask, createContentsTask)
-//                .continueWithTask(new Continuation<Void, Task<DriveFile>>() {
-//                    @Override
-//                    public Task<DriveFile> then(@NonNull Task<Void> task) throws Exception {
-//                        DriveFolder parent = appFolderTask.getResult();
-//                        DriveContents contents = createContentsTask.getResult();
-//
-//                        // Get an output stream for the contents.
-//                        OutputStream outputStream = contents.getOutputStream();
-//
-//                        MetadataChangeSet metadataChangeSet =
-//                                new MetadataChangeSet.Builder()
-//                                        .setMimeType("application/x-sqlite3")
-//                                        .setTitle(DATABASE_NAME)
-//                                        .build();
-//                        try {
-//                            FileInputStream fis = new FileInputStream(dbFile);
-//                            byte[] buffer = new byte[1024];
-//                            try {
-//                                for (int readNum; (readNum = fis.read(buffer)) != -1; ) {
-//                                    outputStream.write(buffer, 0, readNum);
-//                                }
-//                            } catch (IOException e) {
-//                                Log.e("dbhelper", "io exception");
-//                            }
-//                        } catch (FileNotFoundException e) {
-//                            Log.e("dbhelper", "File not found exception");
-//                        }
-//                        return driveResourceClient.createFile(parent, metadataChangeSet, contents);
-//                    }
-//                })
-//                .addOnSuccessListener(new OnSuccessListener<DriveFile>() {
-//                    @Override
-//                    public void onSuccess(DriveFile driveFile) {
-//                        Toast.makeText(context, "file created " + driveFile.getDriveId().encodeToString(), Toast.LENGTH_LONG).show();
-//
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Toast.makeText(context, "file failed to create", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-
-
-//        driveResourceClient
-//                .createContents()
-//                .continueWithTask(
-//                        new Continuation<DriveContents, Task<Void>>() {
-//                            @Override
-//                            public Task<Void> then(@NonNull Task<DriveContents> task) throws Exception {
-//                                return createFileIntentSender(task.getResult(), dbFile);
-//                            }
-//                        })
-//                .addOnFailureListener(
-//                        new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                Log.w("dbhelper", "Failed to create new contents.", e);
-//                            }
-//                        });
+    public static File getDbFile(final Context context) {
+        final File dbFile = new File((context.getDatabasePath("a").getParentFile()), DATABASE_NAME);
+        return dbFile;
     }
-
-//    private static Task<Void> createFileIntentSender(DriveContents result, File dbFile, final Activity activity) {
-//
-//        // Get an output stream for the contents.
-//        OutputStream outputStream = result.getOutputStream();
-//        // Write the bitmap data from it.
-//        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
-//
-//        MetadataChangeSet metadataChangeSet =
-//                new MetadataChangeSet.Builder()
-//                        .setMimeType("application/x-sqlite3")
-//                        .setTitle(DATABASE_NAME)
-//                        .build();
 //        try {
 //            FileInputStream fis = new FileInputStream(dbFile);
 //            byte[] buffer = new byte[1024];
 //            try {
 //                for (int readNum; (readNum = fis.read(buffer)) != -1; ) {
-//                    byteArray.write(buffer, 0, readNum);
+//                    outputStream.write(buffer, 0, readNum);
 //                }
 //            } catch (IOException e) {
 //                Log.e("dbhelper", "io exception");
@@ -675,23 +600,84 @@ public class CogMoodLogDatabaseHelper extends SQLiteOpenHelper {
 //        } catch (FileNotFoundException e) {
 //            Log.e("dbhelper", "File not found exception");
 //        }
-//
-//        CreateFileActivityOptions createFileActivityOptions =
-//                new CreateFileActivityOptions.Builder()
-//                        .setInitialMetadata(metadataChangeSet)
-//                        .setInitialDriveContents(result)
-//                        .build();
-//
-//
-//        return BaseApplication.getDriveClient()
-//                .newCreateFileActivityIntentSender(createFileActivityOptions)
-//                .continueWith(
-//                        new Continuation<IntentSender, Void>() {
-//                            @Override
-//                            public Void then(@NonNull Task<IntentSender> task) throws Exception {
-//                                return null;
-//                            }
-//                        }
-//                );
+//        return driveResourceClient.createFile(parent, metadataChangeSet, contents);
 //    }
+//})
+//        .addOnSuccessListener(new OnSuccessListener<DriveFile>(){
+//@Override
+//public void onSuccess(DriveFile driveFile){
+//        Toast.makeText(context,"file created "+driveFile.getDriveId().encodeToString(),Toast.LENGTH_LONG).show();
+//
+//        }
+//        })
+//        .addOnFailureListener(new OnFailureListener(){
+//@Override
+//public void onFailure(@NonNull Exception e){
+//        Toast.makeText(context,"file failed to create",Toast.LENGTH_SHORT).show();
+//        }
+//        });
+//
+//
+//        driveResourceClient
+//        .createContents()
+//        .continueWithTask(
+//        new Continuation<DriveContents, Task<Void>>(){
+//@Override
+//public Task<Void> then(@NonNull Task<DriveContents> task)throws Exception{
+//        return createFileIntentSender(task.getResult(),dbFile);
+//        }
+//        })
+//        .addOnFailureListener(
+//        new OnFailureListener(){
+//@Override
+//public void onFailure(@NonNull Exception e){
+//        Log.w("dbhelper","Failed to create new contents.",e);
+//        }
+//        });
+//        }
+//
+////    private static Task<Void> createFileIntentSender(DriveContents result, File dbFile, final Activity activity) {
+////
+////        // Get an output stream for the contents.
+////        OutputStream outputStream = result.getOutputStream();
+////        // Write the bitmap data from it.
+////        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+////
+////        MetadataChangeSet metadataChangeSet =
+////                new MetadataChangeSet.Builder()
+////                        .setMimeType("application/x-sqlite3")
+////                        .setTitle(DATABASE_NAME)
+////                        .build();
+////        try {
+////            FileInputStream fis = new FileInputStream(dbFile);
+////            byte[] buffer = new byte[1024];
+////            try {
+////                for (int readNum; (readNum = fis.read(buffer)) != -1; ) {
+////                    byteArray.write(buffer, 0, readNum);
+////                }
+////            } catch (IOException e) {
+////                Log.e("dbhelper", "io exception");
+////            }
+////        } catch (FileNotFoundException e) {
+////            Log.e("dbhelper", "File not found exception");
+////        }
+////
+////        CreateFileActivityOptions createFileActivityOptions =
+////                new CreateFileActivityOptions.Builder()
+////                        .setInitialMetadata(metadataChangeSet)
+////                        .setInitialDriveContents(result)
+////                        .build();
+////
+////
+////        return BaseApplication.getDriveClient()
+////                .newCreateFileActivityIntentSender(createFileActivityOptions)
+////                .continueWith(
+////                        new Continuation<IntentSender, Void>() {
+////                            @Override
+////                            public Void then(@NonNull Task<IntentSender> task) throws Exception {
+////                                return null;
+////                            }
+////                        }
+////                );
+////    }
 }

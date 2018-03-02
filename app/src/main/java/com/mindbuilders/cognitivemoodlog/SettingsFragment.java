@@ -1,8 +1,10 @@
 package com.mindbuilders.cognitivemoodlog;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.preference.CheckBoxPreference;
@@ -17,6 +19,7 @@ import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 import com.mindbuilders.cognitivemoodlog.util.utilities;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -30,7 +33,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private String key = "";
     boolean changeResult = true;
     LoadingIndicatorCallback callback;
-    CheckBoxPreference googleDrivePref;
+    Preference googleDrivePref;
     CountDownLatch latch = new CountDownLatch(1);
     /**
      * Request code for google sign-in
@@ -110,19 +113,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
-        googleDrivePref = (CheckBoxPreference) findPreference(getString(R.string.drive_backup_key));
-        googleDrivePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+        googleDrivePref = (Preference) findPreference(getString(R.string.drive_backup_key));
+        googleDrivePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                if ((boolean) newValue) {
-                    signIn();
-                    googleDrivePref.setChecked(true);
-                } else {
-                    googleDrivePref.setChecked(false);
-                    // disable backup
-                    signOut();
-                }
-                return false;
+            public boolean onPreferenceClick(Preference preference) {
+                backupDb();
+                return true;
             }
         });
 
@@ -136,7 +132,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 //              if (buffer != null && buffer.getCount() > 0) {
 //                    Metadata md = buffer.get(0);
                 restoreBackup();
-              //  Toast.makeText(getContext(), "Backup Restored", Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(getContext(), "Backup Restored", Toast.LENGTH_SHORT).show();
 
                 //}
 //                else {
@@ -147,142 +143,35 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
-        Preference delete = (Preference) findPreference("delete_files");
-        delete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                deleteFiles();
-                return true;
-            }
-        });
-    }
-//
-//    private MetadataBuffer getMetadataBufferList() {
-//
-//        BaseApplication.setMetaDataBuffer(null);
-//        MetadataBuffer metadata = null;
-//
-////todo  I need this to use callbacks because I've got timing issues.
-//        final Query query = new Query.Builder()
-//                .addFilter(Filters.eq(SearchableField.TITLE, DATABASE_NAME)).build();
-//
-//        Task<DriveFolder> task = BaseApplication.getDriveResourceClient().getAppFolder();
-//        task.addOnSuccessListener(new OnSuccessListener<DriveFolder>() {
+
+        //GREAT for testing...
+//        Preference delete = (Preference) findPreference("delete_files");
+//        delete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 //            @Override
-//            public void onSuccess(DriveFolder driveFolder) {
-//                BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
-//                Task<MetadataBuffer> queryTask = BaseApplication.getDriveResourceClient().queryChildren(driveFolder, query);
-//
-//                queryTask.addOnSuccessListener(new OnSuccessListener<MetadataBuffer>() {
-//                    @Override
-//                    public void onSuccess(MetadataBuffer buffer) {
-//                        BaseApplication.setMetaDataBuffer(buffer);
-//                    }
-//                });
+//            public boolean onPreferenceClick(Preference preference) {
+//                deleteFiles();
+//                return true;
 //            }
 //        });
-//        callback.showLoading();
-//        new myAsyncTask().execute();
-//
-//        try {
-//            latch.await(30, TimeUnit.SECONDS);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return BaseApplication.getMetaDataBuffer();
-//    }
+    }
 
-//    private class myAsyncTask extends AsyncTask<Void, Void, Void> {
-//        final Handler handler = new Handler();
-//        final Runnable runnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                if (BaseApplication.getMetaDataBuffer() == null) {
-//                    handler.postDelayed(this, 1000);
-//                }
-//            }
-//        };
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            handler.postDelayed(runnable, 1000);
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//            latch.countDown();
-//            callback.hideLoading();
-//        }
-//    }
 
     private void restoreBackup() {
         BaseApplication.initGoogleAccountCredential();
-        BaseApplication.getResultsFromApi(new WhatToDoTask(this.getActivity(), String.valueOf(OperationEnum.DOWNLOADFILE)));
-//        final byte[] buffer = new byte[8 * 1024];
-//        final File dbFile = new File((getContext().getDatabasePath("a").getParentFile()), DATABASE_NAME);
-//
-//        DriveFile file = getDriveFile(md);
-//
-//        Task<DriveContents> openTask = BaseApplication.getDriveResourceClient().openFile(file, DriveFile.MODE_READ_ONLY);
-//        openTask.continueWithTask(new Continuation<DriveContents, Task<Void>>() {
-//            @Override
-//            public Task<Void> then(@NonNull Task<DriveContents> task) throws Exception {
-//                DriveContents contents = task.getResult();
-//                FileOutputStream fos = null;
-//                InputStream input = null;
-//                try {
-//                    input = contents.getInputStream();
-//                    fos = new FileOutputStream(dbFile);
-//                    int bytesRead;
-//                    while ((bytesRead = input.read(buffer)) != -1) {
-//                        fos.write(buffer, 0, bytesRead);
-//                    }
-//                } finally {
-//                    if (fos != null) {
-//                        fos.close();
-//                    }
-//                    if (input != null) {
-//                        input.close();
-//                    }
-//                }
-//                return null;
-//            }
-//        });
+        new RestoreAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this.getActivity());
+
     }
 
 
     protected void deleteFiles() {
         BaseApplication.initGoogleAccountCredential();
-        BaseApplication.getResultsFromApi(new WhatToDoTask(this.getActivity(), String.valueOf(OperationEnum.DELETEFILE)));
+        BaseApplication.getResultsFromApi(new WhatToDoTask(this.getActivity(), String.valueOf(OperationEnum.DELETEFILE), null));
     }
 
-    protected void signIn() {
+
+    protected void backupDb() {
         BaseApplication.initGoogleAccountCredential();
-        BaseApplication.getResultsFromApi(new WhatToDoTask(this.getActivity(), String.valueOf(OperationEnum.CHECKFORFILE)));
-//        Set<Scope> requiredScopes = new HashSet<>(2);
-//            requiredScopes.add(Drive.SCOPE_APPFOLDER);
-//            BaseApplication.setGoogleSignInAccount(GoogleSignIn.getLastSignedInAccount(this.getActivity()));
-//            if (BaseApplication.getGoogleSignInAccount() != null &&
-//                    BaseApplication.getGoogleSignInAccount().getGrantedScopes().containsAll(requiredScopes)) {
-//                initializeDriveClient(BaseApplication.getGoogleSignInAccount());
-//            } else {
-//                GoogleSignInOptions signInOptions =
-//                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                                .requestScopes(Drive.SCOPE_APPFOLDER)
-//                                .build();
-//                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this.getActivity(), signInOptions);
-//                startActivityForResult(googleSignInClient.getSignInIntent(), REQUEST_CODE_SIGN_IN);
-//        }
-    }
-
-
-    protected void signOut() {
-//        if (BaseApplication.getGoogleSignInClient() != null) {
-//            BaseApplication.getGoogleSignInClient().signOut();
-//        }
+        new BackupAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this.getActivity());
     }
 
 
@@ -296,6 +185,142 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         void showLoading();
 
         void hideLoading();
+    }
+
+    class BackupAsyncTask extends AsyncTask<Activity, Void, Void> implements MyProcessCallback {
+        Activity activity;
+        int currentStatus;
+        AlertDialog.Builder builder;
+        CountDownLatch latch = new CountDownLatch(1);
+        MyProcessCallback needACallback = this;
+
+        @Override
+        protected Void doInBackground(Activity... params) {
+            if (params[0] != null) {
+                activity = params[0];
+                builder = new AlertDialog.Builder(activity);
+                BaseApplication.getResultsFromApi(new WhatToDoTask((activity), String.valueOf(OperationEnum.CHECKFORFILE), needACallback));
+                try {
+                    latch.await(10, TimeUnit.SECONDS);
+                    latch = new CountDownLatch(1);
+                    if (currentStatus == DriveReturnCodes.FOUNDFILE) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                builder.setTitle("Delete Existing Backup")
+                                        .setMessage("Existing DB Backup Found, do you want to Overwrite this DB?  Existing Data Will be Lost")
+                                        .setPositiveButton("Yes, Overwrite", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                BaseApplication.getResultsFromApi(new WhatToDoTask((activity), String.valueOf(OperationEnum.DELETEFILE), needACallback));
+                                            }
+                                        })
+                                        .setNegativeButton("No, do not Overwrite", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                latch.countDown();
+                                                return;
+                                            }
+                                        }).show();
+                            }
+                        });
+
+                        latch.await();
+                        latch = new CountDownLatch(1);
+                    }
+                    if (currentStatus == DriveReturnCodes.FILESDELETED || currentStatus == DriveReturnCodes.NOFILEFOUND) {
+                        BaseApplication.getResultsFromApi(new WhatToDoTask((activity), String.valueOf(OperationEnum.INSERTFILE), needACallback));
+                        latch.await(10, TimeUnit.SECONDS);
+                        if (currentStatus == DriveReturnCodes.DBBACKEDUP) {
+                            return null;
+                        }
+                    }
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        public void finishedTask(int returnCode) {
+            currentStatus = returnCode;
+            latch.countDown();
+        }
+    }
+
+
+    class RestoreAsyncTask extends AsyncTask<Activity, Void, Void> implements MyProcessCallback {
+        Activity activity;
+        int currentStatus;
+        AlertDialog.Builder builder;
+        CountDownLatch latch = new CountDownLatch(1);
+        MyProcessCallback needACallback = this;
+
+        @Override
+        protected Void doInBackground(Activity... params) {
+            if (params[0] != null) {
+                activity = params[0];
+                builder = new AlertDialog.Builder(activity);
+                BaseApplication.getResultsFromApi(new WhatToDoTask((activity), String.valueOf(OperationEnum.CHECKFORFILE), needACallback));
+                try {
+                    latch.await(10, TimeUnit.SECONDS);
+                    latch = new CountDownLatch(1);
+                    if (currentStatus == DriveReturnCodes.FOUNDFILE) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                builder.setTitle("Found Existing Backup")
+                                        .setMessage("DB Backup Found on Your Google Drive, do you want to Overwrite your local DB?  Existing Data Will be Lost")
+                                        .setPositiveButton("Yes, Restore Backup", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                BaseApplication.getResultsFromApi(new WhatToDoTask((activity), String.valueOf(OperationEnum.DOWNLOADFILE), needACallback));
+                                            }
+                                        })
+                                        .setNegativeButton("No, keep Existing Data", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                latch.countDown();
+                                                return;
+                                            }
+                                        }).show();
+                            }
+                        });
+                        latch.await();
+                        latch = new CountDownLatch(1);
+                    }
+//                    if (currentStatus == DriveReturnCodes.FILESDELETED || currentStatus == DriveReturnCodes.NOFILEFOUND) {
+//                        BaseApplication.getResultsFromApi(new WhatToDoTask((activity), String.valueOf(OperationEnum.INSERTFILE),needACallback));
+//                        latch.await(10, TimeUnit.SECONDS);
+//                        if (currentStatus == DriveReturnCodes.DBBACKEDUP) {
+//                            return null;
+//                        }
+//                    }
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        public void finishedTask(int returnCode) {
+            currentStatus = returnCode;
+            latch.countDown();
+        }
     }
 
 

@@ -17,6 +17,7 @@ import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -31,6 +32,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
@@ -54,7 +56,7 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     public static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = {DriveScopes.DRIVE_METADATA_READONLY, DriveScopes.DRIVE_APPDATA};
+    private static final String[] SCOPES = {DriveScopes.DRIVE_APPDATA};
 
     public static GoogleAccountCredential getDriveCredential() {
         return driveCredential;
@@ -163,10 +165,12 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
      * An asynchronous task that handles the Drive API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
      */
-    private static class MakeRequestTask extends AsyncTask<WhatToDoTask, Void, List<String>> {
+    private static class MakeRequestTask extends AsyncTask<WhatToDoTask, Void, Integer> {
         private com.google.api.services.drive.Drive mService = null;
         private Exception mLastError = null;
         private Activity activity;
+        private WhatToDoTask task;
+
 
         MakeRequestTask(GoogleAccountCredential credential) {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
@@ -183,10 +187,12 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
          * @param params no parameters needed for this task.
          */
         @Override
-        protected List<String> doInBackground(WhatToDoTask... params) {
+        protected Integer doInBackground(WhatToDoTask... params) {
             if (params[0] != null) {
                 if (params[0] instanceof  WhatToDoTask) {
-                    this.activity = params[0].getActivity();
+                    task = params[0];
+                    this.activity = task.getActivity();
+
                 }
             }
             else {
@@ -200,6 +206,8 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
                         return deleteFiles();
                     case "DOWNLOADFILE":
                         return downloadFile();
+                    case "INSERTFILE":
+                        return insertFile();
                     default:
                         return null;
                 }
@@ -218,81 +226,82 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
          * found.
          * @throws IOException
          */
-        private List<String> checkForFile() throws IOException {
+        private Integer checkForFile() throws IOException {
             // Get a list of up to 10 files.
-            List<String> fileInfo = new ArrayList<String>();
             FileList files = mService.files().list()
                     .setSpaces("appDataFolder")
-                    .setFields("nextPageToken, files(id, name)")
+                    .setFields("nextPageToken, files(id, name, trashed)")
                     .setPageSize(10)
                     .execute();
             if (files != null) {
                 for (File file : files.getFiles()) {
-                    if (!file.getTrashed()) {
-                        fileInfo.add(file.getName() + " " + file.getId());
+                    if (null == file.getTrashed() || !file.getTrashed()) {
+                        return DriveReturnCodes.FOUNDFILE;
+                     //   fileInfo.add(file.getName() + " " + file.getId());
                     }
                 }
+                return DriveReturnCodes.NOFILEFOUND;
+            } else {
+                return DriveReturnCodes.EMPTYSET;
             }
-
-            return fileInfo;
         }
 
-        private List<String> insertFile() throws IOException {
-            // Get a list of up to 10 files.
-            List<String> fileInfo = new ArrayList<String>();
+        private Integer insertFile() throws IOException {
+
+            File fileMetaData = new File();
+            fileMetaData.setName(CogMoodLogDatabaseHelper.DATABASE_NAME);
+            fileMetaData.setParents(Collections.singletonList("appDataFolder"));
+            java.io.File dbFilePath = CogMoodLogDatabaseHelper.getDbFile(activity.getBaseContext());
+            FileContent mediaContent = new FileContent("application/x-sqlite3",dbFilePath);
+            mService.files().create(fileMetaData, mediaContent)
+                    .setFields("id")
+                    .execute();
+            return DriveReturnCodes.DBBACKEDUP;
+        }
+
+        private Integer downloadFile() throws IOException {
+
             FileList files = mService.files().list()
                     .setSpaces("appDataFolder")
                     .setFields("nextPageToken, files(id, name)")
                     .setPageSize(10)
                     .execute();
             if (files != null) {
-                for (File file : files.getFiles()) {
-
+                ArrayList<File> notDeletedfiles = new ArrayList<>();
+                for (File f:files.getFiles()) {
+                    if (!f.getTrashed() && f.getName().equals(CogMoodLogDatabaseHelper.DATABASE_NAME)) {
+                        notDeletedfiles.add(f);
+                    }
                 }
-                fileInfo.add("files deleted");
-                return fileInfo;
-            }
 
-            return fileInfo;
-        }
-
-        private List<String> downloadFile() throws IOException {
-            // Get a list of up to 10 files.
-            List<String> fileInfo = new ArrayList<String>();
-            FileList files = mService.files().list()
-                    .setSpaces("appDataFolder")
-                    .setFields("nextPageToken, files(id, name)")
-                    .setPageSize(10)
-                    .execute();
-            if (files != null) {
-                if (files.getFiles().get(0).getName().equals(CogMoodLogDatabaseHelper.DATABASE_NAME)) {
+                if (notDeletedfiles.size() > 0 ) {
                     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    mService.files().get(files.getFiles().get(0).getId()).executeMediaAndDownloadTo(outputStream);
+                    mService.files().get(notDeletedfiles.get(0).getId()).executeMediaAndDownloadTo(outputStream);
                     CogMoodLogDatabaseHelper.restoreDb(myContext,outputStream);
-                    fileInfo.add("File Downloaded");
-                    return fileInfo;
+                    return DriveReturnCodes.BACKUPRESTORED;
                 }
             }
-            return fileInfo;
+            return DriveReturnCodes.EMPTYSET;
         }
 
-        private List<String> deleteFiles() throws IOException {
-            // Get a list of up to 10 files.
-            List<String> fileInfo = new ArrayList<String>();
+        private Integer deleteFiles() throws IOException {
+
             FileList files = mService.files().list()
                     .setSpaces("appDataFolder")
-                    .setFields("nextPageToken, files(id, name)")
+                    .setFields("nextPageToken, files(id, name, trashed)")
                     .setPageSize(10)
                     .execute();
             if (files != null) {
                 for (File file : files.getFiles()) {
-                    file.setTrashed(true);
+                    File newContent = new File();
+                    newContent.setTrashed(true);
+                    mService.files().update(file.getId(), newContent).execute();
+                 //  mService.files().delete(file.getId());
                 }
-                fileInfo.add("files deleted");
-                return fileInfo;
+                return DriveReturnCodes.FILESDELETED;
             }
 
-            return fileInfo;
+            return DriveReturnCodes.EMPTYSET;
         }
 
 
@@ -304,19 +313,20 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
         }
 
         @Override
-        protected void onPostExecute(List<String> output) {
-
+        protected void onPostExecute(Integer output) {
             if (activity instanceof PreferenceActivity) {
                 ((PreferenceActivity) activity).hideLoading();
             }
-
-            if (output == null || output.size() == 0) {
-//                mOutputText.setText("No results returned.");
-            } else {
-                output.add(0, "Data retrieved using the Drive API:");
-                Toast.makeText(activity, output.toString(), Toast.LENGTH_SHORT).show();
-//                mOutputText.setText(TextUtils.join("\n", output));
-                activity = null;
+            if (output != null ) {
+                if (output == DriveReturnCodes.ERROR || output == DriveReturnCodes.EMPTYSET) {
+                    Toast.makeText(activity, DriveReturnCodes.getMessage(output), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(activity, DriveReturnCodes.getMessage(output), Toast.LENGTH_SHORT).show();
+                    activity = null;
+                }
+            }
+            if (task != null && task.getCallback() != null) {
+                task.getCallback().finishedTask(output);
             }
         }
 
@@ -359,8 +369,10 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
             } else {
                 // Start a dialog from which the user can choose an account
                 activity.startActivityForResult(
-                        getDriveCredential().newChooseAccountIntent(),
+                        getDriveCredential().newChooseAccountIntent().putExtra("op",task.getOp()),
                         REQUEST_ACCOUNT_PICKER);
+
+
             }
         } else {
             // Request the GET_ACCOUNTS permission via a user dialog
@@ -393,6 +405,5 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
     }
 }

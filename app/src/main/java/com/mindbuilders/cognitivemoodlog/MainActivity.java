@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -215,6 +216,15 @@ public class MainActivity extends AppCompatActivity {
             startActivity(settingsIntent);
             return true;
         }
+
+        if (id == R.id.action_privacy_policy) {
+            String url = "https://sites.google.com/view/cognitivemoodlogprivacypolicy";
+            Intent privacyPolicyIntent = new Intent(Intent.ACTION_VIEW);
+            privacyPolicyIntent.setData(Uri.parse(url));
+            startActivity(privacyPolicyIntent);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

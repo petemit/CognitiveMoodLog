@@ -14,10 +14,14 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.batch.BatchRequest;
+import com.google.api.client.googleapis.batch.json.JsonBatchCallback;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.client.googleapis.json.GoogleJsonError;
 import com.google.api.client.http.FileContent;
+import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -25,15 +29,16 @@ import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import com.google.api.services.drive.model.Permission;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -45,11 +50,12 @@ import static net.sqlcipher.database.SQLiteDatabase.loadLibs;
  * Created by Peter on 12/4/2017.
  */
 
-public class BaseApplication extends Application implements EasyPermissions.PermissionCallbacks {
+public class BaseApplication extends Application{
     public static Context myContext;
 
     private static GoogleAccountCredential driveCredential;
     private static CogMoodLogDatabaseHelper dbHelper;
+    private static CountDownLatch latch;
     public static String passwordHash = "";
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -57,6 +63,10 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     public static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = {DriveScopes.DRIVE_APPDATA};
+
+    public BaseApplication() {
+        setLatch(new CountDownLatch(1));
+    }
 
     public static GoogleAccountCredential getDriveCredential() {
         return driveCredential;
@@ -80,9 +90,11 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
     }
 
     public static void initGoogleAccountCredential() {
-        setDriveCredential(GoogleAccountCredential.usingOAuth2(
-                myContext, Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff()));
+        if (BaseApplication.getDriveCredential() == null ) {
+            setDriveCredential(GoogleAccountCredential.usingOAuth2(
+                    myContext, Arrays.asList(SCOPES))
+                    .setBackOff(new ExponentialBackOff()));
+        }
     }
 
     /**
@@ -148,7 +160,7 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
         return (networkInfo != null && networkInfo.isConnected());
     }
 
-    public static void getResultsFromApi(WhatToDoTask task) {
+    public static void getResultsFromApi(final WhatToDoTask task) {
         if (task.getActivity() != null && task.getActivity() instanceof Activity)
         if (!isGooglePlayServicesAvailable(task.getActivity().getBaseContext())) {
             acquireGooglePlayServices(task);
@@ -157,8 +169,25 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
         } else if (!isDeviceOnline(task.getActivity().getBaseContext())) {
 
         } else {
+            if (task.getActivity() instanceof PreferenceActivity) {
+                task.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((PreferenceActivity) task.getActivity()).showLoading();
+                    }
+                });
+
+            }
             new MakeRequestTask(getDriveCredential()).execute(task);
         }
+    }
+
+    public static CountDownLatch getLatch() {
+        return latch;
+    }
+
+    public static void setLatch(CountDownLatch lat) {
+        latch = lat;
     }
 
     /**
@@ -263,7 +292,7 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
 
             FileList files = mService.files().list()
                     .setSpaces("appDataFolder")
-                    .setFields("nextPageToken, files(id, name)")
+                    .setFields("nextPageToken, files(id, name, trashed)")
                     .setPageSize(10)
                     .execute();
             if (files != null) {
@@ -292,12 +321,32 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
                     .setPageSize(10)
                     .execute();
             if (files != null) {
+                JsonBatchCallback<File> callback = new JsonBatchCallback<File>() {
+                    @Override
+                    public void onSuccess(File file,
+                                          HttpHeaders responseHeaders)
+                            throws IOException {
+                        System.out.println("Permission ID: " + file.getId());
+                    }
+
+                    @Override
+                    public void onFailure(GoogleJsonError e,
+                                          HttpHeaders responseHeaders)
+                            throws IOException {
+                        // Handle error
+                        System.err.println(e.getMessage());
+                    }
+                };
+
+
+                BatchRequest batch = mService.batch();
                 for (File file : files.getFiles()) {
                     File newContent = new File();
                     newContent.setTrashed(true);
-                    mService.files().update(file.getId(), newContent).execute();
+                    mService.files().update(file.getId(), newContent).queue(batch,callback);
                  //  mService.files().delete(file.getId());
                 }
+                batch.execute();
                 return DriveReturnCodes.FILESDELETED;
             }
 
@@ -307,9 +356,7 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
 
         @Override
         protected void onPreExecute() {
-            if (activity instanceof PreferenceActivity) {
-                ((PreferenceActivity) activity).showLoading();
-            }
+
         }
 
         @Override
@@ -354,33 +401,68 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
 
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
     public static void chooseAccount(WhatToDoTask task) {
-        Activity activity = task.getActivity();
-        if (activity == null) {
-            return;
-        }
-        if (EasyPermissions.hasPermissions(
-                activity.getBaseContext(), Manifest.permission.GET_ACCOUNTS)) {
+        new GetDrivePermissionsAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,task);
 
-            String accountName = activity.getPreferences(Context.MODE_PRIVATE).getString(PREF_ACCOUNT_NAME, null);
 
-            if (accountName != null) {
-                getDriveCredential().setSelectedAccountName(accountName);
-                getResultsFromApi(task);
+    }
+
+    public static class GetDrivePermissionsAsyncTask extends  AsyncTask<WhatToDoTask, Void, Void> {
+        WhatToDoTask task;
+
+        @Override
+        protected Void doInBackground(WhatToDoTask... whatToDoTasks) {
+            if (whatToDoTasks != null) {
+                task = whatToDoTasks[0];
             } else {
-                // Start a dialog from which the user can choose an account
-                activity.startActivityForResult(
-                        getDriveCredential().newChooseAccountIntent().putExtra("op",task.getOp()),
-                        REQUEST_ACCOUNT_PICKER);
+                return null;
+            }
+            Activity activity = task.getActivity();
+            if (activity == null) {
+                return null;
+            }
+            if (EasyPermissions.hasPermissions(
+                    activity.getBaseContext(), Manifest.permission.GET_ACCOUNTS)) {
 
+                String accountName = activity.getPreferences(Context.MODE_PRIVATE).getString(PREF_ACCOUNT_NAME, null);
+
+                if (accountName != null) {
+                    getDriveCredential().setSelectedAccountName(accountName);
+                    getResultsFromApi(task);
+                } else {
+                    // Start a dialog from which the user can choose an account
+
+                    activity.startActivityForResult(
+                            getDriveCredential().newChooseAccountIntent().putExtra("op",task.getOp()),
+                            REQUEST_ACCOUNT_PICKER);
+                    try {
+                        BaseApplication.getLatch().await();
+                        BaseApplication.setLatch(new CountDownLatch(1));
+                        getResultsFromApi(task);
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                }
+            } else {
+                // Request the GET_ACCOUNTS permission via a user dialog
+                EasyPermissions.requestPermissions(
+                        activity,
+                        "This app needs to access your Google account (via Contacts).",
+                        REQUEST_PERMISSION_GET_ACCOUNTS,
+                        Manifest.permission.GET_ACCOUNTS);
+                try {
+                    BaseApplication.getLatch().await();
+                    BaseApplication.setLatch(new CountDownLatch(1));
+                    getResultsFromApi(task);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
             }
-        } else {
-            // Request the GET_ACCOUNTS permission via a user dialog
-            EasyPermissions.requestPermissions(
-                    activity,
-                    "This app needs to access your Google account (via Contacts).",
-                    REQUEST_PERMISSION_GET_ACCOUNTS,
-                    Manifest.permission.GET_ACCOUNTS);
+            return null;
         }
     }
 
@@ -392,18 +474,4 @@ public class BaseApplication extends Application implements EasyPermissions.Perm
         BaseApplication.dbHelper = dbHelper;
     }
 
-
-    @Override
-    public void onPermissionsGranted(int requestCode, List<String> perms) {
-
-    }
-
-    @Override
-    public void onPermissionsDenied(int requestCode, List<String> perms) {
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    }
 }

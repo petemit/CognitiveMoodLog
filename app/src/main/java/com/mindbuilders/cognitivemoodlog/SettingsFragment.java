@@ -144,15 +144,29 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
 
-        //GREAT for testing...
-//        Preference delete = (Preference) findPreference("delete_files");
-//        delete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-//            @Override
-//            public boolean onPreferenceClick(Preference preference) {
-//                deleteFiles();
-//                return true;
-//            }
-//        });
+        Preference delete = (Preference) findPreference("delete_files");
+        delete.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Delete Online Backup")
+                        .setMessage("Are you sure you want delete your online backup?  Data will be lost")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                deleteFiles();
+                            }
+                        })
+                        .setNegativeButton("No, I do not want to delete my online Backup", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                return;
+                            }
+                        }).show();
+
+                return true;
+            }
+        });
     }
 
 
@@ -295,6 +309,30 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         });
                         latch.await();
                         latch = new CountDownLatch(1);
+                        if (currentStatus == DriveReturnCodes.BACKUPRESTORED) {
+                            activity.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(activity, "Restore Complete, restarting app", Toast.LENGTH_SHORT).show();
+                                    activity.finish();
+                                }
+                            });
+                        }
+
+                    }
+                    if (currentStatus == DriveReturnCodes.NOFILEFOUND) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                builder.setTitle("No Backup Found")
+                                        .setMessage("No DB Backup Found on Your Google Drive")
+                                        .setNegativeButton("Okay", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                            }
+                                        }).show();
+                            }
+                        });
                     }
 //                    if (currentStatus == DriveReturnCodes.FILESDELETED || currentStatus == DriveReturnCodes.NOFILEFOUND) {
 //                        BaseApplication.getResultsFromApi(new WhatToDoTask((activity), String.valueOf(OperationEnum.INSERTFILE),needACallback));

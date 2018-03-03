@@ -101,6 +101,8 @@ public class ReviewActivity extends AppCompatActivity {
                Toast.makeText(ReviewActivity.this,"Logentry Saved",Toast.LENGTH_LONG).show();
                Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
                startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
+
             }
         });
 

@@ -7,13 +7,13 @@ android {
         applicationId "com.mindbuilders.cognitivemoodlog"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 10
-        versionName "1.25"
+        versionCode 12
+        versionName "1.30"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

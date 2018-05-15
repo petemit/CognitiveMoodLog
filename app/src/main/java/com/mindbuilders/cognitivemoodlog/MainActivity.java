@@ -62,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
 //delete the DB on startup so we can make sure it's created right.
         //       getBaseContext().deleteDatabase("CognitiveMoodLog.db");
 
-
         setSupportActionBar(toolbar);
         //Fantastic way to browse your database when the app is running.
         // Stetho.initializeWithDefaults(this);
@@ -231,6 +230,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void openCreateNewLogEntry(View view) {
         Intent intent = new Intent(this, CreateNewLogEntryActivity.class);
+        BaseApplication.thoughtobjs = null;
+        BaseApplication.emotionobjs = null;
+        BaseApplication.thought_cognitivedistortionobjs = null;
         //  EditText editText = (EditText) findViewById(R.id.editMessage1);
         //  String message = editText.getText().toString();
         // intent.putExtra(EXTRA_MESSAGE, message);

@@ -13,6 +13,7 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.mindbuilders.cognitivemoodlog.BaseApplication;
 import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
 import com.mindbuilders.cognitivemoodlog.CreateNewLogEntryActivity;
 import com.mindbuilders.cognitivemoodlog.R;
@@ -31,7 +32,6 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
     private Cursor cursor;
     net.sqlcipher.database.SQLiteDatabase db;
     private Context context;
-    private List<emotionobj> emotionList;
     EmotionRVAdapterListener mEmotionAddListener;
     Activity activity;
 
@@ -52,7 +52,7 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.emotion_listitem,parent,false);
         EmotionViewHolder viewHolder=new EmotionViewHolder(view);
-        setEmotionList(((CreateNewLogEntryActivity)activity).getEmotionobjList());
+
         try {
             mEmotionAddListener = (EmotionRVAdapterListener) context;
 
@@ -75,13 +75,6 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
         return emotioncategorycount;
     }
 
-    public List<emotionobj> getEmotionList() {
-        return emotionList;
-    }
-
-    public void setEmotionList(List<emotionobj> emotionList) {
-        this.emotionList = emotionList;
-    }
 
     class EmotionViewHolder extends RecyclerView.ViewHolder {
         TextView listItemTextView;
@@ -91,30 +84,38 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
         public EmotionViewHolder(final View itemView) {
             super(itemView);
             listItemTextView=(TextView) itemView.findViewById(R.id.emotioncategoryitem);
+            listItemTextView.setId(getAdapterPosition());
             listItemRadioGroup=(RadioGroup) itemView.findViewById(R.id.emotionradiogroup);
+            listItemRadioGroup.setId(getAdapterPosition());
             seekbar=(SeekBar)itemView.findViewById(R.id.emotionstrengthseekbar);
+            seekbar.setId(getAdapterPosition());
 
             listItemRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(RadioGroup group, int checkedId) {
                     //todo link this to the emotion category so if you get another click in the same category it doesn't add it twice.
-                    emotionobj emo = new emotionobj();
+                    String name = ((RadioButton) (group.findViewById(group.getCheckedRadioButtonId()))).getText().toString();
+                    String categoryId = String.valueOf((group.findViewById(group.getCheckedRadioButtonId())).getTag());
+                    emotionobj emo = findEmotionObjByNameAndCatId(name, categoryId);
+                    if (emo == null) {
+                        emo = new emotionobj();
+                    }
                     emo.setId(checkedId);
-                    emo.setName(((RadioButton) (group.findViewById(group.getCheckedRadioButtonId()))).getText().toString());
-                    emo.setEmotioncategoryid((Integer) ((RadioButton) (group.findViewById(group.getCheckedRadioButtonId()))).getTag());
+                    emo.setName(name);
+                    emo.setEmotioncategoryid(Integer.parseInt(categoryId));
                     seekbar.setTag(checkedId);
 
-                    if (getEmotionList().isEmpty())
+                    if (BaseApplication.emotionobjs.isEmpty())
                     {
-                        getEmotionList().add(emo);
+                        BaseApplication.emotionobjs.add(emo);
                     }
                     int index=0;
-                    ArrayList<emotionobj> replacementlist = new ArrayList<emotionobj>(getEmotionList());
+                  //  ArrayList<emotionobj> replacementlist = new ArrayList<emotionobj>(BaseApplication.emotionobjs);
                     RadioButton tagbutton= ((RadioButton) (group.findViewById(group.getCheckedRadioButtonId())));
                     int tagint = (Integer)tagbutton.getTag();
-                    for (emotionobj emoobj: replacementlist) {
+                    for (emotionobj emoobj: BaseApplication.emotionobjs) {
                     if(emoobj.getEmotioncategoryid()==tagint){
-                        getEmotionList().set(index,emo);
+                        BaseApplication.emotionobjs.set(index,emo);
                         emo.setIsaddedtoreview(true);
 
                     }
@@ -124,7 +125,7 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
                         index++;
                    }
                     if (!emo.getIsaddedtoreview()){
-                        getEmotionList().add(emo);
+                        BaseApplication.emotionobjs.add(emo);
                     }
 
 
@@ -145,7 +146,7 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
-                    for (emotionobj emo: getEmotionList()) {
+                    for (emotionobj emo: BaseApplication.emotionobjs) {
                         if (seekBar.getTag()!=null&&emo.getId()==(int)seekBar.getTag()){
                             emo.setFeelingstrengthBefore(seekBar.getProgress());
 
@@ -192,16 +193,46 @@ public class EmotionRVAdapter extends RecyclerView.Adapter<EmotionRVAdapter.Emot
              //   listItemRadioGroup=(ViewGroup) itemView.findViewById(R.id.emotionradiogroup);
                     while (groupcursor.moveToNext()) {
                         RadioButton rb = new RadioButton(itemView.getContext());//listItemRadioGroup.getContext());//itemView.getContext());
-                        rb.setText(groupcursor.getString(groupcursor.getColumnIndex("name")));
+                        String name = groupcursor.getString(groupcursor.getColumnIndex("name"));
+                        String categoryId = groupcursor.getString(groupcursor.getColumnIndex(CogMoodLogDatabaseContract.emotion.COLUMN_EMOTIONCATEGORY_ID));
+                        rb.setText(name);
                         if ( groupcursor.getString(groupcursor.getColumnIndex("rowid")) != null) {
                             rb.setId(Integer.parseInt(groupcursor.getString(groupcursor.getColumnIndex("rowid"))));
-                            rb.setTag(Integer.parseInt(groupcursor.getString(groupcursor.getColumnIndex(CogMoodLogDatabaseContract.emotion.COLUMN_EMOTIONCATEGORY_ID))));
+                            rb.setTag(Integer.parseInt(categoryId));
+
+
                         }
                         listItemRadioGroup.addView(rb);
+                        emotionobj emo = findEmotionObjByNameAndCatId(name,categoryId);
+
+                        if (emo != null) {
+                            seekbar.setProgress(emo.getFeelingStrengthBefore());
+                            rb.toggle();
+                        }
                     }
             }
 
         }
+    }
+
+    public emotionobj findEmotionObjById(int id) {
+        for (emotionobj emo: BaseApplication.emotionobjs
+             ) {
+            if (emo.getId() == id) {
+                return emo;
+            }
+        }
+        return null;
+    }
+
+    public emotionobj findEmotionObjByNameAndCatId(String name, String catId) {
+        for (emotionobj emo: BaseApplication.emotionobjs
+                ) {
+            if ((emo.getName()+emo.getEmotioncategoryid()).equals(name+catId)) {
+                return emo;
+            }
+        }
+        return null;
     }
 
 }

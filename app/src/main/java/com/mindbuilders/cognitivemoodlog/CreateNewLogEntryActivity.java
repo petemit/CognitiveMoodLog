@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -37,14 +38,12 @@ public class CreateNewLogEntryActivity extends AppCompatActivity implements Desc
      * and next wizard steps.
      */
     private ViewPager mPager;
-    private List<emotionobj> emotionobjList;
-    private List<thoughtobj> thoughtobjList;
+
     String logentry="";
     boolean isfinished;
     Timestamp timestamp;
     ImageView leftNav;
     ImageView rightNav;
-    private List<thought_cognitivedistortionobj> thought_cognitivedistortionobjs;
     private static final String[] CONTENT = new String[] { "Situation", "Emotions", "Negative Thoughts", "Cognitive Distortions", "Positive Thoughts", "Review Thoughts", "Review Emotions" };
 
 
@@ -54,14 +53,12 @@ public class CreateNewLogEntryActivity extends AppCompatActivity implements Desc
     private SmartFragmentStatePagerAdapter mPagerAdapter;
     private int position;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_new_log_entry);
         leftNav = (ImageView) findViewById(R.id.left_nav);
         rightNav = (ImageView)findViewById(R.id.right_nav);
-        emotionobjList=new ArrayList<emotionobj>();
         mPager = (ViewPager) findViewById(R.id.viewpager);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Cognitive Mood Log");
@@ -187,29 +184,37 @@ public class CreateNewLogEntryActivity extends AppCompatActivity implements Desc
 
     @Override
     public void updateThoughts(List<thoughtobj> thoughtobjList) {
-        this.thoughtobjList=thoughtobjList;
+        BaseApplication.thoughtobjs = thoughtobjList;
+    }
+
+    @Override
+    public List<thoughtobj> getThoughtList() {
+        return BaseApplication.thoughtobjs;
     }
 
     @Override
     public void updateEmotions(List<emotionobj> emotionList) {
-        this.emotionobjList=emotionList;
+        BaseApplication.emotionobjs = emotionList;
     }
 
     public List<emotionobj> getEmotionobjList() {
-        return emotionobjList;
+        return BaseApplication.emotionobjs;
     }
 
     public List<thoughtobj> getThoughtobjList() {
-        return thoughtobjList;
+        if (BaseApplication.thoughtobjs == null) {
+            BaseApplication.thoughtobjs = new ArrayList<>();
+        }
+        return BaseApplication.thoughtobjs;
     }
 
     @Override
     public void updateThought_CognitiveDistortionList(List<thought_cognitivedistortionobj> tcoglist) {
-        this.thought_cognitivedistortionobjs=tcoglist;
+        BaseApplication.thought_cognitivedistortionobjs = tcoglist;
     }
 
     public List<thought_cognitivedistortionobj> getThought_cognitivedistortionobjs() {
-        return thought_cognitivedistortionobjs;
+        return BaseApplication.thought_cognitivedistortionobjs;
     }
 
     /**

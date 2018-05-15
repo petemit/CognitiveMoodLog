@@ -24,7 +24,6 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
     EditText negThoughtEditText;
     ViewGroup negthoughtlistview;
     ViewGroup rootView;
-    private List<thoughtobj> thoughtobjList;
     int thoughtincrementor=1;
     ThoughtAddFragmentListener mthoughtaddListener;
     utilities util;
@@ -46,11 +45,11 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
         rootView = (ViewGroup) inflater.inflate(
                 R.layout.fragment_thought_add, container, false);
         util=new utilities(this.getContext());
-        situationDescription = (TextView) rootView.findViewById(R.id.ThoughtAddSituationDescription);
-        addThoughtButton=(Button)rootView.findViewById(R.id.addnegthoughtbutton);
+        situationDescription = rootView.findViewById(R.id.ThoughtAddSituationDescription);
+        addThoughtButton= rootView.findViewById(R.id.addnegthoughtbutton);
         addThoughtButton.setOnClickListener(this);
-        negThoughtEditText=(EditText)rootView.findViewById(R.id.addnegthoughtedittext);
-        negthoughtlistview=(ViewGroup)rootView.findViewById(R.id.negthoughtlist);
+        negThoughtEditText= rootView.findViewById(R.id.addnegthoughtedittext);
+        negthoughtlistview= rootView.findViewById(R.id.negthoughtlist);
         situationDescription.setText(((CreateNewLogEntryActivity)getActivity()).getSituation());
         negThoughtEditText.setHorizontallyScrolling(false);
         negThoughtEditText.setMaxLines(4);
@@ -63,24 +62,85 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
 
             }
         });
-        setThoughtList(new ArrayList<thoughtobj>());
+
+            handleList();
+
+
         // todo create a way to recreate this view when pulled from memory.  Just take the objects from the parent activity
         return rootView;
     }
 
+    private void handleList() {
+        if (((CreateNewLogEntryActivity) getActivity()).getThoughtobjList() == null) {
+            BaseApplication.thoughtobjs = new ArrayList<>();
+        }
+        else {
+            negthoughtlistview.removeAllViews();
+            for (int i = 0; i < (((CreateNewLogEntryActivity) getActivity()).getThoughtobjList().size()); i++) {
+                thoughtobj to = ((CreateNewLogEntryActivity) getActivity()).getThoughtobjList().get(i);
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                View tv = inflater.inflate(R.layout.negative_thought,rootView,false);
+
+
+
+                TextView textView = (TextView) tv.findViewById(R.id.negthoughtlistitem);
+                tv.setTag(Integer.toString(to.getId())+"tv");
+                SeekBar seekbar = (SeekBar) tv.findViewById(R.id.negthoughtseekbar);
+                View removebutton=(View) tv.findViewById(R.id.removenegthoughtbutton);
+                removebutton.setOnClickListener(new RemoveThoughtClickListener(to, to.getId()));
+                textView.setText(to.getNegativethought());
+                textView.setTag(to.getId());
+                seekbar.setTag(to.getId());
+                seekbar.setOnSeekBarChangeListener(new MySeekBarChangeListener());
+                seekbar.setProgress(to.getNegativebeliefBefore());
+
+                negthoughtlistview.addView(tv);
+            }
+        }
+
+    }
+
+    class RemoveThoughtClickListener implements View.OnClickListener {
+        thoughtobj to;
+        int index;
+        public RemoveThoughtClickListener(thoughtobj to, int index) {
+            this.to = to;
+            this.index = index;
+        }
+        @Override
+        public void onClick(View v) {
+            negthoughtlistview.removeView(negthoughtlistview.findViewWithTag(Integer.toString(index)+"tv"));
+            ArrayList<thoughtobj> list = (ArrayList)((CreateNewLogEntryActivity) getActivity()).getThoughtobjList();
+            list.remove(index);
+            for (int i = 0; i < (list.size()); i++) {
+                list.get(i).setId(list.indexOf(list.get(i)));
+                negthoughtlistview.getChildAt(i).setTag(Integer.toString(to.getId())+"tv");
+                TextView textView = (TextView)  negthoughtlistview.getChildAt(i).findViewById(R.id.negthoughtlistitem);
+                SeekBar seekbar = (SeekBar)  negthoughtlistview.getChildAt(i).findViewById(R.id.negthoughtseekbar);
+                View removebutton=(View)  negthoughtlistview.getChildAt(i).findViewById(R.id.removenegthoughtbutton);
+                removebutton.setOnClickListener(new RemoveThoughtClickListener(to, to.getId()));
+                textView.setTag(to.getId());
+                seekbar.setTag(to.getId());
+                seekbar.setOnSeekBarChangeListener(new MySeekBarChangeListener());
+            }
+
+            thoughtincrementor--;
+        }
+    }
+
+
     @Override
     public void onResume() {
         situationDescription.setText(((CreateNewLogEntryActivity)getActivity()).getSituation());
+        handleList();
         super.onResume();
-    }
 
-    public void setThoughtList(List<thoughtobj> thoughtobjList) {
-        this.thoughtobjList = thoughtobjList;
     }
 
 
     public interface ThoughtAddFragmentListener {
         public void updateThoughts(List<thoughtobj> thoughtobjList);
+        List<thoughtobj> getThoughtList();
     }
 
     @Override
@@ -96,68 +156,64 @@ public class ThoughtAddFragment extends Fragment implements View.OnClickListener
 
 // fill in any details dynamically here
             TextView textView = (TextView) tv.findViewById(R.id.negthoughtlistitem);
-            tv.setTag(Integer.toString(thoughtincrementor)+"tv");
+
             SeekBar seekbar = (SeekBar) tv.findViewById(R.id.negthoughtseekbar);
             View removebutton=(View) tv.findViewById(R.id.removenegthoughtbutton);
-            removebutton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    negthoughtlistview.removeView(negthoughtlistview.findViewWithTag(Integer.toString(thoughtincrementor-1)+"tv"));
-                    thoughtobjList.remove(thoughtincrementor-2);
-                    thoughtincrementor--;
 
-                }
-            });
-            textView.setTag(thoughtincrementor);
+
             textView.setText(negThoughtEditText.getText());
             negThoughtEditText.setText("");
             negThoughtEditText.setEnabled(false);
             negThoughtEditText.setEnabled(true);
-            seekbar.setTag(thoughtincrementor);
 
-            seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                    for (thoughtobj tob: getThoughtList()) {
-                        if (seekBar.getTag()!=null&&tob.getId()==(int)seekBar.getTag()){
-                            tob.setNegativebeliefBefore(seekBar.getProgress());
-
-                        }
-
-                    }
-                }
-            });
+            seekbar.setOnSeekBarChangeListener(new MySeekBarChangeListener());
 
 // insert into main view
             //rootView.addView(tv);
             //Create thought object and add it to the thoughtobject list
-            thoughtobj thoughtobj=new thoughtobj();
-            thoughtobj.setId(thoughtincrementor);
-            thoughtobj.setNegativethought(textView.getText().toString());
-            thoughtobjList.add(thoughtobj);
+            thoughtobj to=new thoughtobj();
+
+            to.setNegativethought(textView.getText().toString());
+
+            ((CreateNewLogEntryActivity) getActivity()).getThoughtobjList().add(to);
+            to.setId(((CreateNewLogEntryActivity) getActivity()).getThoughtobjList().indexOf(to));
+            removebutton.setOnClickListener(new RemoveThoughtClickListener(to, to.getId()));
+            tv.setTag(Integer.toString(to.getId())+"tv");
+            textView.setTag(to.getId());
+            seekbar.setTag(to.getId());
             thoughtincrementor++;
             negthoughtlistview.addView(tv);
-            mthoughtaddListener.updateThoughts(thoughtobjList);
         }
 
-    }
-
-    public List<thoughtobj> getThoughtList(){
-        return thoughtobjList;
     }
     public void setThoughtAddSituationDescription(String situation){
         situationDescription.setText(situation);
 
+    }
+
+    class MySeekBarChangeListener implements SeekBar.OnSeekBarChangeListener {
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+        }
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+            for (thoughtobj tob: ((CreateNewLogEntryActivity) getActivity()).getThoughtobjList()) {
+                if (seekBar.getTag()!=null&&tob.getId()==(int)seekBar.getTag()){
+                    tob.setNegativebeliefBefore(seekBar.getProgress());
+
+                }
+
+            }
+        }
     }
 
 }

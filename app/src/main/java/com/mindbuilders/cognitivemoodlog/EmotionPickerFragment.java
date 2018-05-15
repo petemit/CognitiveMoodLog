@@ -14,6 +14,8 @@ import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseContract;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 import com.mindbuilders.cognitivemoodlog.ui.EmotionRVAdapter;
 
+import java.util.ArrayList;
+
 
 public class EmotionPickerFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
@@ -31,7 +33,11 @@ public class EmotionPickerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        if (BaseApplication.emotionobjs == null) {
+            BaseApplication.emotionobjs = new ArrayList<>();
+        }
         ViewGroup rootView = (ViewGroup) inflater.inflate(
+
                 R.layout.fragment_emotion_picker, container, false);
         parent=(CreateNewLogEntryActivity)getActivity();
         situationDescription = (TextView) rootView.findViewById(R.id.SituationDescription);

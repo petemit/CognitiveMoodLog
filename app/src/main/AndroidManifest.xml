@@ -28,11 +28,16 @@
         <activity
             android:name=".CreateNewLogEntryActivity"
             android:label="@string/title_activity_create_new_log_entry"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ReviewActivity" />
-        <activity android:name=".OpenPreviousLogsActivity" />
-        <activity android:name=".TroubleshootEntryActivity" />
-        <activity android:name=".ExplainCognitiveTherapyActivity" />
+        <activity android:name=".ReviewActivity"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".OpenPreviousLogsActivity"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".TroubleshootEntryActivity"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".ExplainCognitiveTherapyActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".PreferenceActivity"></activity>
     </application>
 

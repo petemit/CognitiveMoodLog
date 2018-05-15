@@ -30,6 +30,9 @@ import com.google.api.services.drive.DriveScopes;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 import com.google.api.services.drive.model.Permission;
+import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
+import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
 
 import java.io.ByteArrayOutputStream;
@@ -63,6 +66,9 @@ public class BaseApplication extends Application{
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     public static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = {DriveScopes.DRIVE_APPDATA};
+    public static List<thoughtobj> thoughtobjs;
+    public static List<emotionobj> emotionobjs;
+    public static List<thought_cognitivedistortionobj> thought_cognitivedistortionobjs;
 
     public BaseApplication() {
         setLatch(new CountDownLatch(1));
@@ -75,6 +81,8 @@ public class BaseApplication extends Application{
     public static void setDriveCredential(GoogleAccountCredential driveCredential) {
         BaseApplication.driveCredential = driveCredential;
     }
+
+
 
     @Override
     public void onCreate() {
@@ -188,6 +196,30 @@ public class BaseApplication extends Application{
 
     public static void setLatch(CountDownLatch lat) {
         latch = lat;
+    }
+
+    public List<thought_cognitivedistortionobj> getThought_cognitivedistortionobjs() {
+        return thought_cognitivedistortionobjs;
+    }
+
+    public void setThought_cognitivedistortionobjs(List<thought_cognitivedistortionobj> thought_cognitivedistortionobjs) {
+        this.thought_cognitivedistortionobjs = thought_cognitivedistortionobjs;
+    }
+
+    public List<thoughtobj> getThoughtobjs() {
+        return thoughtobjs;
+    }
+
+    public void setThoughtobjs(List<thoughtobj> thoughtobjs) {
+        this.thoughtobjs = thoughtobjs;
+    }
+
+    public List<emotionobj> getEmotionobjs() {
+        return emotionobjs;
+    }
+
+    public void setEmotionobjs(List<emotionobj> emotionobjs) {
+        this.emotionobjs = emotionobjs;
     }
 
     /**

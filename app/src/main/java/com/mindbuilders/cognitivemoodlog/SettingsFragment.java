@@ -1,12 +1,20 @@
 package com.mindbuilders.cognitivemoodlog;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.DialogInterface;
+import net.sqlcipher.database.SQLiteDatabase;
+
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.preference.CheckBoxPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -16,10 +24,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
+import com.mindbuilders.cognitivemoodlog.util.SqliteExporter;
 import com.mindbuilders.cognitivemoodlog.util.utilities;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import pub.devrel.easypermissions.EasyPermissions;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.content.Context.DOWNLOAD_SERVICE;
+import static com.mindbuilders.cognitivemoodlog.BaseApplication.REQUEST_PERMISSION_GET_ACCOUNTS;
 
 
 /**
@@ -167,6 +184,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
+
+        Preference download = (Preference) findPreference(getString(R.string.backup_to_csv_key));
+        download.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                AsyncTask<Activity, Void, Void> downloadTask = new downloadAsyncTask();
+                downloadTask.execute(getActivity());
+                return true;
+            }
+        });
     }
 
 
@@ -199,6 +226,57 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         void showLoading();
 
         void hideLoading();
+
+
+
+    }
+
+    class downloadAsyncTask extends AsyncTask<Activity, Void, Void> implements  MyProcessCallback {
+        Activity activity;
+        int currentStatus;
+        AlertDialog.Builder builder;
+        CountDownLatch latch = new CountDownLatch(1);
+        MyProcessCallback needACallback = this;
+        File file;
+        DownloadManager downloadManager;
+
+        @Override
+        public void finishedTask(int returnCode) {
+            latch.countDown();
+        }
+
+        @Override
+        protected Void doInBackground(Activity... params) {
+
+
+
+
+
+            if (params[0] != null) {
+                activity = params[0];
+                new BaseApplication.GetWritePermissionsAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,new WhatToDoTask(activity, "", this));
+                try {
+                    latch.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                SQLiteDatabase db = BaseApplication.getDbHelper().getReadableDatabase(BaseApplication.passwordHash);
+                downloadManager = (DownloadManager) activity.getSystemService(DOWNLOAD_SERVICE);
+                try {
+                    file = new File(SqliteExporter.export(db, activity.getApplicationContext()));
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            downloadManager.addCompletedDownload(file.getName(), file.getName(), true, "text/plain",file.getAbsolutePath(),file.length(),true);
+        }
     }
 
     class BackupAsyncTask extends AsyncTask<Activity, Void, Void> implements MyProcessCallback {

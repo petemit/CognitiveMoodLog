@@ -12,6 +12,7 @@
     <string name="preferences">Preferences</string>
     <string name="password_protect_key">encrypt_logentry_with_password_preference</string>
     <string name="drive_backup_key">drive_backup_key</string>
+    <string name="backup_to_csv_key">backup_to_csv_key</string>
     <string name="privacy_policy">Privacy Policy</string>
     <!-- my id-->
     <!--  <string name="banner_ad_unit_id">ca-app-pub-0694347371071565/6137388488</string>-->

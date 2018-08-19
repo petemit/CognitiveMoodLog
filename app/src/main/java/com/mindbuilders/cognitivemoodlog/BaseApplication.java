@@ -2,12 +2,16 @@ package com.mindbuilders.cognitivemoodlog;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
@@ -34,6 +38,9 @@ import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
 import com.mindbuilders.cognitivemoodlog.data.CogMoodLogDatabaseHelper;
+import com.mindbuilders.cognitivemoodlog.util.SqliteExporter;
+
+import net.sqlcipher.database.SQLiteDatabase;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,6 +53,7 @@ import java.util.concurrent.CountDownLatch;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static net.sqlcipher.database.SQLiteDatabase.loadLibs;
 
 
@@ -436,6 +444,40 @@ public class BaseApplication extends Application{
         new GetDrivePermissionsAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,task);
 
 
+    }
+
+    public static class GetWritePermissionsAsyncTask extends  AsyncTask<WhatToDoTask, Void, Void> {
+        WhatToDoTask task;
+
+        @Override
+        protected Void doInBackground(WhatToDoTask... whatToDoTasks) {
+
+            if (whatToDoTasks != null) {
+                task = whatToDoTasks[0];
+            } else {
+                return null;
+            }
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (task.getActivity().checkSelfPermission(WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    EasyPermissions.requestPermissions(
+                            task.getActivity(),
+                            "This app needs to access your external storage to save your backup",
+                            1005,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    try {
+                        BaseApplication.getLatch().await();
+                        BaseApplication.setLatch(new CountDownLatch(1));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            task.getCallback().finishedTask(1005);
+            return null;
+        }
     }
 
     public static class GetDrivePermissionsAsyncTask extends  AsyncTask<WhatToDoTask, Void, Void> {

@@ -2,6 +2,7 @@ package com.mindbuilders.cognitivemoodlog.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,13 +26,16 @@ import com.mindbuilders.cognitivemoodlog.CmlDos.thought_cognitivedistortionobj;
 import com.mindbuilders.cognitivemoodlog.CmlDos.thoughtobj;
 import com.mindbuilders.cognitivemoodlog.R;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -172,6 +176,38 @@ public class utilities {
 //                    }
 //                });
 //    }
+
+
+
+    public static String getDownloadsDir(Context context){
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/cogmoodlog_"+ createBackupFileName();
+    }
+
+    private static String createBackupFileName(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_SSSS");
+        return sdf.format(new Date()) + ".csv";
+    }
+
+    public static File createDirIfNotExist(String path){
+        File dir = new File(path);
+        if( !dir.exists() ){
+            dir.mkdir();
+        }
+        return dir;
+    }
+
+    /* Checks if external storage is available for read and write */
+    public static boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state);
+    }
+
+    /* Checks if external storage is available to at least read */
+    public static boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        return Environment.MEDIA_MOUNTED.equals(state) ||
+                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state);
+    }
 }
 
 

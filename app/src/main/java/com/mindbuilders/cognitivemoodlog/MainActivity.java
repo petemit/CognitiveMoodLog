@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                     FIRSTLOAD = true;
                     Log.i("mainactivity", "db doesn't exist");
                 }
+
                 } catch (SQLiteException e) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
                     View passwordView = LayoutInflater.from(this).inflate(R.layout.password_prompt, null);

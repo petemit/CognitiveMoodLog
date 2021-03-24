@@ -3,29 +3,60 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("android.extensions")
+    kotlin("kapt")
+}
+android {
+    compileSdkVersion(30)
+    defaultConfig {
+        applicationId("com.mindbuilders.cognitivemoodlog")
+        minSdkVersion(21)
+        targetSdkVersion(30)
+        versionCode(20)
+        versionName("2.0.0")
+
+        testInstrumentationRunner("android.support.test.runner.AndroidJUnitRunner")
+    }
+
+    buildTypes {
+        named("release") {
+            minifyEnabled(true)
+            proguardFiles("proguard-rules.pro")
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+                targetCompatibility =JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    // compose
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.0.0-beta01"
+    }
 }
 
-//apply plugin: 'com.android.application'
-//
-//android {
-//    compileSdkVersion 26
-//    buildToolsVersion "26.0.2"
-//    defaultConfig {
-//        applicationId "com.mindbuilders.cognitivemoodlog"
-//        minSdkVersion 19
-//        targetSdkVersion 26
-//        versionCode 13
-//        versionName "1.30"
-//
-//        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-//    }
-//    buildTypes {
-//        release {
-//            minifyEnabled false
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//        }
-//    }
-//}
+dependencies {
+
+    //dagger
+    implementation("com.google.dagger:dagger:2.28.3")
+    kapt("com.google.dagger:dagger-compiler:2.28.3")
+
+    //architecture components
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.3.4")
+    implementation("androidx.navigation:navigation-ui-ktx:2.3.4")
+    implementation("androidx.navigation:navigation-compose:1.0.0-alpha09")
+    implementation("androidx.room:room-ktx:2.2.6")
+    implementation("androidx.room:room-runtime:2.2.6")
+    kapt("androidx.room:room-compiler:2.2.6")
+}
 //
 //ext.supportLibraryVersion = '26.1.0'
 //dependencies {
@@ -53,4 +84,4 @@ plugins {
 //
 //    compile group: 'com.opencsv', name: 'opencsv', version: '4.1'
 //}
-//apply from: 'signingconfig.gradle'
+apply(from = "signingconfig.gradle")

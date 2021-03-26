@@ -48,7 +48,7 @@ fun MainMenu(navController: NavController, viewModel: LogViewModel) {
             modifier = Modifier.padding(12.dp)
         ) {
             mainMenuDestinations.forEach { screen ->
-                MenuButton(
+                NavigateButton(
                     name = stringResource(id = screen.resourceId), modifier = Modifier
                         .padding(12.dp)
                         .fillMaxWidth(.5f)
@@ -63,12 +63,7 @@ fun MainMenu(navController: NavController, viewModel: LogViewModel) {
     }
 }
 
-@Composable
-fun MenuButton(name: String, modifier: Modifier, navigate: () -> Unit) {
-    Button(modifier = modifier, onClick = navigate) {
-        Text(text = name)
-    }
-}
+
 
 @Preview(showBackground = true)
 @Composable

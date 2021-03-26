@@ -1,8 +1,6 @@
 package com.mindbuilders.cognitivemoodlog.view
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.getValue
@@ -25,7 +23,13 @@ fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
             Text("Describe the situation that made you feel upset.")
             OutlinedTextField(
                 value = situation,
-                onValueChange = { string -> viewModel.onSituationChange(string) })
+                onValueChange = { string -> viewModel.onSituationChange(string) },
+                modifier = Modifier.fillMaxWidth().padding(12.dp).fillMaxHeight(.5f)
+
+            )
+            NavigateButton(name = "Next", modifier = Modifier.fillMaxWidth(.5f)) {
+
+            }
         }
     }
 }

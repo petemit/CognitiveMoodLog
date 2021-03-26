@@ -17,12 +17,12 @@
 //package com.mindbuilders.cognitivemoodlog.ui;
 //
 //import android.content.Context;
-//import android.support.v4.view.PagerAdapter;
-//import android.support.v4.view.ViewPager;
-//import android.support.v4.view.ViewPager.OnPageChangeListener;
+//import android.support.v4.com.mindbuilders.cognitivemoodlog.view.PagerAdapter;
+//import android.support.v4.com.mindbuilders.cognitivemoodlog.view.ViewPager;
+//import android.support.v4.com.mindbuilders.cognitivemoodlog.view.ViewPager.OnPageChangeListener;
 //import android.util.AttributeSet;
-//import android.view.View;
-//import android.view.ViewGroup;
+//import android.com.mindbuilders.cognitivemoodlog.view.View;
+//import android.com.mindbuilders.cognitivemoodlog.view.ViewGroup;
 //import android.widget.HorizontalScrollView;
 //import android.widget.LinearLayout;
 //import android.widget.TextView;
@@ -32,8 +32,8 @@
 //import com.viewpagerindicator.PageIndicator;
 //
 //
-//import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-//import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+//import static android.com.mindbuilders.cognitivemoodlog.view.ViewGroup.LayoutParams.MATCH_PARENT;
+//import static android.com.mindbuilders.cognitivemoodlog.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 //
 ///**
 // * This widget implements the dynamic action bar tab behavior that can change
@@ -58,8 +58,8 @@
 //    private Runnable mTabSelector;
 //
 //    private final OnClickListener mTabClickListener = new OnClickListener() {
-//        public void onClick(View view) {
-//            TabView tabView = (TabView)view;
+//        public void onClick(View com.mindbuilders.cognitivemoodlog.view) {
+//            TabView tabView = (TabView)com.mindbuilders.cognitivemoodlog.view;
 //            final int oldSelected = mViewPager.getCurrentItem();
 //            final int newSelected = tabView.getIndex();
 //            mViewPager.setCurrentItem(newSelected);
@@ -191,19 +191,19 @@
 //    }
 //
 //    @Override
-//    public void setViewPager(ViewPager view) {
-//        if (mViewPager == view) {
+//    public void setViewPager(ViewPager com.mindbuilders.cognitivemoodlog.view) {
+//        if (mViewPager == com.mindbuilders.cognitivemoodlog.view) {
 //            return;
 //        }
 //        if (mViewPager != null) {
 //            mViewPager.setOnPageChangeListener(null);
 //        }
-//        final PagerAdapter adapter = view.getAdapter();
+//        final PagerAdapter adapter = com.mindbuilders.cognitivemoodlog.view.getAdapter();
 //        if (adapter == null) {
 //            throw new IllegalStateException("ViewPager does not have adapter instance.");
 //        }
-//        mViewPager = view;
-//        view.setOnPageChangeListener(this);
+//        mViewPager = com.mindbuilders.cognitivemoodlog.view;
+//        com.mindbuilders.cognitivemoodlog.view.setOnPageChangeListener(this);
 //        notifyDataSetChanged();
 //    }
 //
@@ -234,8 +234,8 @@
 //    }
 //
 //    @Override
-//    public void setViewPager(ViewPager view, int initialPosition) {
-//        setViewPager(view);
+//    public void setViewPager(ViewPager com.mindbuilders.cognitivemoodlog.view, int initialPosition) {
+//        setViewPager(com.mindbuilders.cognitivemoodlog.view);
 //        setCurrentItem(initialPosition);
 //    }
 //

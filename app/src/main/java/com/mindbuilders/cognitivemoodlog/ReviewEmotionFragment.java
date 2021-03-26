@@ -5,9 +5,9 @@
 //import android.content.DialogInterface;
 //import android.os.Bundle;
 //import android.support.v4.app.Fragment;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
+//import android.com.mindbuilders.cognitivemoodlog.view.LayoutInflater;
+//import android.com.mindbuilders.cognitivemoodlog.view.View;
+//import android.com.mindbuilders.cognitivemoodlog.view.ViewGroup;
 //import android.widget.Button;
 //import android.widget.SeekBar;
 //import android.widget.TextView;
@@ -136,7 +136,7 @@
 //
 //    }
 //
-//    private void openReviewActivity(View view){
+//    private void openReviewActivity(View com.mindbuilders.cognitivemoodlog.view){
 //        ((CreateNewLogEntryActivity)getActivity()).openReviewActivity();
 //
 //

@@ -8,8 +8,8 @@
 //import android.support.annotation.NonNull;
 //import android.support.v7.app.ActionBar;
 //import android.support.v7.app.AppCompatActivity;
-//import android.view.MenuItem;
-//import android.view.View;
+//import android.com.mindbuilders.cognitivemoodlog.view.MenuItem;
+//import android.com.mindbuilders.cognitivemoodlog.view.View;
 //import android.widget.ProgressBar;
 //import android.widget.Spinner;
 //import android.widget.Toast;

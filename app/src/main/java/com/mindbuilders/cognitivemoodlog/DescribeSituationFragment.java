@@ -4,9 +4,9 @@
 //import android.support.v4.app.Fragment;
 //import android.text.Editable;
 //import android.text.TextWatcher;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
+//import android.com.mindbuilders.cognitivemoodlog.view.LayoutInflater;
+//import android.com.mindbuilders.cognitivemoodlog.view.View;
+//import android.com.mindbuilders.cognitivemoodlog.view.ViewGroup;
 //import android.widget.EditText;
 //import android.app.Activity;
 //import android.widget.TextView;
@@ -101,8 +101,8 @@
 //        }
 //    }
 //
-//    public void textChanged(TextView view) {
-//   //     activityCommander.updateSituation(view.getText().toString());
+//    public void textChanged(TextView com.mindbuilders.cognitivemoodlog.view) {
+//   //     activityCommander.updateSituation(com.mindbuilders.cognitivemoodlog.view.getText().toString());
 //
 //    }
 //

@@ -5,10 +5,10 @@
 //import android.os.Environment;
 //import android.support.annotation.NonNull;
 //import android.util.Log;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.view.inputmethod.InputMethodManager;
+//import android.com.mindbuilders.cognitivemoodlog.view.LayoutInflater;
+//import android.com.mindbuilders.cognitivemoodlog.view.View;
+//import android.com.mindbuilders.cognitivemoodlog.view.ViewGroup;
+//import android.com.mindbuilders.cognitivemoodlog.view.inputmethod.InputMethodManager;
 //import android.widget.SeekBar;
 //import android.widget.TextView;
 //
@@ -50,9 +50,9 @@
 //        this.context = context;
 //    }
 //
-//    public void hideKeyboard(View view) {
+//    public void hideKeyboard(View com.mindbuilders.cognitivemoodlog.view) {
 //        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-//        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+//        inputMethodManager.hideSoftInputFromWindow(com.mindbuilders.cognitivemoodlog.view.getWindowToken(), 0);
 //    }
 //
 //    public void createThoughtReviewView(ViewGroup vg, List<thoughtobj> thoughtobjList, List<CognitiveDistortionobj> cogobjs) {

@@ -3,9 +3,9 @@
 //import android.app.Activity;
 //import android.os.Bundle;
 //import android.support.v4.app.Fragment;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
+//import android.com.mindbuilders.cognitivemoodlog.view.LayoutInflater;
+//import android.com.mindbuilders.cognitivemoodlog.view.View;
+//import android.com.mindbuilders.cognitivemoodlog.view.ViewGroup;
 //import android.widget.AdapterView;
 //import android.widget.ArrayAdapter;
 //import android.widget.Spinner;
@@ -88,7 +88,7 @@
 //
 //                    spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //                        @Override
-//                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                        public void onItemSelected(AdapterView<?> parent, View com.mindbuilders.cognitivemoodlog.view, int position, long id) {
 //
 //                                CognitiveDistortionobj cogobj = (CognitiveDistortionobj) ((Spinner) parent).getItemAtPosition(position);
 //                                TextView desc = (TextView) rootView.findViewById((int) parent.getTag());

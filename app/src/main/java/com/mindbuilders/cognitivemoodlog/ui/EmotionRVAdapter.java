@@ -5,9 +5,9 @@
 //import android.database.Cursor;
 //import android.database.sqlite.SQLiteDatabase;
 //import android.support.v7.widget.RecyclerView;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
+//import android.com.mindbuilders.cognitivemoodlog.view.LayoutInflater;
+//import android.com.mindbuilders.cognitivemoodlog.view.View;
+//import android.com.mindbuilders.cognitivemoodlog.view.ViewGroup;
 //import android.widget.RadioButton;
 //import android.widget.RadioGroup;
 //import android.widget.SeekBar;
@@ -50,8 +50,8 @@
 //    public EmotionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 //        context =parent.getContext();
 //        LayoutInflater inflater = LayoutInflater.from(context);
-//        View view = inflater.inflate(R.layout.emotion_listitem,parent,false);
-//        EmotionViewHolder viewHolder=new EmotionViewHolder(view);
+//        View com.mindbuilders.cognitivemoodlog.view = inflater.inflate(R.layout.emotion_listitem,parent,false);
+//        EmotionViewHolder viewHolder=new EmotionViewHolder(com.mindbuilders.cognitivemoodlog.view);
 //
 //        try {
 //            mEmotionAddListener = (EmotionRVAdapterListener) context;

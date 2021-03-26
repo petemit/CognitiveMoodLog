@@ -7,12 +7,12 @@
 //import android.os.PersistableBundle;
 //import android.support.v4.app.Fragment;
 //import android.support.v4.app.FragmentManager;
-//import android.support.v4.view.ViewPager;
+//import android.support.v4.com.mindbuilders.cognitivemoodlog.view.ViewPager;
 //import android.support.v7.app.AppCompatActivity;
 //import android.support.v7.widget.Toolbar;
-//import android.view.Menu;
-//import android.view.MenuItem;
-//import android.view.View;
+//import android.com.mindbuilders.cognitivemoodlog.view.Menu;
+//import android.com.mindbuilders.cognitivemoodlog.view.MenuItem;
+//import android.com.mindbuilders.cognitivemoodlog.view.View;
 //import android.widget.ImageView;
 //
 //import com.mindbuilders.cognitivemoodlog.CmlDos.emotionobj;
@@ -48,7 +48,7 @@
 //
 //
 //    /**
-//     * The pager adapter, which provides the pages to the view pager widget.
+//     * The pager adapter, which provides the pages to the com.mindbuilders.cognitivemoodlog.view pager widget.
 //     */
 //    private SmartFragmentStatePagerAdapter mPagerAdapter;
 //    private int position;
@@ -78,7 +78,7 @@
 //        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
 //        mPager.setAdapter(mPagerAdapter);
 //
-////        //Binding the title view pager indicator
+////        //Binding the title com.mindbuilders.cognitivemoodlog.view pager indicator
 //        TabPageIndicator2 tabPageIndicator2 = (TabPageIndicator2) findViewById(R.id.vpi);
 //        tabPageIndicator2.setViewPager(mPager);
 //

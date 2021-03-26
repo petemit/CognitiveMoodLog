@@ -3,9 +3,9 @@
 //import android.app.Activity;
 //import android.os.Bundle;
 //import android.support.v4.app.Fragment;
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
+//import android.com.mindbuilders.cognitivemoodlog.view.LayoutInflater;
+//import android.com.mindbuilders.cognitivemoodlog.view.View;
+//import android.com.mindbuilders.cognitivemoodlog.view.ViewGroup;
 //import android.widget.Button;
 //import android.widget.EditText;
 //import android.widget.SeekBar;
@@ -66,7 +66,7 @@
 //            handleList();
 //
 //
-//        // todo create a way to recreate this view when pulled from memory.  Just take the objects from the parent activity
+//        // todo create a way to recreate this com.mindbuilders.cognitivemoodlog.view when pulled from memory.  Just take the objects from the parent activity
 //        return rootView;
 //    }
 //
@@ -144,14 +144,14 @@
 //    }
 //
 //    @Override
-//    public void onClick(View view) {
+//    public void onClick(View com.mindbuilders.cognitivemoodlog.view) {
 //        if (!(negThoughtEditText.getText().equals(""))
 //                || !(negThoughtEditText.getText()==(null))) {
 //        //    TextView tv = new TextView(this.getContext());
 //       //     tv.setText(negThoughtEditText.getText());
 //          //  negthoughtlistview.addView(tv);
 //
-//            LayoutInflater inflater = LayoutInflater.from(view.getContext());
+//            LayoutInflater inflater = LayoutInflater.from(com.mindbuilders.cognitivemoodlog.view.getContext());
 //            View tv = inflater.inflate(R.layout.negative_thought,rootView,false);
 //
 //// fill in any details dynamically here
@@ -169,7 +169,7 @@
 //
 //            seekbar.setOnSeekBarChangeListener(new MySeekBarChangeListener());
 //
-//// insert into main view
+//// insert into main com.mindbuilders.cognitivemoodlog.view
 //            //rootView.addView(tv);
 //            //Create thought object and add it to the thoughtobject list
 //            thoughtobj to=new thoughtobj();

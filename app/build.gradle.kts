@@ -63,6 +63,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha01")
     implementation("androidx.activity:activity-compose:1.3.0-alpha05")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"]}")
+    implementation("androidx.navigation:navigation-compose:1.0.0-alpha09")
+
     kapt("com.google.dagger:dagger-compiler:2.28.3")
 
     //architecture components

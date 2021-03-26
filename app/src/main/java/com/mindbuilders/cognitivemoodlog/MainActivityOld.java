@@ -16,10 +16,10 @@
 //import android.support.v7.widget.Toolbar;
 //import android.util.Base64;
 //import android.util.Log;
-//import android.view.LayoutInflater;
-//import android.view.Menu;
-//import android.view.MenuItem;
-//import android.view.View;
+//import android.com.mindbuilders.cognitivemoodlog.view.LayoutInflater;
+//import android.com.mindbuilders.cognitivemoodlog.view.Menu;
+//import android.com.mindbuilders.cognitivemoodlog.view.MenuItem;
+//import android.com.mindbuilders.cognitivemoodlog.view.View;
 //import android.widget.Button;
 //import android.widget.EditText;
 //import android.widget.TextView;
@@ -188,8 +188,8 @@
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//            public void onClick(View com.mindbuilders.cognitivemoodlog.view) {
+//                Snackbar.make(com.mindbuilders.cognitivemoodlog.view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                        .setAction("Action", null).show();
 //            }
 //        });
@@ -229,7 +229,7 @@
 //    }
 //
 //
-//    public void openCreateNewLogEntry(View view) {
+//    public void openCreateNewLogEntry(View com.mindbuilders.cognitivemoodlog.view) {
 //        Intent intent = new Intent(this, CreateNewLogEntryActivity.class);
 //        BaseApplication.thoughtobjs = null;
 //        BaseApplication.emotionobjs = null;
@@ -242,7 +242,7 @@
 //
 //    }
 //
-//    public void OpenExplainCognitiveTherapy(View view) {
+//    public void OpenExplainCognitiveTherapy(View com.mindbuilders.cognitivemoodlog.view) {
 //        Intent intent = new Intent(this, ExplainCognitiveTherapyActivity.class);
 //        //  EditText editText = (EditText) findViewById(R.id.editMessage1);
 //        //  String message = editText.getText().toString();
@@ -252,7 +252,7 @@
 //
 //    }
 //
-//    public void openPreviousLogs(View view) {
+//    public void openPreviousLogs(View com.mindbuilders.cognitivemoodlog.view) {
 //        Intent intent = new Intent(this, OpenPreviousLogsActivity.class);
 //        startActivity(intent);
 //

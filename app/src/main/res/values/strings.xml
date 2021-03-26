@@ -11,4 +11,7 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="title_activity_main">Cognitive Behavioral Therapy Pal</string>
 
+
+    <string name="describe_situation">Create New Log</string>
+
 </resources>

@@ -13,5 +13,6 @@
 
 
     <string name="describe_situation">Create New Log</string>
+    <string name="review_logs">See Old Logs</string>
 
 </resources>

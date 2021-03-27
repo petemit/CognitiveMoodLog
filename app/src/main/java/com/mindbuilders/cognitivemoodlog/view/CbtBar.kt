@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 
 
 @Composable
-fun CbtBar() {
-    TopAppBar(title = { Text("Top AppBar") },
+fun CbtBar(title: String = "") {
+    TopAppBar(title = { Text(title) },
         backgroundColor = MaterialTheme.colors.primarySurface,
         navigationIcon = {
             Icon(

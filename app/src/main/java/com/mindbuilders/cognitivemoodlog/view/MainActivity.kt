@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +31,7 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController, startDestination = Screen.MainMenu.route) {
                     composable(Screen.MainMenu.route) { MainMenu(navController = navController, viewModel = viewModel) }
                     composable(Screen.DescribeSituation.route) { DescribeSituation(navController = navController, viewModel = viewModel) }
+                    composable(Screen.SelectEmotions.route) { SelectEmotions(navController = navController, viewModel = viewModel) }
                 }
             }
         }
@@ -41,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainMenu(navController: NavController, viewModel: LogViewModel) {
-    AppScaffold {
+    AppScaffold("Cognitive Behavioral Therapy Pal") {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,

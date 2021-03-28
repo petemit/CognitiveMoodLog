@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +22,7 @@ import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
 
+@ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +34,7 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.MainMenu.route) { MainMenu(navController = navController, viewModel = viewModel) }
                     composable(Screen.DescribeSituation.route) { DescribeSituation(navController = navController, viewModel = viewModel) }
                     composable(Screen.SelectEmotions.route) { SelectEmotions(navController = navController, viewModel = viewModel) }
+                    composable(Screen.ThoughtsBefore.route) { ThoughtsBefore(navController = navController, viewModel = viewModel) }
                 }
             }
         }

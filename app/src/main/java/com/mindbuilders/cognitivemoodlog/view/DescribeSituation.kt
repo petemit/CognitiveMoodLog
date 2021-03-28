@@ -28,7 +28,6 @@ fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
                 value = situation,
                 onValueChange = { string -> viewModel.onSituationChange(string) },
                 modifier = Modifier.fillMaxWidth().padding(12.dp).fillMaxHeight(.5f)
-
             )
             NavigateButton(name = "Next", modifier = Modifier.fillMaxWidth(.5f)) {
                 navController.navigate(Screen.SelectEmotions.route)

@@ -15,5 +15,6 @@
     <string name="describe_situation">Create New Log</string>
     <string name="review_logs">See Old Logs</string>
     <string name="select_emotions">Select Emotions</string>
+    <string name="thoughts_before">Negative Thoughts</string>
 
 </resources>

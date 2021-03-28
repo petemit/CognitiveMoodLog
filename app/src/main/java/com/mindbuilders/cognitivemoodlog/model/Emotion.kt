@@ -4,8 +4,8 @@ data class Emotion(
     val id: Int,
     val category: String,
     val name: String,
-    var strengthBefore: Int = 0,
-    var strengthAfter: Int = 0
+    var strengthBefore: Float = 0f,
+    var strengthAfter: Float = 0f
 )
 
 val emotions = listOf(

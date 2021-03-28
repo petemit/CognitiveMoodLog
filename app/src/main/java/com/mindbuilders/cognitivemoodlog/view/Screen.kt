@@ -8,4 +8,5 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int) {
     object DescribeSituation : Screen("describe_situation", R.string.describe_situation)
     object ReviewLogs : Screen("review_logs", R.string.review_logs)
     object SelectEmotions: Screen("select_emotions", R.string.select_emotions)
+    object ThoughtsBefore: Screen("thoughts_before", R.string.thoughts_before)
 }

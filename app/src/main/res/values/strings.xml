@@ -16,5 +16,6 @@
     <string name="review_logs">See Old Logs</string>
     <string name="select_emotions">Select Emotions</string>
     <string name="thoughts_before">Negative Thoughts</string>
+    <string name="cognitive_distortions">Cognitive Distortions</string>
 
 </resources>

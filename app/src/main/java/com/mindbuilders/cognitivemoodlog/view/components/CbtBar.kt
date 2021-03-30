@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog.view
+package com.mindbuilders.cognitivemoodlog.view.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material.*

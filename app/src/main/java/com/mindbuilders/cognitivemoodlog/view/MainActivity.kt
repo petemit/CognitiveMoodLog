@@ -21,6 +21,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
+import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
+import com.mindbuilders.cognitivemoodlog.view.components.CbtButton
 
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
@@ -35,6 +37,7 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.DescribeSituation.route) { DescribeSituation(navController = navController, viewModel = viewModel) }
                     composable(Screen.SelectEmotions.route) { SelectEmotions(navController = navController, viewModel = viewModel) }
                     composable(Screen.ThoughtsBefore.route) { ThoughtsBefore(navController = navController, viewModel = viewModel) }
+                    composable(Screen.CognitiveDistortions.route) { CognitiveDistortions(navController = navController, viewModel = viewModel) }
                 }
             }
         }
@@ -50,7 +53,7 @@ fun MainMenu(navController: NavController, viewModel: LogViewModel) {
             modifier = Modifier.padding(12.dp)
         ) {
             mainMenuDestinations.forEach { screen ->
-                NavigateButton(
+                CbtButton(
                     name = stringResource(id = screen.resourceId), modifier = Modifier
                         .padding(12.dp)
                         .fillMaxWidth(.5f)

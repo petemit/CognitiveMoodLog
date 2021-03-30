@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog.view
+package com.mindbuilders.cognitivemoodlog.view.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

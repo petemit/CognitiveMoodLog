@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import com.mindbuilders.cognitivemoodlog.model.Emotion
 import com.mindbuilders.cognitivemoodlog.model.emotions
 import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
+import com.mindbuilders.cognitivemoodlog.util.roundTo
 import java.lang.StringBuilder
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -32,38 +33,18 @@ fun EmotionRow(emotion: Emotion, isBefore: Boolean) {
                 valueRange = 0f..10f,
                 onValueChange = {
                 strength = it
+                    //todo this smells funky to manage state this way, not sure what to do yet
                     if (isBefore) {
                         emotion.strengthBefore =
-                            it.roundTo(0) //todo this smells funky, not sure what to do yet
+                            it.roundTo(0)
                     } else  {
                         emotion.strengthAfter =
-                            it.roundTo(0) //todo this smells funky, not sure what to do yet
+                            it.roundTo(0)
                     }
             })
             Text(strength.roundTo(0).toString())
         }
     }
-
-}
-
-//this is stupid.  Compose is not baked yet.  steps aren't working
-fun Float.roundTo(numDigits: Int) : Float {
-    var sb: StringBuilder? = null
-    if (numDigits > 0) {
-        sb = StringBuilder()
-        sb.append(".")
-        repeat(numDigits) {
-            sb.append("#")
-        }
-    }
-    val pattern = if (sb != null) {
-        "#$sb"
-    } else {
-        "#"
-    }
-    val df = DecimalFormat(pattern)
-    df.roundingMode = RoundingMode.FLOOR
-    return df.format(this).toFloat()
 }
 
 @Preview

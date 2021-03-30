@@ -13,6 +13,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
+import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
+import com.mindbuilders.cognitivemoodlog.view.components.CbtButton
+import com.mindbuilders.cognitivemoodlog.view.components.TitleText
 
 @Composable
 fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
@@ -29,7 +32,7 @@ fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
                 onValueChange = { string -> viewModel.onSituationChange(string) },
                 modifier = Modifier.fillMaxWidth().padding(12.dp).fillMaxHeight(.5f)
             )
-            NavigateButton(name = "Next", modifier = Modifier.fillMaxWidth(.5f)) {
+            CbtButton(name = "Next", modifier = Modifier.fillMaxWidth(.5f)) {
                 navController.navigate(Screen.SelectEmotions.route)
             }
         }

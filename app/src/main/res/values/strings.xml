@@ -17,5 +17,7 @@
     <string name="select_emotions">Select Emotions</string>
     <string name="thoughts_before">Negative Thoughts</string>
     <string name="cognitive_distortions">Cognitive Distortions</string>
+    <string name="thoughts_after">Positive Thoughts</string>
+    <string name="emotions_after">Emotions After</string>
 
 </resources>

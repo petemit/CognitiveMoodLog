@@ -11,9 +11,6 @@ import com.mindbuilders.cognitivemoodlog.model.Emotion
 import com.mindbuilders.cognitivemoodlog.model.emotions
 import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
 import com.mindbuilders.cognitivemoodlog.util.roundTo
-import java.lang.StringBuilder
-import java.math.RoundingMode
-import java.text.DecimalFormat
 
 @Composable
 fun EmotionRow(emotion: Emotion, isBefore: Boolean) {

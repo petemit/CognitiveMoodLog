@@ -38,6 +38,9 @@ class MainActivity : ComponentActivity() {
                     composable(Screen.SelectEmotions.route) { SelectEmotions(navController = navController, viewModel = viewModel) }
                     composable(Screen.ThoughtsBefore.route) { ThoughtsBefore(navController = navController, viewModel = viewModel) }
                     composable(Screen.CognitiveDistortions.route) { CognitiveDistortions(navController = navController, viewModel = viewModel) }
+                    composable(Screen.ThoughtsAfter.route) { ThoughtsAfter(navController = navController, viewModel = viewModel) }
+                    composable(Screen.EmotionsAfter.route) { EmotionsAfter(navController = navController, viewModel = viewModel) }
+
                 }
             }
         }

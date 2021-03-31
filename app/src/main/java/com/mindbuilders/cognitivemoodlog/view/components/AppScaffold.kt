@@ -17,6 +17,8 @@ fun AppScaffold(title: String, body: @Composable () -> Unit) {
         Surface(
             color = MaterialTheme.colors.background,
             modifier = Modifier.fillMaxSize().padding(6.dp,0.dp,6.dp,0.dp)
-        ) { body.invoke() }
+        ) {
+            body.invoke()
+        }
     }
 }

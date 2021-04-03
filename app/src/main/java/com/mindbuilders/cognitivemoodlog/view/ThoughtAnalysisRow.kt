@@ -26,9 +26,9 @@ fun ThoughtAnalysisRow(
     viewModel: LogViewModel,
     modifier: Modifier = Modifier.padding(12.dp)
 ) {
-    val cognitiveDistortions: List<CognitiveDistortion> =
-        viewModel.cognitiveDistortionList.observeAsState(listOf()).value
-    var selectedCd: Int by rememberSaveable { mutableStateOf(-1) }
+    val cognitiveDistortions: List<CognitiveDistortion> by
+        viewModel.cognitiveDistortionList.observeAsState(listOf())
+    var selectedCd: Int by rememberSaveable { mutableStateOf(viewModel.cognitiveDistortionList.value?.indexOf(thought.cognitiveDistortion) ?: -1) }
     var isOpen: Boolean by remember { mutableStateOf(false) }
     val cd = cognitiveDistortions.getOrNull(selectedCd)
     Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {

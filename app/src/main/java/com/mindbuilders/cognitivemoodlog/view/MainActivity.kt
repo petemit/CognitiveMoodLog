@@ -35,12 +35,13 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController, startDestination = Screen.MainMenu.route) {
                     composable(Screen.MainMenu.route) { MainMenu(navController = navController, viewModel = viewModel) }
                     composable(Screen.DescribeSituation.route) { DescribeSituation(navController = navController, viewModel = viewModel) }
-                    composable(Screen.SelectEmotions.route) { SelectEmotions(navController = navController, viewModel = viewModel) }
+                    composable(Screen.SelectEmotions.route) { EmotionsBefore(navController = navController, viewModel = viewModel) }
                     composable(Screen.ThoughtsBefore.route) { ThoughtsBefore(navController = navController, viewModel = viewModel) }
                     composable(Screen.CognitiveDistortions.route) { CognitiveDistortions(navController = navController, viewModel = viewModel) }
                     composable(Screen.ThoughtsAfter.route) { ThoughtsAfter(navController = navController, viewModel = viewModel) }
                     composable(Screen.EmotionsAfter.route) { EmotionsAfter(navController = navController, viewModel = viewModel) }
-
+                    composable(Screen.LogReview.route) { LogReview(navController = navController, viewModel = viewModel) }
+                    composable(Screen.ThoughtsReview.route) { ThoughtsReview(navController = navController, viewModel = viewModel) }
                 }
             }
         }

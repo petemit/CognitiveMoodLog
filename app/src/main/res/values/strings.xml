@@ -19,5 +19,7 @@
     <string name="cognitive_distortions">Cognitive Distortions</string>
     <string name="thoughts_after">Positive Thoughts</string>
     <string name="emotions_after">Emotions After</string>
+    <string name="log_review">Review Log Entry</string>
+    <string name="thoughts_review">Review Thoughts</string>
 
 </resources>

@@ -13,13 +13,13 @@ import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
 import com.mindbuilders.cognitivemoodlog.util.roundTo
 
 @Composable
-fun EmotionRow(emotion: Emotion, isBefore: Boolean) {
+fun EmotionRow(emotion: Emotion, isBefore: Boolean, viewModel: LogViewModel) {
     val starting: Float = if (isBefore) {
         emotion.strengthBefore
     } else {
         emotion.strengthAfter
     }
-    var strength by remember { mutableStateOf(starting)}
+    var strength by remember { mutableStateOf(starting) }
     Row(modifier = Modifier.fillMaxWidth()) {
         Text(emotion.name, modifier = Modifier.padding(12.dp))
         Spacer(modifier = Modifier.weight(1f))
@@ -29,16 +29,12 @@ fun EmotionRow(emotion: Emotion, isBefore: Boolean) {
                 steps = 10,
                 valueRange = 0f..10f,
                 onValueChange = {
-                strength = it
-                    //todo this smells funky to manage state this way, not sure what to do yet
-                    if (isBefore) {
+                    strength = it
+                    viewModel.editEmotion {
                         emotion.strengthBefore =
-                            it.roundTo(0)
-                    } else  {
-                        emotion.strengthAfter =
-                            it.roundTo(0)
+                            strength.roundTo(0)
                     }
-            })
+                })
             Text(strength.roundTo(0).toString())
         }
     }
@@ -48,6 +44,6 @@ fun EmotionRow(emotion: Emotion, isBefore: Boolean) {
 @Composable
 fun EmotionRow_Preview() {
     CognitiveMoodLogTheme {
-        EmotionRow(emotions[3], true)
+        EmotionRow(emotions[3], true, LogViewModel())
     }
 }

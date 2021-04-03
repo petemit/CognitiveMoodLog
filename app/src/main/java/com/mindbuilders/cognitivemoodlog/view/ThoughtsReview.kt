@@ -11,40 +11,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import com.mindbuilders.cognitivemoodlog.model.Emotion
-import com.mindbuilders.cognitivemoodlog.util.roundTo
+import com.mindbuilders.cognitivemoodlog.model.Thought
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
 import com.mindbuilders.cognitivemoodlog.view.components.CbtButton
 import com.mindbuilders.cognitivemoodlog.view.components.ScrollableSituation
 import com.mindbuilders.cognitivemoodlog.view.components.TitleText
 
 @Composable
-fun EmotionsAfter(navController: NavController, viewModel: LogViewModel) {
+fun ThoughtsReview(navController: NavController, viewModel: LogViewModel) {
     val situation: String by viewModel.situation.observeAsState("")
-    val selectedEmotions: List<Emotion>? by viewModel.selectedEmotions.observeAsState()
-    AppScaffold("Emotions After") {
+    val thoughtList: List<Thought> by viewModel.thoughts.observeAsState(listOf())
+    AppScaffold("Thoughts Review") {
         LazyColumn {
-
             item {
-                TitleText("After this exercise, now rate the emotions you feel and rate their strengths from 1 to 10 in comparison to what they were before")
+                TitleText("Now, how much do you believe your previous negative thoughts?")
                 ScrollableSituation(situation = situation)
                 CbtButton(
                     name = "Next", modifier = Modifier
                         .fillMaxWidth(.5f)
                         .padding(bottom = 8.dp)
                 ) {
-                    navController.navigate(Screen.LogReview.route)
+                    navController.navigate(Screen.EmotionsAfter.route)
                 }
             }
-            selectedEmotions?.let {
-                items(it, key = { emotion: Emotion -> emotion.id }) { emotion ->
-                    AfterAnalysisRow(before = emotion.strengthBefore, after = emotion.strengthAfter , text = emotion.name, isReview = false) {
-                        viewModel.editEmotion {
-                            emotion.strengthAfter = it
-                        }
-                    }
 
+            items(thoughtList, key = { thought: Thought -> thought.id }) { thought ->
+                AfterAnalysisRow(
+                    before = thought.negBeliefBefore,
+                    after = thought.negBeliefAfter,
+                    text = thought.thoughtBefore,
+                    isReview = false
+                ) {
+                    viewModel.editThought {
+                        thought.negBeliefAfter = it
+                    }
                 }
+
             }
         }
     }

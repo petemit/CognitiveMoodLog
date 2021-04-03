@@ -11,7 +11,9 @@ class LogViewModel: ViewModel() {
     val situation: LiveData<String> = _situation
 
     //emotions
-    val emotionList: LiveData<List<Emotion>> = MutableLiveData(emotions)
+    private val _emotionList: MutableLiveData<List<Emotion>> = MutableLiveData(emotions)
+    val emotionList: LiveData<List<Emotion>> = _emotionList
+
 
     val groupedEmotions = emotionList.map { emotionList -> emotionList.groupBy { it.category } }
 
@@ -25,12 +27,22 @@ class LogViewModel: ViewModel() {
     val cognitiveDistortionList: LiveData<List<CognitiveDistortion>> = MutableLiveData(cognitiveDistortions)
 
     fun onSituationChange(newSituation: String) {
-        _situation.value = newSituation
+        _situation.value = newSituation 
     }
 
     fun addBeforeThought(newThought: String) {
         val thought = Thought(thoughtBefore = newThought)
         _thoughts.value?.add(thought)
+        _thoughts.notifyObserver()
+    }
+
+    fun editEmotion(func: () -> Unit) {
+        func.invoke()
+        _emotionList.notifyObserver()
+    }
+
+    fun editThought(func: () -> Unit) {
+        func.invoke()
         _thoughts.notifyObserver()
     }
 }

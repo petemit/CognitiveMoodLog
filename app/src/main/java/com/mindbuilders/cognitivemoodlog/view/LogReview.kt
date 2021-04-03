@@ -19,7 +19,11 @@ fun LogReview(navController: NavController, viewModel: LogViewModel) {
     val selectedEmotions: List<Emotion>? by viewModel.selectedEmotions.observeAsState()
     val thoughtList: List<Thought> by viewModel.thoughts.observeAsState(listOf())
 
-    AppScaffold("Log Entry Review") {
+    AppScaffold("Log Entry Review",
+        //destination = Screen.ThoughtsBefore,
+        destEnabled = true,
+        navController = navController
+    ) {
         LazyColumn {
             item {
                 TitleText("Review Your Log Entry.")
@@ -44,7 +48,11 @@ fun LogReview(navController: NavController, viewModel: LogViewModel) {
                 TitleText("Thoughts")
             }
             items(thoughtList) {
-                ThoughtRow(thought = it, viewModel = viewModel, isReview = true )
+                ThoughtRow(
+                    thought = it,
+                    isReview = true,
+                    viewModel = viewModel
+                )
             }
 
         }

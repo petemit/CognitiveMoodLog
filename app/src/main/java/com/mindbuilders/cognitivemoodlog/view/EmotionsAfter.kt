@@ -22,19 +22,14 @@ import com.mindbuilders.cognitivemoodlog.view.components.TitleText
 fun EmotionsAfter(navController: NavController, viewModel: LogViewModel) {
     val situation: String by viewModel.situation.observeAsState("")
     val selectedEmotions: List<Emotion>? by viewModel.selectedEmotions.observeAsState()
-    AppScaffold("Emotions After") {
+    AppScaffold("Emotions After",
+        destination = Screen.LogReview,
+        destEnabled = true,
+        navController = navController) {
         LazyColumn {
-
             item {
                 TitleText("After this exercise, now rate the emotions you feel and rate their strengths from 1 to 10 in comparison to what they were before")
                 ScrollableSituation(situation = situation)
-                CbtButton(
-                    name = "Next", modifier = Modifier
-                        .fillMaxWidth(.5f)
-                        .padding(bottom = 8.dp)
-                ) {
-                    navController.navigate(Screen.LogReview.route)
-                }
             }
             selectedEmotions?.let {
                 items(it, key = { emotion: Emotion -> emotion.id }) { emotion ->

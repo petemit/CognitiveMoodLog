@@ -25,7 +25,7 @@ fun ThoughtRow(
 
     var posBelief by remember { mutableStateOf(thought.posBelief) }
     var beforeBelief by remember { mutableStateOf(thought.negBeliefBefore) }
-    var positiveThought by remember { mutableStateOf("") }
+    var positiveThought by remember { mutableStateOf(thought.thoughtAfter) }
     var selectedThought by remember { mutableStateOf("") }
     val openDialog = remember { mutableStateOf(false) }
 
@@ -95,7 +95,9 @@ fun ThoughtRow(
                             label = { Text("Positive Thought") },
                             onValueChange = {
                                 positiveThought = it
-                                thought.thoughtAfter = it
+                                viewModel.editThought {
+                                    thought.thoughtAfter = it
+                                }
                             })
                     }
                 }

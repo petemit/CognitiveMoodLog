@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import com.mindbuilders.cognitivemoodlog.model.*
 
-class LogViewModel: ViewModel() {
+class LogViewModel : ViewModel() {
     private val _situation: MutableLiveData<String> = MutableLiveData()
     val situation: LiveData<String> = _situation
 
@@ -17,17 +17,24 @@ class LogViewModel: ViewModel() {
 
     val groupedEmotions = emotionList.map { emotionList -> emotionList.groupBy { it.category } }
 
-    val selectedEmotions = emotionList.map { emotionList -> emotionList.filter { it.strengthBefore > 0 } }
+    val selectedEmotions =
+        emotionList.map { emotionList -> emotionList.filter { it.strengthBefore > 0 } }
 
     //thoughts
     private val _thoughts: MutableLiveData<MutableList<Thought>> = MutableLiveData(mutableListOf())
     val thoughts: LiveData<out List<Thought>> = _thoughts
+    val hasPositiveThoughts: LiveData<Boolean> = thoughts.map { listOfThoughts ->
+        listOfThoughts.all {
+            it.thoughtAfter.isNotEmpty()
+        }
+    }
 
     //cognitive distortions
-    val cognitiveDistortionList: LiveData<List<CognitiveDistortion>> = MutableLiveData(cognitiveDistortions)
+    val cognitiveDistortionList: LiveData<List<CognitiveDistortion>> =
+        MutableLiveData(cognitiveDistortions)
 
     fun onSituationChange(newSituation: String) {
-        _situation.value = newSituation 
+        _situation.value = newSituation
     }
 
     fun addBeforeThought(newThought: String) {

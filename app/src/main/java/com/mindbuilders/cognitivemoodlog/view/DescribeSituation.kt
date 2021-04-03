@@ -10,17 +10,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
-import com.mindbuilders.cognitivemoodlog.view.components.CbtButton
 import com.mindbuilders.cognitivemoodlog.view.components.TitleText
 
 @Composable
 fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
     val situation: String by viewModel.situation.observeAsState("")
-    AppScaffold("Describe Situation") {
+    AppScaffold(
+        title = "Describe Situation",
+        destination = Screen.SelectEmotions,
+        destEnabled = situation.isNotEmpty(),
+        navController = navController
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -30,11 +33,11 @@ fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
             OutlinedTextField(
                 value = situation,
                 onValueChange = { string -> viewModel.onSituationChange(string) },
-                modifier = Modifier.fillMaxWidth().padding(12.dp).fillMaxHeight(.5f)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+                    .fillMaxHeight(.5f)
             )
-            CbtButton(name = "Next", modifier = Modifier.fillMaxWidth(.5f)) {
-                navController.navigate(Screen.SelectEmotions.route)
-            }
         }
     }
 }

@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun CbtButton(name: String, modifier: Modifier, navigate: () -> Unit) {
-    Button(modifier = modifier, onClick = navigate) {
+fun CbtButton(name: String, modifier: Modifier, isEnabled: Boolean = true, navigate: () -> Unit) {
+    Button(modifier = modifier, onClick = navigate, enabled = isEnabled) {
         Text(text = name)
     }
 }

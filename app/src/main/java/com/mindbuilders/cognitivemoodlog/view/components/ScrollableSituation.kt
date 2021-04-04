@@ -17,7 +17,7 @@ fun ScrollableSituation(situation: String) {
         modifier = Modifier
             .fillMaxWidth()
             .height(100.dp)
-            .padding(12.dp)
+            .padding(vertical = 8.dp)
     )
 }
 

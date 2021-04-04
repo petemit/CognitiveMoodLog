@@ -41,6 +41,17 @@ fun ThoughtRow(
             })
     }
     Column {
+
+        //Cognitive Distortion
+        if (!isBefore || isReview) {
+            Row {
+                Text(
+                    "Cognitive Distortion: ${thought.cognitiveDistortion?.name}",
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+        }
+
         //Negative Row
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(

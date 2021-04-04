@@ -27,10 +27,13 @@ fun ThoughtsBefore(navController: NavController, viewModel: LogViewModel) {
     val thoughtList: List<Thought> by viewModel.thoughts.observeAsState(emptyList())
     var thoughtCount: Int by rememberSaveable { mutableStateOf(0) }
 
-    AppScaffold("Thoughts Before",
+    AppScaffold(
+        "Thoughts Before",
         destination = Screen.CognitiveDistortions,
         destEnabled = thoughtCount > 0,
-        navController = navController) {
+        instructions = "Type in a thought and click add to continue",
+        navController = navController
+    ) {
         LazyColumn(modifier = Modifier.fillMaxHeight()) {
             item {
                 TitleText("Enter any negative thoughts that you automatically think of when you consider the situation.\n\nNext, rate the thought's strength from 0-10")
@@ -62,7 +65,7 @@ fun ThoughtsBefore(navController: NavController, viewModel: LogViewModel) {
             }
 
             //todo this is a hack, but I'm not sure how to make thoughtList redraw.  I wonder if I have to have a local state that I need to handle separately.
-            items(thoughtCount){ thought ->
+            items(thoughtCount) { thought ->
             }
             items(thoughtList) {
                 ThoughtRow(it, true, viewModel = viewModel)

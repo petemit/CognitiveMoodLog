@@ -22,6 +22,7 @@ fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
         title = "Describe Situation",
         destination = Screen.SelectEmotions,
         destEnabled = situation.isNotEmpty(),
+        instructions = "Fill out the situation to continue",
         navController = navController
     ) {
         Column(
@@ -35,7 +36,6 @@ fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
                 onValueChange = { string -> viewModel.onSituationChange(string) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(12.dp)
                     .fillMaxHeight(.5f)
             )
         }

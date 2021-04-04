@@ -1,11 +1,14 @@
 package com.mindbuilders.cognitivemoodlog.view.components
 
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
@@ -17,25 +20,31 @@ fun AppScaffold(
     destination: Screen? = null,
     destEnabled: Boolean = false,
     navController: NavController,
+    instructions: String = "",
     body: @Composable () -> Unit
 ) {
     Scaffold(
         topBar = { CbtBar(title) },
-        bottomBar = {destination?.let {
-            NavigationButtons(it, destEnabled, navController)
-        } },
+        bottomBar = {
+            destination?.let {
+                NavigationButtons(it, destEnabled, navController, instructions = instructions)
+            }
+        },
     ) {
         Surface(
             color = MaterialTheme.colors.background,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(6.dp, 0.dp, 6.dp, 0.dp)
+                .padding(12.dp, 0.dp, 12.dp, 0.dp)
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
             ) {
-                Column(Modifier.wrapContentSize()
-                    .padding(bottom = 50.dp)) {
+                Column(
+                    Modifier
+                        .wrapContentSize()
+                        .padding(bottom = 50.dp)
+                ) {
                     body.invoke()
                 }
             }
@@ -44,7 +53,8 @@ fun AppScaffold(
 }
 
 @Composable
-fun NavigationButtons(destination: Screen, destEnabled: Boolean, navController: NavController) {
+fun NavigationButtons(destination: Screen, destEnabled: Boolean, navController: NavController, instructions: String?) {
+    val context = LocalContext.current
     Surface(
         color = MaterialTheme.colors.background,
         modifier = Modifier
@@ -62,14 +72,22 @@ fun NavigationButtons(destination: Screen, destEnabled: Boolean, navController: 
             ) {
                 navController.popBackStack()
             }
-            CbtButton(
-                name = "Next", modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 12.dp)
-                    ,
-                isEnabled = destEnabled
-            ) {
-                navController.navigate(destination.route)
+            Row(modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 12.dp)
+                .clickable {
+                    instructions?.let { string: String ->
+
+                        Toast.makeText(context, string, Toast.LENGTH_LONG).show()
+                    }
+
+                }) {
+                CbtButton(
+                    name = "Next", modifier = Modifier.fillMaxWidth(),
+                    isEnabled = destEnabled
+                ) {
+                    navController.navigate(destination.route)
+                }
             }
 
         }

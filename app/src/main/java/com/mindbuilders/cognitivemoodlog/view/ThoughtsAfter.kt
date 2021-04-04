@@ -22,6 +22,7 @@ fun ThoughtsAfter(navController: NavController, viewModel: LogViewModel) {
     AppScaffold("Positive Thoughts",
         destination = Screen.ThoughtsReview,
         destEnabled = hasPositiveThoughts,
+        instructions = "Write a positive thought for each negative thought to continue",
         navController = navController
     ) {
         LazyColumn {

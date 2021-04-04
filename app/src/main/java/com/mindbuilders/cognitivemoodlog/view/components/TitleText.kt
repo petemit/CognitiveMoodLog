@@ -12,7 +12,7 @@ import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
 
 @Composable
 fun TitleText(text: String = "") {
-    Text(text = text, fontSize = 20.sp, modifier = Modifier.padding(12.dp))
+    Text(text = text, fontSize = 20.sp, modifier = Modifier.padding(vertical = 12.dp))
 }
 
 @Preview(showBackground = true)

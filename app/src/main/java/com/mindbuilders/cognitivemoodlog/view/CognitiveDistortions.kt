@@ -21,9 +21,11 @@ import com.mindbuilders.cognitivemoodlog.view.components.TitleText
 @Composable
 fun CognitiveDistortions(navController: NavController, viewModel: LogViewModel) {
     val thoughts: List<Thought> by viewModel.thoughts.observeAsState(emptyList())
+    val allCogged: Boolean  by viewModel.allCogged.observeAsState(false)
     AppScaffold("Cognitive Distortions",
         destination = Screen.ThoughtsAfter,
-        destEnabled = true,
+        destEnabled = allCogged,
+        instructions = "Select a cognitive distortion for each thought or pick \"I'm not sure\"",
         navController = navController) {
         Column {
             TitleText("Which Cognitive Distortion Matches That Negative Thought Most Accurately?")

@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
+import com.mindbuilders.cognitivemoodlog.data.AssetFetcher
 import com.mindbuilders.cognitivemoodlog.model.*
+import javax.inject.Inject
 
-class LogViewModel : ViewModel() {
+class LogViewModel @Inject constructor(val assetFetcher: AssetFetcher): ViewModel() {
     private val _situation: MutableLiveData<String> = MutableLiveData()
     val situation: LiveData<String> = _situation
 
@@ -16,7 +18,6 @@ class LogViewModel : ViewModel() {
 
 
     val groupedEmotions = emotionList.map { emotionList -> emotionList.groupBy { it.category } }
-
     val selectedEmotions =
         emotionList.map { emotionList -> emotionList.filter { it.strengthBefore > 0 } }
 
@@ -26,6 +27,11 @@ class LogViewModel : ViewModel() {
     val hasPositiveThoughts: LiveData<Boolean> = thoughts.map { listOfThoughts ->
         listOfThoughts.all {
             it.thoughtAfter.isNotEmpty()
+        }
+    }
+    val allCogged: LiveData<Boolean> = thoughts.map { listOfThoughts ->
+        listOfThoughts.all {
+            it.cognitiveDistortion != null
         }
     }
 

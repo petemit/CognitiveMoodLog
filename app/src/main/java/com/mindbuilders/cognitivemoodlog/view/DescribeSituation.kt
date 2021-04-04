@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.mindbuilders.cognitivemoodlog.data.AssetFetcher
 import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
 import com.mindbuilders.cognitivemoodlog.view.components.TitleText
@@ -46,7 +47,7 @@ fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
 @Composable
 fun DescribeSituation_Preview() {
     val navController = rememberNavController()
-    val viewModel = LogViewModel()
+    val viewModel = LogViewModel(AssetFetcher())
     CognitiveMoodLogTheme {
         DescribeSituation(navController = navController, viewModel = viewModel)
     }

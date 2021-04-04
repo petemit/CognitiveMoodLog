@@ -15,18 +15,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mindbuilders.cognitivemoodlog.model.Thought
 import com.mindbuilders.cognitivemoodlog.view.components.*
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ThoughtsBefore(navController: NavController, viewModel: LogViewModel) {
     val situation: String by viewModel.situation.observeAsState("")
     var currentThought: String by rememberSaveable { mutableStateOf("") }
     val thoughtList: List<Thought> by viewModel.thoughts.observeAsState(emptyList())
     var thoughtCount: Int by rememberSaveable { mutableStateOf(0) }
-
+    val keyboardController = LocalSoftwareKeyboardController.current
     AppScaffold(
         "Thoughts Before",
         destination = Screen.CognitiveDistortions,
@@ -50,7 +54,9 @@ fun ThoughtsBefore(navController: NavController, viewModel: LogViewModel) {
                             .padding(start = 12.dp, end = 12.dp),
                         value = currentThought,
                         label = { Text("Add Thought Here") },
-                        onValueChange = { currentThought = it })
+                        onValueChange = {
+                            currentThought = it
+                        })
                     CbtButton(
                         name = "Add", modifier = Modifier
                             .padding(start = 12.dp, end = 12.dp, top = 8.dp)
@@ -59,6 +65,7 @@ fun ThoughtsBefore(navController: NavController, viewModel: LogViewModel) {
                         viewModel.addBeforeThought(currentThought)
                         currentThought = ""
                         thoughtCount = viewModel.thoughts.value?.size ?: 0
+                        keyboardController?.hideSoftwareKeyboard()
                     }
                 }
                 CbtDivider()

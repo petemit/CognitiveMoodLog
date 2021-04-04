@@ -5,10 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,15 +17,24 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
+import com.mindbuilders.cognitivemoodlog.data.AssetFetcher
 import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
 import com.mindbuilders.cognitivemoodlog.view.components.CbtButton
+import dagger.android.AndroidInjection
+import com.mindbuilders.cognitivemoodlog.di.LogViewModelFactory
+import javax.inject.Inject
 
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
+    @Inject
+    lateinit var viewModelFactory: LogViewModelFactory
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel: LogViewModel by viewModels()
+        AndroidInjection.inject(this)
+        val viewModel: LogViewModel by viewModels {
+            viewModelFactory
+        }
         setContent {
             CognitiveMoodLogTheme {
                 val navController = rememberNavController()
@@ -102,7 +108,7 @@ fun MainMenu(navController: NavController, viewModel: LogViewModel) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(12.dp).fillMaxWidth().fillMaxHeight()
         ) {
             mainMenuDestinations.forEach { screen ->
                 CbtButton(
@@ -125,7 +131,7 @@ fun MainMenu(navController: NavController, viewModel: LogViewModel) {
 @Composable
 fun DefaultPreview() {
     val navController = rememberNavController()
-    val viewModel = LogViewModel()
+    val viewModel = LogViewModel(AssetFetcher())
     CognitiveMoodLogTheme {
         MainMenu(navController = navController, viewModel = viewModel)
     }

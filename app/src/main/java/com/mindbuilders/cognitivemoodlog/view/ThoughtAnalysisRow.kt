@@ -70,7 +70,9 @@ fun ThoughtAnalysisRow(
                 cognitiveDistortions.forEachIndexed { index, cd ->
                     DropdownMenuItem(onClick = {
                         selectedCd = index
-                        thought.cognitiveDistortion = cd
+                        viewModel.editThought {
+                            thought.cognitiveDistortion = cd
+                        }
                         isOpen = false
                     }) {
                         Text(cd.name)

@@ -9,7 +9,6 @@ data class Emotion(
 )
 
 val emotions =
-
     listOf(
     Emotion(id = 1, category = "Anger", name = "Mad"),
     Emotion(id = 2, category = "Anger", name = "Angry"),

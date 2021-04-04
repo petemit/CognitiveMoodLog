@@ -48,7 +48,9 @@ dependencies {
 
     //dagger
     implementation("com.google.dagger:dagger:2.28.3")
-    implementation("com.google.android.material:material:1.3.0")
+    implementation("com.google.dagger:dagger-android:2.28.3")
+    kapt("com.google.dagger:dagger-compiler:2.28.3")
+    kapt("com.google.dagger:dagger-android-processor:2.28.3")
 
     //core
     implementation("androidx.core:core-ktx:1.3.2")
@@ -66,7 +68,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:${rootProject.extra["compose_version"]}")
     implementation("androidx.navigation:navigation-compose:1.0.0-alpha09")
 
-    kapt("com.google.dagger:dagger-compiler:2.28.3")
+
 
     //architecture components
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")

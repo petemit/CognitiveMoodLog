@@ -8,7 +8,9 @@ data class Emotion(
     var strengthAfter: Float = 0f
 )
 
-val emotions = listOf(
+val emotions =
+
+    listOf(
     Emotion(id = 1, category = "Anger", name = "Mad"),
     Emotion(id = 2, category = "Anger", name = "Angry"),
     Emotion(id = 3, category = "Anger", name = "Offended"),

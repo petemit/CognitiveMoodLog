@@ -20,7 +20,10 @@ fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
         destination = Screen.SelectEmotions,
         destEnabled = situation.isNotEmpty(),
         instructions = "Fill out the situation to continue",
-        navController = navController
+        backButton = {
+        },
+        navController = navController,
+        viewModel = viewModel
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

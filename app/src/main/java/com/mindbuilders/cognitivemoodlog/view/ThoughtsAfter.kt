@@ -23,7 +23,8 @@ fun ThoughtsAfter(navController: NavController, viewModel: LogViewModel) {
         destination = Screen.ThoughtsReview,
         destEnabled = hasPositiveThoughts,
         instructions = "Write a positive thought for each negative thought to continue",
-        navController = navController
+        navController = navController,
+        viewModel = viewModel
     ) {
         LazyColumn {
             item {

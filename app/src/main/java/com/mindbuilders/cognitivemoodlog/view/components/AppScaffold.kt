@@ -7,27 +7,78 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import com.mindbuilders.cognitivemoodlog.view.LogViewModel
 import com.mindbuilders.cognitivemoodlog.view.Screen
 
 @Composable
 fun AppScaffold(
+    //todo this function is too big.  I'd like to DI some of these things, but how do I do that with a function?
     title: String,
     destination: Screen? = null,
     destEnabled: Boolean = false,
     navController: NavController,
     instructions: String = "",
+    viewModel: LogViewModel,
+    barActionBehavior: MenuAction = MenuAction.CLEAR,
+    backButton: @Composable () -> Unit = {
+        CbtButton(
+            name = "Back", modifier = Modifier.fillMaxWidth()
+        ) {
+            navController.popBackStack()
+        }
+    },
+    nextButton: @Composable () -> Unit = {
+        CbtButton(
+            name = "Next", modifier = Modifier.fillMaxWidth(),
+            isEnabled = destEnabled
+        ) {
+            destination?.route?.let { navController.navigate(it) }
+        }
+    },
     body: @Composable () -> Unit
 ) {
+    val abandonDialogIsShowing: MutableState<Boolean> = rememberSaveable { mutableStateOf(false ) }
+    AbandonDialog(navController = navController, viewModel = viewModel, isShowing = abandonDialogIsShowing)
     Scaffold(
-        topBar = { CbtBar(title) },
+        topBar = {
+            when (barActionBehavior) {
+                MenuAction.CLEAR -> {
+                    CbtBar(
+                        title)
+                        {
+                            abandonDialogIsShowing.value = true
+                        }
+
+                }
+                MenuAction.SAVE -> {
+                    CbtBar(
+                        title,
+                        isSave = true
+                    ) {
+                        //commit
+                        viewModel.clearLog()
+                        navController.navigate(Screen.DescribeSituation.route)
+                    }
+
+                }
+            }
+
+        },
         bottomBar = {
             destination?.let {
-                NavigationButtons(it, destEnabled, navController, instructions = instructions)
+                NavigationButtons(
+                    instructions = instructions,
+                    nextButton = nextButton,
+                    backButton = backButton
+                )
             }
         },
     ) {
@@ -53,7 +104,11 @@ fun AppScaffold(
 }
 
 @Composable
-fun NavigationButtons(destination: Screen, destEnabled: Boolean, navController: NavController, instructions: String?) {
+fun NavigationButtons(
+    instructions: String?,
+    backButton: @Composable () -> Unit,
+    nextButton: @Composable () -> Unit
+) {
     val context = LocalContext.current
     Surface(
         color = MaterialTheme.colors.background,
@@ -65,12 +120,12 @@ fun NavigationButtons(destination: Screen, destEnabled: Boolean, navController: 
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
         ) {
-            CbtButton(
-                name = "Back", modifier = Modifier
+            Row(
+                modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 12.dp)
             ) {
-                navController.popBackStack()
+                backButton.invoke()
             }
             Row(modifier = Modifier
                 .weight(1f)
@@ -78,18 +133,20 @@ fun NavigationButtons(destination: Screen, destEnabled: Boolean, navController: 
                 .clickable {
                     instructions?.let { string: String ->
 
-                        Toast.makeText(context, string, Toast.LENGTH_LONG).show()
+                        Toast
+                            .makeText(context, string, Toast.LENGTH_LONG)
+                            .show()
                     }
 
                 }) {
-                CbtButton(
-                    name = "Next", modifier = Modifier.fillMaxWidth(),
-                    isEnabled = destEnabled
-                ) {
-                    navController.navigate(destination.route)
-                }
+                nextButton.invoke()
             }
 
         }
     }
+}
+
+enum class MenuAction {
+    CLEAR,
+    SAVE
 }

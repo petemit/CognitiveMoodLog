@@ -29,14 +29,16 @@ fun ThoughtsBefore(navController: NavController, viewModel: LogViewModel) {
     val situation: String by viewModel.situation.observeAsState("")
     var currentThought: String by rememberSaveable { mutableStateOf("") }
     val thoughtList: List<Thought> by viewModel.thoughts.observeAsState(emptyList())
-    var thoughtCount: Int by rememberSaveable { mutableStateOf(0) }
+    val hasNegativeThought: Boolean by viewModel.hasANegativeThought.observeAsState(false)
+    var thoughtCount: Int by rememberSaveable { mutableStateOf (thoughtList.count { it.thoughtBefore.isNotEmpty()}) }
     val keyboardController = LocalSoftwareKeyboardController.current
     AppScaffold(
         "Thoughts Before",
         destination = Screen.CognitiveDistortions,
-        destEnabled = thoughtCount > 0,
+        destEnabled = hasNegativeThought,
         instructions = "Type in a thought and click add to continue",
-        navController = navController
+        navController = navController,
+        viewModel = viewModel
     ) {
         LazyColumn(modifier = Modifier.fillMaxHeight()) {
             item {

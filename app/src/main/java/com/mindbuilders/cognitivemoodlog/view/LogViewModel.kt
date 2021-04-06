@@ -17,13 +17,17 @@ class LogViewModel @Inject constructor(val repository: SeedDataRepository) : Vie
     val emotionList: LiveData<List<Emotion>> = _emotionList
 
     val groupedEmotions: LiveData<Map<String, List<Emotion>>> = emotionList.map { emotionList -> emotionList.groupBy { it.category } }
-    val selectedEmotions: LiveData<List<Emotion>> = _emotionList
-    //  emotionList.map { emotionList -> emotionList.filter { it.strengthBefore > 0 } }
+    val selectedEmotions: LiveData<List<Emotion>> = emotionList.map { emotionList -> emotionList.filter { it.strengthBefore > 0 } }
 
     //thoughts
     private val _thoughts: MutableLiveData<MutableList<Thought>> = MutableLiveData(mutableListOf())
     val thoughts: LiveData<out List<Thought>> = _thoughts
 
+    val hasANegativeThought: LiveData<Boolean> = thoughts.map { listOfThoughts ->
+        listOfThoughts.any {
+            it.thoughtBefore.isNotEmpty()
+        }
+    }
     //whether all negative thoughts have a positive thought counterpart
     val hasPositiveThoughts: LiveData<Boolean> = thoughts.map { listOfThoughts ->
         listOfThoughts.all {
@@ -74,6 +78,12 @@ class LogViewModel @Inject constructor(val repository: SeedDataRepository) : Vie
     fun editThought(func: () -> Unit) {
         func.invoke()
         _thoughts.notifyObserver()
+    }
+
+    fun clearLog() {
+        _thoughts.value = mutableListOf()
+        _emotionList.value = mutableListOf()
+        _situation.value = ""
     }
 }
 

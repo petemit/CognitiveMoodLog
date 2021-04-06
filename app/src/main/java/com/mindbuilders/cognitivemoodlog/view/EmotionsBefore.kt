@@ -26,7 +26,8 @@ fun EmotionsBefore(navController: NavController, viewModel: LogViewModel) {
         destination = Screen.ThoughtsBefore,
         destEnabled = selectedEmotions?.let { it.isNotEmpty() } ?: false,
         instructions = "Scroll to find the emotions you are feeling and drag at least one slider to continue",
-        navController = navController
+        navController = navController,
+        viewModel = viewModel
     ) {
         LazyColumn {
             item {

@@ -21,7 +21,9 @@ fun ThoughtsReview(navController: NavController, viewModel: LogViewModel) {
     AppScaffold("Thoughts Review",
         destination = Screen.EmotionsAfter,
         destEnabled = true,
-        navController = navController) {
+        navController = navController,
+        viewModel = viewModel
+    ) {
         LazyColumn(modifier = Modifier.padding(horizontal = 8.dp)) {
             item {
                 TitleText("Now, how much do you believe your previous negative thoughts?")

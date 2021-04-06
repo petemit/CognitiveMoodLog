@@ -104,7 +104,8 @@ class MainActivity : ComponentActivity() {
 fun MainMenu(navController: NavController, viewModel: LogViewModel) {
     AppScaffold(
         "Cognitive Behavioral Therapy Pal",
-        navController = navController
+        navController = navController,
+        viewModel = viewModel
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

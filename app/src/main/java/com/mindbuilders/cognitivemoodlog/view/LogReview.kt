@@ -9,6 +9,7 @@ import androidx.navigation.NavController
 import com.mindbuilders.cognitivemoodlog.model.Emotion
 import com.mindbuilders.cognitivemoodlog.model.Thought
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
+import com.mindbuilders.cognitivemoodlog.view.components.MenuAction
 import com.mindbuilders.cognitivemoodlog.view.components.ScrollableSituation
 import com.mindbuilders.cognitivemoodlog.view.components.TitleText
 
@@ -22,7 +23,9 @@ fun LogReview(navController: NavController, viewModel: LogViewModel) {
     AppScaffold("Log Entry Review",
         //destination = Screen.ThoughtsBefore,
         destEnabled = true,
-        navController = navController
+        navController = navController,
+        viewModel = viewModel,
+        barActionBehavior = MenuAction.SAVE
     ) {
         LazyColumn {
             item {

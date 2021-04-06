@@ -26,7 +26,8 @@ fun EmotionsAfter(navController: NavController, viewModel: LogViewModel) {
         "Emotions After",
         destination = Screen.LogReview,
         destEnabled = true,
-        navController = navController
+        navController = navController,
+        viewModel = viewModel
     ) {
         LazyColumn(modifier = Modifier.padding(horizontal = 8.dp)) {
             item {

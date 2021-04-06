@@ -5,6 +5,7 @@ import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mindbuilders.cognitivemoodlog.data.AssetFetcher
@@ -41,10 +42,4 @@ fun EmotionRow(emotion: Emotion, isBefore: Boolean, viewModel: LogViewModel) {
     }
 }
 
-@Preview
-@Composable
-fun EmotionRow_Preview() {
-    CognitiveMoodLogTheme {
-        EmotionRow(emotions[3], true, LogViewModel(AssetFetcher()))
-    }
-}
+

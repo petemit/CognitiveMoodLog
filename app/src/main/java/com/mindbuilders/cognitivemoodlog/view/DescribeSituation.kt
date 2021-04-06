@@ -7,12 +7,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.mindbuilders.cognitivemoodlog.data.AssetFetcher
-import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
 import com.mindbuilders.cognitivemoodlog.view.components.TitleText
 
@@ -43,13 +39,15 @@ fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DescribeSituation_Preview() {
-    val navController = rememberNavController()
-    val viewModel = LogViewModel(AssetFetcher())
-    CognitiveMoodLogTheme {
-        DescribeSituation(navController = navController, viewModel = viewModel)
-    }
-}
+
+//todo I'm leaving this commented as some documentation... managing these preview functions is a pain as soon as I introduced Dagger.  Also, preview right now is so slow it is not buying me anything.  I'm removing the rest of them.
+//@Preview(showBackground = true)
+//@Composable
+//fun DescribeSituation_Preview() {
+//    val navController = rememberNavController()
+//    val viewModel = LogViewModel(AssetFetcher(LocalContext.current))
+//    CognitiveMoodLogTheme {
+//        DescribeSituation(navController = navController, viewModel = viewModel)
+//    }
+//}
 

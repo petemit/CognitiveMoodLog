@@ -3,6 +3,7 @@ package com.mindbuilders.cognitivemoodlog.view
 import androidx.lifecycle.*
 import com.mindbuilders.cognitivemoodlog.data.SeedDataRepository
 import com.mindbuilders.cognitivemoodlog.model.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -55,8 +56,10 @@ class LogViewModel @Inject constructor(val repository: SeedDataRepository) : Vie
 
     init {
         viewModelScope.launch {
+            _isLoading.value = true
             _emotionList.value = repository.getEmotions()
             _cognitiveDistortionList.value = repository.getCds()
+            _isLoading.value = false
         }
     }
 
@@ -84,6 +87,10 @@ class LogViewModel @Inject constructor(val repository: SeedDataRepository) : Vie
         _thoughts.value = mutableListOf()
         _emotionList.value = mutableListOf()
         _situation.value = ""
+    }
+
+    fun saveLog() {
+        TODO("Not yet implemented")
     }
 }
 

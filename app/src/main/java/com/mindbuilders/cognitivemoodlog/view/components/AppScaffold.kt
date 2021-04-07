@@ -45,17 +45,23 @@ fun AppScaffold(
     },
     body: @Composable () -> Unit
 ) {
-    val abandonDialogIsShowing: MutableState<Boolean> = rememberSaveable { mutableStateOf(false ) }
-    AbandonDialog(navController = navController, viewModel = viewModel, isShowing = abandonDialogIsShowing)
+    val context = LocalContext.current
+    val abandonDialogIsShowing: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
+    AbandonDialog(
+        navController = navController,
+        viewModel = viewModel,
+        isShowing = abandonDialogIsShowing
+    )
     Scaffold(
         topBar = {
             when (barActionBehavior) {
                 MenuAction.CLEAR -> {
                     CbtBar(
-                        title)
-                        {
-                            abandonDialogIsShowing.value = true
-                        }
+                        title
+                    )
+                    {
+                        abandonDialogIsShowing.value = true
+                    }
 
                 }
                 MenuAction.SAVE -> {
@@ -64,6 +70,8 @@ fun AppScaffold(
                         isSave = true
                     ) {
                         //commit
+                        viewModel.saveLog()
+                        Toast.makeText(context, "Log saved", Toast.LENGTH_LONG).show()
                         viewModel.clearLog()
                         navController.navigate(Screen.DescribeSituation.route)
                     }

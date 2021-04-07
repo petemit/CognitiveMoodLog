@@ -2,12 +2,17 @@ package com.mindbuilders.cognitivemoodlog.view
 
 import androidx.lifecycle.*
 import com.mindbuilders.cognitivemoodlog.data.SeedDataRepository
+
 import com.mindbuilders.cognitivemoodlog.model.*
+import com.mongodb.realm.livedataquickstart.model.LiveRealmResults
+import dagger.Lazy
+import io.realm.Realm
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class LogViewModel @Inject constructor(val repository: SeedDataRepository) : ViewModel() {
+class LogViewModel @Inject constructor(val repository: SeedDataRepository, val realm: Lazy<Realm>) :
+    ViewModel() {
 
     //situation
     private val _situation: MutableLiveData<String> = MutableLiveData()
@@ -17,8 +22,10 @@ class LogViewModel @Inject constructor(val repository: SeedDataRepository) : Vie
     private val _emotionList: MutableLiveData<List<Emotion>> = MutableLiveData()
     val emotionList: LiveData<List<Emotion>> = _emotionList
 
-    val groupedEmotions: LiveData<Map<String, List<Emotion>>> = emotionList.map { emotionList -> emotionList.groupBy { it.category } }
-    val selectedEmotions: LiveData<List<Emotion>> = emotionList.map { emotionList -> emotionList.filter { it.strengthBefore > 0 } }
+    val groupedEmotions: LiveData<Map<String, List<Emotion>>> =
+        emotionList.map { emotionList -> emotionList.groupBy { it.category } }
+    val selectedEmotions: LiveData<List<Emotion>> =
+        emotionList.map { emotionList -> emotionList.filter { it.strengthBefore > 0 } }
 
     //thoughts
     private val _thoughts: MutableLiveData<MutableList<Thought>> = MutableLiveData(mutableListOf())
@@ -29,6 +36,7 @@ class LogViewModel @Inject constructor(val repository: SeedDataRepository) : Vie
             it.thoughtBefore.isNotEmpty()
         }
     }
+
     //whether all negative thoughts have a positive thought counterpart
     val hasPositiveThoughts: LiveData<Boolean> = thoughts.map { listOfThoughts ->
         listOfThoughts.all {
@@ -36,6 +44,10 @@ class LogViewModel @Inject constructor(val repository: SeedDataRepository) : Vie
         }
     }
 
+    //logentries
+    suspend fun getLogEntries(): LiveRealmResults<LogEntry> {
+        return repository.getLogs()
+    }
 
     //loading status
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData<Boolean>(false)
@@ -90,7 +102,19 @@ class LogViewModel @Inject constructor(val repository: SeedDataRepository) : Vie
     }
 
     fun saveLog() {
-        TODO("Not yet implemented")
+        viewModelScope.launch {
+            repository.putLog(
+                situation = situation.value ?: "",
+                emotions = selectedEmotions.value ?: listOf(),
+                thoughts = thoughts.value ?: listOf()
+            )
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        //todo feels weird for the view model to be in charge of this when it's not interacting with the db in any other way.  maybe a lifecycle observer could do this better
+        realm.get().close()
     }
 }
 

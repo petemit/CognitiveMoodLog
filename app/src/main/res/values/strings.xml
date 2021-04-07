@@ -21,5 +21,6 @@
     <string name="emotions_after">Emotions After</string>
     <string name="log_review">Review Log Entry</string>
     <string name="thoughts_review">Review Thoughts</string>
+    <string name="see_past_logs">See Past Logs</string>
 
 </resources>

@@ -116,6 +116,12 @@ class MainActivity : ComponentActivity() {
                     viewModel = viewModel
                 )
             }
+            composable(Screen.SeePastLogs.route) {
+                SeePastLogs(
+                    navController = navController,
+                    viewModel = viewModel
+                )
+            }
         }
     }
 }

@@ -5,13 +5,11 @@ import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+
 import androidx.compose.ui.unit.dp
-import com.mindbuilders.cognitivemoodlog.data.AssetFetcher
+
 import com.mindbuilders.cognitivemoodlog.model.Emotion
-import com.mindbuilders.cognitivemoodlog.model.emotions
-import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
+
 import com.mindbuilders.cognitivemoodlog.util.roundTo
 
 @Composable

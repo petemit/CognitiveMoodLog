@@ -3,6 +3,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
+    id("realm-android")
 }
 android {
     compileSdkVersion(30)
@@ -38,7 +39,11 @@ android {
     buildFeatures {
         viewBinding = true
         compose = true
+        dataBinding = true
+
     }
+
+
     composeOptions {
         kotlinCompilerExtensionVersion = "${rootProject.extra["compose_version"]}"
     }
@@ -84,6 +89,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.2.6")
     implementation("androidx.room:room-runtime:2.2.6")
     kapt("androidx.room:room-compiler:2.2.6")
+
 }
 //
 //ext.supportLibraryVersion = '26.1.0'

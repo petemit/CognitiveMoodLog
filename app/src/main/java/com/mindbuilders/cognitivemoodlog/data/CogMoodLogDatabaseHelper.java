@@ -544,8 +544,8 @@
 //        SimpleDateFormat dateFormat = new SimpleDateFormat(
 //                "yyyy-MM-dd h:mm a", Locale.getDefault());
 //        Date date = new Date();
-//        return dateFormat.format(date);
-//    }
+////        return dateFormat.format(date);
+////    }
 //
 //    public static void restoreDb(final Context context, ByteArrayOutputStream bos) {
 //        final byte[] buffer = new byte[8 * 1024];

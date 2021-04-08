@@ -30,10 +30,10 @@ interface AppModule {
                 .build()
         }
 
-
         @Provides
         fun providesRealm(realmConfig: RealmConfiguration): Realm {
             return Realm.getInstance(realmConfig)
         }
+
     }
 }

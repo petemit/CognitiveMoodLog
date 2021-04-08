@@ -14,5 +14,4 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int) {
     object ThoughtsReview: Screen("thoughts_review", R.string.thoughts_review)
     object EmotionsAfter: Screen("emotions_after", R.string.emotions_after)
     object LogReview: Screen("log_review", R.string.log_review)
-    object SeePastLogs: Screen("see_past_logs", R.string.see_past_logs)
 }

@@ -65,7 +65,8 @@ class LiveRealmResults<T : RealmModel?> @MainThread constructor(results: RealmRe
         if (results.isLoaded) {
             // we should not notify observers when results aren't ready yet (async query).
             // however, synchronous query should be set explicitly.
-            setValue(results)
+
+                postValue(results)
         }
     }
 }

@@ -7,7 +7,6 @@ import com.mindbuilders.cognitivemoodlog.model.*
 import com.mongodb.realm.livedataquickstart.model.LiveRealmResults
 import dagger.Lazy
 import io.realm.Realm
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -45,8 +44,12 @@ class LogViewModel @Inject constructor(val repository: SeedDataRepository, val r
     }
 
     //logentries
-    suspend fun getLogEntries(): LiveRealmResults<LogEntry> {
-        return repository.getLogs()
+
+    val logEntries: LiveData<List<LogEntry>?> = repository.results.map { it.value }
+    fun refreshLogEntries() {
+        viewModelScope.launch {
+            repository.refresh()
+        }
     }
 
     //loading status

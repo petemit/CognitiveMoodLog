@@ -1,6 +1,8 @@
 package com.mindbuilders.cognitivemoodlog.data
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.mindbuilders.cognitivemoodlog.model.*
 import com.mongodb.realm.livedataquickstart.model.LiveRealmResults
 import io.realm.Realm
@@ -10,19 +12,32 @@ import kotlinx.coroutines.withContext
 import org.bson.types.ObjectId
 import javax.inject.Inject
 import dagger.Lazy
+import io.realm.RealmConfiguration
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 
-class SeedDataRepository @Inject constructor(private val assetFetcher: AssetFetcher, private val realm: Lazy<Realm>) {
+class SeedDataRepository @Inject constructor(
+    private val assetFetcher: AssetFetcher,
+    private val realmConfig: RealmConfiguration
+) {
 
-    suspend fun getLogs(): LiveRealmResults<LogEntry>  {
-        return withContext(Dispatchers.IO) {
-            return@withContext LiveRealmResults(realm.get().where(LogEntry::class.java).sort("date", Sort.DESCENDING).findAll())
+    val results = MutableLiveData<LiveRealmResults<LogEntry>>()
+    suspend fun refresh() {
+        withContext(Dispatchers.IO) {
+            val realm = Realm.getInstance(realmConfig)
+            val realmResults =
+                realm.where(LogEntry::class.java).sort("date", Sort.DESCENDING).findAll().freeze()
+
+            results.postValue(LiveRealmResults(realmResults))
+
         }
     }
 
     suspend fun putLog(situation: String, emotions: List<Emotion>, thoughts: List<Thought>) {
         withContext(Dispatchers.IO) {
-            realm.get().executeTransaction { r: Realm ->
+            val realm = Realm.getInstance(realmConfig)
+            realm.executeTransaction { r: Realm ->
                 val newLogEntry = r.createObject(LogEntry::class.java, ObjectId())
                 newLogEntry.situation = situation
                 newLogEntry.emotions.addAll(emotions.map {
@@ -38,8 +53,9 @@ class SeedDataRepository @Inject constructor(private val assetFetcher: AssetFetc
                     realmThought.thoughtAfter = it.thoughtAfter
                     realmThought.thoughtBefore = it.thoughtBefore
                     //todo add fetch and then find
-                    realmThought.cognitiveDistortion = r.createObject(RealmCognitiveDistortion::class.java, ObjectId())
-                    val cd  = it.cognitiveDistortion
+                    realmThought.cognitiveDistortion =
+                        r.createObject(RealmCognitiveDistortion::class.java, ObjectId())
+                    val cd = it.cognitiveDistortion
                     cd?.let { nonNullCd ->
                         realmThought.cognitiveDistortion?.name = nonNullCd.name
                         realmThought.cognitiveDistortion?.description =

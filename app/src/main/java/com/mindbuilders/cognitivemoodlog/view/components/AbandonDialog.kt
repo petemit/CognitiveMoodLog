@@ -23,7 +23,7 @@ fun AbandonDialog(navController: NavController, viewModel: LogViewModel, isShowi
                 Button(onClick = {
                     dismiss.invoke()
                     viewModel.clearLog()
-                    navController.navigate(Screen.DescribeSituation.route)
+                    navController.navigate(Screen.MainMenu.route)
                 }) {
                     Text("Discard Log")
                 }

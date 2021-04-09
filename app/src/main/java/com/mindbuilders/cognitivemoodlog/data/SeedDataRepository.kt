@@ -1,7 +1,6 @@
 package com.mindbuilders.cognitivemoodlog.data
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.mindbuilders.cognitivemoodlog.model.*
 import com.mongodb.realm.livedataquickstart.model.LiveRealmResults
@@ -11,10 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.bson.types.ObjectId
 import javax.inject.Inject
-import dagger.Lazy
 import io.realm.RealmConfiguration
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 
 class SeedDataRepository @Inject constructor(
@@ -22,12 +18,12 @@ class SeedDataRepository @Inject constructor(
     private val realmConfig: RealmConfiguration
 ) {
 
-    val results = MutableLiveData<LiveRealmResults<LogEntry>>()
+    val results = MutableLiveData<LiveRealmResults<RealmLogEntry>>()
     suspend fun refresh() {
         withContext(Dispatchers.IO) {
             val realm = Realm.getInstance(realmConfig)
             val realmResults =
-                realm.where(LogEntry::class.java).sort("date", Sort.DESCENDING).findAll().freeze()
+                realm.where(RealmLogEntry::class.java).sort("date", Sort.DESCENDING).findAll().freeze()
 
             results.postValue(LiveRealmResults(realmResults))
 
@@ -38,7 +34,7 @@ class SeedDataRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             val realm = Realm.getInstance(realmConfig)
             realm.executeTransaction { r: Realm ->
-                val newLogEntry = r.createObject(LogEntry::class.java, ObjectId())
+                val newLogEntry = r.createObject(RealmLogEntry::class.java, ObjectId())
                 newLogEntry.situation = situation
                 newLogEntry.emotions.addAll(emotions.map {
                     val realmEmotion = r.createObject(RealmEmotion::class.java, ObjectId())

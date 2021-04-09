@@ -28,6 +28,9 @@ fun AppScaffold(
     instructions: String = "",
     viewModel: LogViewModel,
     barActionBehavior: MenuAction = MenuAction.CLEAR,
+    closeBehavior: () -> Unit = {
+
+    },
     backButton: @Composable () -> Unit = {
         CbtButton(
             name = "Back", modifier = Modifier.fillMaxWidth()
@@ -73,9 +76,14 @@ fun AppScaffold(
                         viewModel.saveLog()
                         Toast.makeText(context, "Log saved", Toast.LENGTH_LONG).show()
                         viewModel.clearLog()
-                        navController.navigate(Screen.DescribeSituation.route)
+                        navController.navigate(Screen.MainMenu.route)
                     }
 
+                }
+                MenuAction.CLOSE -> {
+                    CbtBar(title) {
+                        closeBehavior.invoke()
+                    }
                 }
             }
 
@@ -156,5 +164,6 @@ fun NavigationButtons(
 
 enum class MenuAction {
     CLEAR,
-    SAVE
+    SAVE,
+    CLOSE
 }

@@ -6,18 +6,21 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mindbuilders.cognitivemoodlog.model.Thought
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
-import com.mindbuilders.cognitivemoodlog.view.components.ScrollableSituation
+import com.mindbuilders.cognitivemoodlog.view.components.SituationText
 import com.mindbuilders.cognitivemoodlog.view.components.TitleText
 
 @Composable
 fun ThoughtsReview(navController: NavController, viewModel: LogViewModel) {
     val situation: String by viewModel.situation.observeAsState("")
     val thoughtList: List<Thought> by viewModel.thoughts.observeAsState(listOf())
+    var situationDialog = remember { mutableStateOf(false) }
     AppScaffold("Thoughts Review",
         destination = Screen.EmotionsAfter,
         destEnabled = true,
@@ -27,8 +30,7 @@ fun ThoughtsReview(navController: NavController, viewModel: LogViewModel) {
         LazyColumn(modifier = Modifier.padding(horizontal = 8.dp)) {
             item {
                 TitleText("Now, how much do you believe your previous negative thoughts?")
-                ScrollableSituation(situation = situation)
-
+                SituationText(situation = situation, situationDialog)
             }
 
             items(thoughtList, key = { thought: Thought -> thought.id }) { thought ->

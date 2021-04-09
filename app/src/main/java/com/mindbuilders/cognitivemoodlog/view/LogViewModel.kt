@@ -4,7 +4,6 @@ import androidx.lifecycle.*
 import com.mindbuilders.cognitivemoodlog.data.SeedDataRepository
 
 import com.mindbuilders.cognitivemoodlog.model.*
-import com.mongodb.realm.livedataquickstart.model.LiveRealmResults
 import dagger.Lazy
 import io.realm.Realm
 import kotlinx.coroutines.launch
@@ -45,7 +44,7 @@ class LogViewModel @Inject constructor(val repository: SeedDataRepository, val r
 
     //logentries
 
-    val logEntries: LiveData<List<LogEntry>?> = repository.results.map { it.value }
+    val realmLogEntries: LiveData<List<RealmLogEntry>?> = repository.results.map { it.value }
     fun refreshLogEntries() {
         viewModelScope.launch {
             repository.refresh()

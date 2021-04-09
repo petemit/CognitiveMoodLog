@@ -5,8 +5,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.navigation.NavController
 import com.mindbuilders.cognitivemoodlog.model.Thought
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold

@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -32,6 +31,8 @@ fun ThoughtsBefore(navController: NavController, viewModel: LogViewModel) {
     val hasNegativeThought: Boolean by viewModel.hasANegativeThought.observeAsState(false)
     var thoughtCount: Int by rememberSaveable { mutableStateOf (thoughtList.count { it.thoughtBefore.isNotEmpty()}) }
     val keyboardController = LocalSoftwareKeyboardController.current
+    var situationDialog = remember { mutableStateOf(false) }
+
     AppScaffold(
         "Thoughts Before",
         destination = Screen.CognitiveDistortions,
@@ -43,7 +44,7 @@ fun ThoughtsBefore(navController: NavController, viewModel: LogViewModel) {
         LazyColumn(modifier = Modifier.fillMaxHeight()) {
             item {
                 TitleText("Enter any negative thoughts that you automatically think of when you consider the situation.\n\nNext, rate the thought's strength from 0-10")
-                ScrollableSituation(situation = situation)
+                SituationText(situation = situation, situationDialog)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

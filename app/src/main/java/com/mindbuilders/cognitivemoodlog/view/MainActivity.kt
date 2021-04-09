@@ -26,6 +26,7 @@ import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
 import com.mindbuilders.cognitivemoodlog.view.components.CbtButton
 import dagger.android.AndroidInjection
 import com.mindbuilders.cognitivemoodlog.di.LogViewModelFactory
+import com.mindbuilders.cognitivemoodlog.di.LogViewModelSavedStateHandleFactory
 import com.mindbuilders.cognitivemoodlog.view.components.ScrollableText
 import javax.inject.Inject
 
@@ -33,12 +34,13 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var viewModelFactory: LogViewModelFactory
+    val viewModel: LogViewModel by viewModels {
+        LogViewModelSavedStateHandleFactory<LogViewModel>(viewModelFactory, this)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
-        val viewModel: LogViewModel by viewModels {
-            viewModelFactory
-        }
+
         setContent {
             val loadingState = viewModel.isLoading.observeAsState(initial = false)
 

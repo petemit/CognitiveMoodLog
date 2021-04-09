@@ -1,14 +1,16 @@
 package com.mindbuilders.cognitivemoodlog.di
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.SavedStateHandle
+import com.mindbuilders.cognitivemoodlog.data.SeedDataRepository
 import com.mindbuilders.cognitivemoodlog.view.LogViewModel
+import dagger.Lazy
+import io.realm.Realm
 import javax.inject.Inject
 
 
-class LogViewModelFactory @Inject constructor(val logViewModel: LogViewModel): ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        //todo is this the only way to do this?
-        return logViewModel as T
+class LogViewModelFactory @Inject constructor(private val repository: SeedDataRepository, private val realm: Lazy<Realm>): ILogViewModelAssistantFactory<LogViewModel> {
+
+    override fun create(handle: SavedStateHandle): LogViewModel {
+        return LogViewModel(repository = repository, realm = realm, handle = handle)
     }
 }

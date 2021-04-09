@@ -9,7 +9,11 @@ import io.realm.Realm
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class LogViewModel @Inject constructor(val repository: SeedDataRepository, val realm: Lazy<Realm>) :
+class LogViewModel constructor(
+    val repository: SeedDataRepository,
+    val realm: Lazy<Realm>,
+    handle: SavedStateHandle
+) :
     ViewModel() {
 
     //situation

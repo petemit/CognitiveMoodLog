@@ -43,7 +43,9 @@ fun AppScaffold(
             name = "Next", modifier = Modifier.fillMaxWidth(),
             isEnabled = destEnabled
         ) {
-            destination?.route?.let { navController.navigate(it) }
+            destination?.route?.let {
+                viewModel.nav(navController, it)
+            }
         }
     },
     body: @Composable () -> Unit

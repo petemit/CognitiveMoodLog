@@ -4,10 +4,9 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
-import com.mindbuilders.cognitivemoodlog.view.LogViewModel
 
 class LogViewModelSavedStateHandleFactory<out T : ViewModel> constructor(
-    private val viewModelFactoryAssistant: ILogViewModelAssistantFactory<LogViewModel>,
+    private val viewModelFactoryAssistant: LogViewModelFactory,
     owner: SavedStateRegistryOwner
 ) : AbstractSavedStateViewModelFactory(owner, null) {
     override fun <T : ViewModel?> create(

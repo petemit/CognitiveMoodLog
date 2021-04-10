@@ -6,28 +6,28 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
-import com.mindbuilders.cognitivemoodlog.data.AssetFetcher
+import com.mindbuilders.cognitivemoodlog.di.LogViewModelFactory
+import com.mindbuilders.cognitivemoodlog.di.LogViewModelSavedStateHandleFactory
 import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
 import com.mindbuilders.cognitivemoodlog.view.components.CbtButton
 import dagger.android.AndroidInjection
-import com.mindbuilders.cognitivemoodlog.di.LogViewModelFactory
-import com.mindbuilders.cognitivemoodlog.di.LogViewModelSavedStateHandleFactory
-import com.mindbuilders.cognitivemoodlog.view.components.ScrollableText
 import javax.inject.Inject
 
 @ExperimentalFoundationApi
@@ -43,23 +43,30 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val loadingState = viewModel.isLoading.observeAsState(initial = false)
-
+            val lastNav by viewModel.lastNav.observeAsState()
             CognitiveMoodLogTheme {
                 val navController = rememberNavController()
-                buildNavHost(navController, viewModel)
+                val lastNavVal = lastNav
+                if (lastNavVal != null && lastNavVal.isNotEmpty()) {
+                    BuildNavHost(navController, viewModel, lastNavVal)
+                } else {
+                    BuildNavHost(navController, viewModel)
+                }
             }
             if (loadingState.value) {
                 ProgressView()
             }
         }
+
     }
 
     @Composable
-    private fun buildNavHost(
+    private fun BuildNavHost(
         navController: NavHostController,
-        viewModel: LogViewModel
+        viewModel: LogViewModel,
+        lastNav: String = Screen.MainMenu.route
     ) {
-        NavHost(navController, startDestination = Screen.MainMenu.route) {
+        NavHost(navController, startDestination = lastNav) {
             composable(Screen.MainMenu.route) {
                 MainMenu(
                     navController = navController,
@@ -145,9 +152,7 @@ fun MainMenu(navController: NavController, viewModel: LogViewModel) {
                         .padding(12.dp)
                         .fillMaxWidth(.5f)
                 ) {
-                    navController.navigate(
-                        screen.route
-                    )
+                    viewModel.nav(navController,screen.route)
                 }
             }
 

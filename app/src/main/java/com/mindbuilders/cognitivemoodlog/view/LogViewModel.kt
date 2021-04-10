@@ -1,6 +1,8 @@
 package com.mindbuilders.cognitivemoodlog.view
 
 import androidx.lifecycle.*
+import androidx.navigation.NavController
+import androidx.navigation.compose.navigate
 import com.mindbuilders.cognitivemoodlog.data.SeedDataRepository
 
 import com.mindbuilders.cognitivemoodlog.model.*
@@ -11,14 +13,17 @@ import javax.inject.Inject
 
 class LogViewModel constructor(
     val repository: SeedDataRepository,
-    val realm: Lazy<Realm>,
-    handle: SavedStateHandle
+    private val realm: Lazy<Realm>,
+    private val handle: SavedStateHandle
 ) :
     ViewModel() {
 
     //situation
-    private val _situation: MutableLiveData<String> = MutableLiveData()
+    private val _situation: MutableLiveData<String> = MutableLiveData(handle.get("situation") ?: "")
     val situation: LiveData<String> = _situation
+
+    //last nav
+    val lastNav: LiveData<String> = handle.getLiveData("lastRoute")
 
     //emotions
     private val _emotionList: MutableLiveData<List<Emotion>> = MutableLiveData()
@@ -30,7 +35,7 @@ class LogViewModel constructor(
         emotionList.map { emotionList -> emotionList.filter { it.strengthBefore > 0 } }
 
     //thoughts
-    private val _thoughts: MutableLiveData<MutableList<Thought>> = MutableLiveData(mutableListOf())
+    private val _thoughts: MutableLiveData<MutableList<Thought>> = MutableLiveData(handle.get("thoughts") ?: mutableListOf())
     val thoughts: LiveData<out List<Thought>> = _thoughts
 
     val hasANegativeThought: LiveData<Boolean> = thoughts.map { listOfThoughts ->
@@ -75,29 +80,34 @@ class LogViewModel constructor(
     init {
         viewModelScope.launch {
             _isLoading.value = true
-            _emotionList.value = repository.getEmotions()
+            val savedEmotions = handle.get<List<Emotion>>("emotions")
+            _emotionList.value = savedEmotions ?: repository.getEmotions()
             _cognitiveDistortionList.value = repository.getCds()
             _isLoading.value = false
         }
     }
 
     fun onSituationChange(newSituation: String) {
+        handle["situation"] = newSituation
         _situation.value = newSituation
     }
 
     fun addBeforeThought(newThought: String) {
         val thought = Thought(thoughtBefore = newThought)
         _thoughts.value?.add(thought)
+        handle["thoughts"] = _thoughts.value
         _thoughts.notifyObserver()
     }
 
     fun editEmotion(func: () -> Unit) {
         func.invoke()
+        handle["emotions"] = _emotionList.value
         _emotionList.notifyObserver()
     }
 
     fun editThought(func: () -> Unit) {
         func.invoke()
+        handle["thoughts"] = _thoughts.value
         _thoughts.notifyObserver()
     }
 
@@ -105,6 +115,10 @@ class LogViewModel constructor(
         _thoughts.value = mutableListOf()
         _emotionList.value = mutableListOf()
         _situation.value = ""
+
+        handle.remove<String>("situation")
+        handle.remove<List<Thought>>("thoughts")
+        handle.remove<List<Emotion>>("emotions")
     }
 
     fun saveLog() {
@@ -114,13 +128,27 @@ class LogViewModel constructor(
                 emotions = selectedEmotions.value ?: listOf(),
                 thoughts = thoughts.value ?: listOf()
             )
+            clearLog()
         }
+
     }
 
     override fun onCleared() {
         super.onCleared()
         //todo feels weird for the view model to be in charge of this when it's not interacting with the db in any other way.  maybe a lifecycle observer could do this better
         realm.get().close()
+    }
+
+//    fun navLast(navController: NavController) {
+//        val route = handle.get<String>("lastRoute")
+//        if (route != null && route.isNotEmpty()) {
+//            navController.navigate(route)
+//        }
+//    }
+
+    fun nav(navController: NavController, route: String) {
+        handle["lastRoute"] = route
+        navController.navigate(route)
     }
 }
 

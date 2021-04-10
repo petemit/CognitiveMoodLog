@@ -19,6 +19,7 @@ import com.mindbuilders.cognitivemoodlog.R
 import com.mindbuilders.cognitivemoodlog.model.CognitiveDistortion
 import com.mindbuilders.cognitivemoodlog.model.Thought
 import com.mindbuilders.cognitivemoodlog.view.components.CbtDivider
+import com.mindbuilders.cognitivemoodlog.view.components.ScrollableText
 
 @Composable
 fun ThoughtAnalysisRow(
@@ -27,12 +28,50 @@ fun ThoughtAnalysisRow(
     modifier: Modifier = Modifier.padding(12.dp)
 ) {
     val cognitiveDistortions: List<CognitiveDistortion> by
-        viewModel.cognitiveDistortionList.observeAsState(listOf())
-    var selectedCd: Int by rememberSaveable { mutableStateOf(viewModel.cognitiveDistortionList.value?.indexOf(thought.cognitiveDistortion) ?: -1) }
+    viewModel.cognitiveDistortionList.observeAsState(listOf())
+    var selectedCd: Int by rememberSaveable {
+        mutableStateOf(
+            viewModel.cognitiveDistortionList.value?.indexOf(
+                thought.cognitiveDistortion
+            ) ?: -1
+        )
+    }
+    var infoCd: CognitiveDistortion? by rememberSaveable {
+        mutableStateOf(null)
+    }
+    var showDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
     var isOpen: Boolean by remember { mutableStateOf(false) }
     val cd = cognitiveDistortions.getOrNull(selectedCd)
+    val dismiss = {
+        showDialog = false
+        infoCd = null
+    }
     Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
 
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = dismiss,
+                text = {
+                    infoCd?.let {
+                        val text = if (it.description.isNotEmpty()) {
+                            it.description
+                        } else {
+                            it.summary
+                        }
+                        ScrollableText(
+                            string = text,
+                            modifier = Modifier.height(200.dp)
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(onClick = dismiss) {
+                        Text("Close")
+                    }
+                })
+        }
         Text(
             "Negative Thought: ${thought.thoughtBefore}",
             modifier = Modifier
@@ -61,7 +100,7 @@ fun ThoughtAnalysisRow(
                 Row(modifier = Modifier.weight(1f), horizontalArrangement = Arrangement.End) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_baseline_arrow_drop_down_circle_24),
-                        contentDescription = null,
+                        contentDescription = "expand dropdown",
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
@@ -75,7 +114,22 @@ fun ThoughtAnalysisRow(
                         }
                         isOpen = false
                     }) {
-                        Text(cd.name)
+                        Row {
+                            //todo find a way to make the text not displace its siblings
+                            Text(cd.name, maxLines = 2)
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_baseline_info_24),
+                                contentDescription = "more information about this cognitive distortion",
+                                modifier = Modifier
+                                    .padding(horizontal = 8.dp)
+                                    .requiredSize(24.dp)
+                                    .clickable {
+                                        infoCd = cd
+                                        showDialog = true
+                                    }
+                            )
+                        }
                     }
                 }
             }

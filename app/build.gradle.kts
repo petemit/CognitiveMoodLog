@@ -4,6 +4,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("realm-android")
+    id("kotlin-parcelize")
 }
 android {
     compileSdkVersion(30)

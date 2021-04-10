@@ -8,9 +8,9 @@ import io.realm.Realm
 import javax.inject.Inject
 
 
-class LogViewModelFactory @Inject constructor(private val repository: SeedDataRepository, private val realm: Lazy<Realm>): ILogViewModelAssistantFactory<LogViewModel> {
+class LogViewModelFactory @Inject constructor(private val repository: SeedDataRepository, private val realm: Lazy<Realm>) {
 
-    override fun create(handle: SavedStateHandle): LogViewModel {
+    fun create(handle: SavedStateHandle): LogViewModel {
         return LogViewModel(repository = repository, realm = realm, handle = handle)
     }
 }

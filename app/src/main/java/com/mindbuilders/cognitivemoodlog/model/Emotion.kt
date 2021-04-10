@@ -1,12 +1,16 @@
 package com.mindbuilders.cognitivemoodlog.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Emotion(
     val id: Int,
     val category: String,
     val name: String,
     var strengthBefore: Float = 0f,
     var strengthAfter: Float = 0f
-)
+) : Parcelable
 
 val emotions =
     listOf(

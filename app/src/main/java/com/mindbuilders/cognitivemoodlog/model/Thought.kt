@@ -1,7 +1,10 @@
 package com.mindbuilders.cognitivemoodlog.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 import java.util.*
 
+@Parcelize
 data class Thought(
     val id : String = UUID.randomUUID().toString(),
     var thoughtBefore: String = "",
@@ -10,4 +13,4 @@ data class Thought(
     var negBeliefAfter: Float = 0f,
     var posBelief: Float = 0f,
     var cognitiveDistortion: CognitiveDistortion? = null
-)
+) : Parcelable

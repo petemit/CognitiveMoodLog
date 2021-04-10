@@ -1,11 +1,10 @@
-package com.mindbuilders.cognitivemoodlog.view.components
+package com.mindbuilders.cognitivemoodlog.ui
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController

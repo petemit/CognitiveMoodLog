@@ -8,8 +8,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.NavController
 import com.mindbuilders.cognitivemoodlog.model.Thought
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
-import com.mindbuilders.cognitivemoodlog.view.components.CbtDivider
-import com.mindbuilders.cognitivemoodlog.view.components.TitleText
+import com.mindbuilders.cognitivemoodlog.ui.CbtDivider
+import com.mindbuilders.cognitivemoodlog.ui.TitleText
 
 
 @Composable

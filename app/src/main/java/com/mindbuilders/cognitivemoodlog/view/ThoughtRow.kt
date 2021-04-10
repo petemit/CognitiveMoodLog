@@ -9,10 +9,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mindbuilders.cognitivemoodlog.model.Thought
 import com.mindbuilders.cognitivemoodlog.util.roundTo
-import com.mindbuilders.cognitivemoodlog.view.components.CbtDivider
-import com.mindbuilders.cognitivemoodlog.view.components.CbtSlider
-import com.mindbuilders.cognitivemoodlog.view.components.ScrollableText
-import com.mindbuilders.cognitivemoodlog.view.components.inertSlider
+import com.mindbuilders.cognitivemoodlog.ui.CbtDivider
+import com.mindbuilders.cognitivemoodlog.ui.CbtSlider
+import com.mindbuilders.cognitivemoodlog.ui.ScrollableText
+import com.mindbuilders.cognitivemoodlog.ui.inertSlider
 
 @Composable
 fun ThoughtRow(

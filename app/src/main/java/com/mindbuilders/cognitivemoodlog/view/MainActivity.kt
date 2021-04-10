@@ -11,8 +11,6 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,7 +24,7 @@ import com.mindbuilders.cognitivemoodlog.di.LogViewModelFactory
 import com.mindbuilders.cognitivemoodlog.di.LogViewModelSavedStateHandleFactory
 import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
-import com.mindbuilders.cognitivemoodlog.view.components.CbtButton
+import com.mindbuilders.cognitivemoodlog.ui.CbtButton
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 

@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog.view.components
+package com.mindbuilders.cognitivemoodlog.ui
 
 import androidx.compose.material.Button
 import androidx.compose.material.Text

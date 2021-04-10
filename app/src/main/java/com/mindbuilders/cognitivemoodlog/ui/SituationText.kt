@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog.view.components
+package com.mindbuilders.cognitivemoodlog.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,9 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
 
 @Composable
 fun SituationText(situation: String, situationDialog: MutableState<Boolean>) {

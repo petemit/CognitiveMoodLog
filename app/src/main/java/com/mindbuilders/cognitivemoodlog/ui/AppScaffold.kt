@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog.view.components
+package com.mindbuilders.cognitivemoodlog.ui
 
 import android.widget.Toast
 import androidx.compose.foundation.clickable

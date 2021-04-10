@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog.view.components
+package com.mindbuilders.cognitivemoodlog.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -12,10 +12,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.mindbuilders.cognitivemoodlog.view.components.AbandonDialog
+import com.mindbuilders.cognitivemoodlog.ui.AbandonDialog
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
-import com.mindbuilders.cognitivemoodlog.view.components.CbtButton
-import com.mindbuilders.cognitivemoodlog.view.components.TitleText
+import com.mindbuilders.cognitivemoodlog.ui.CbtButton
+import com.mindbuilders.cognitivemoodlog.ui.TitleText
 
 @Composable
 fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {

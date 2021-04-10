@@ -9,8 +9,8 @@ import com.mindbuilders.cognitivemoodlog.model.Emotion
 import com.mindbuilders.cognitivemoodlog.model.Thought
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
 import com.mindbuilders.cognitivemoodlog.view.components.MenuAction
-import com.mindbuilders.cognitivemoodlog.view.components.SituationText
-import com.mindbuilders.cognitivemoodlog.view.components.TitleText
+import com.mindbuilders.cognitivemoodlog.ui.SituationText
+import com.mindbuilders.cognitivemoodlog.ui.TitleText
 
 
 @Composable

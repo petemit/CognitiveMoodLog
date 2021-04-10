@@ -1,22 +1,18 @@
 package com.mindbuilders.cognitivemoodlog.view
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mindbuilders.cognitivemoodlog.model.Emotion
+import com.mindbuilders.cognitivemoodlog.ui.Header
+import com.mindbuilders.cognitivemoodlog.ui.SituationText
+import com.mindbuilders.cognitivemoodlog.ui.TitleText
 import com.mindbuilders.cognitivemoodlog.view.components.*
 
 @ExperimentalFoundationApi

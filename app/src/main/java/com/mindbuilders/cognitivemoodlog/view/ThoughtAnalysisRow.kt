@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.sp
 import com.mindbuilders.cognitivemoodlog.R
 import com.mindbuilders.cognitivemoodlog.model.CognitiveDistortion
 import com.mindbuilders.cognitivemoodlog.model.Thought
-import com.mindbuilders.cognitivemoodlog.view.components.CbtDivider
-import com.mindbuilders.cognitivemoodlog.view.components.ScrollableText
+import com.mindbuilders.cognitivemoodlog.ui.CbtDivider
+import com.mindbuilders.cognitivemoodlog.ui.ScrollableText
 
 @Composable
 fun ThoughtAnalysisRow(

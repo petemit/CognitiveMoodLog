@@ -1,26 +1,10 @@
 <resources>
-    <string name="app_name">CognitiveMoodLog</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_create_new_log_entry">CreateNewLogEntry</string>
-    <string name="describe_your_situation_that_made_you_feel_upset">Describe your situation that made you feel upset:</string>
+    <string name="app_name">CBT Pal</string>
     <string name="feelinggoodlink"><a href="http://www.feelinggood.com">feelinggood.com</a></string>
-    <string name="preferences">Preferences</string>
     <string name="password_protect_key">encrypt_logentry_with_password_preference</string>
     <string name="drive_backup_key">drive_backup_key</string>
     <string name="backup_to_csv_key">backup_to_csv_key</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="title_activity_main">CBT Pal</string>
-
-
-    <string name="describe_situation">Create New Log</string>
-    <string name="review_logs">See Old Logs</string>
-    <string name="select_emotions">Select Emotions</string>
-    <string name="thoughts_before">Negative Thoughts</string>
-    <string name="cognitive_distortions">Cognitive Distortions</string>
-    <string name="thoughts_after">Positive Thoughts</string>
-    <string name="emotions_after">Emotions After</string>
-    <string name="log_review">Review Log Entry</string>
-    <string name="thoughts_review">Review Thoughts</string>
-    <string name="see_past_logs">See Past Logs</string>
 
 </resources>

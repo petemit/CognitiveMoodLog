@@ -1,6 +1,5 @@
 package com.mindbuilders.cognitivemoodlog.view
 
-import androidx.activity.OnBackPressedDispatcher
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,9 +16,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.mindbuilders.cognitivemoodlog.model.*
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
-import com.mindbuilders.cognitivemoodlog.view.components.CbtDivider
+import com.mindbuilders.cognitivemoodlog.ui.CbtDivider
 import com.mindbuilders.cognitivemoodlog.view.components.MenuAction
-import com.mindbuilders.cognitivemoodlog.view.components.TitleText
+import com.mindbuilders.cognitivemoodlog.ui.TitleText
 import java.text.SimpleDateFormat
 import java.util.*
 

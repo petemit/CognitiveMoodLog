@@ -1,22 +1,16 @@
 package com.mindbuilders.cognitivemoodlog.view
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
 import com.mindbuilders.cognitivemoodlog.model.Thought
 import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
-import com.mindbuilders.cognitivemoodlog.view.components.CbtButton
-import com.mindbuilders.cognitivemoodlog.view.components.CbtDivider
-import com.mindbuilders.cognitivemoodlog.view.components.TitleText
+import com.mindbuilders.cognitivemoodlog.ui.CbtDivider
+import com.mindbuilders.cognitivemoodlog.ui.TitleText
 
 @Composable
 fun CognitiveDistortions(navController: NavController, viewModel: LogViewModel) {

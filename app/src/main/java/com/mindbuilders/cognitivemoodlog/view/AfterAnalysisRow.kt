@@ -8,9 +8,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mindbuilders.cognitivemoodlog.util.roundTo
-import com.mindbuilders.cognitivemoodlog.view.components.CbtDivider
-import com.mindbuilders.cognitivemoodlog.view.components.CbtSlider
-import com.mindbuilders.cognitivemoodlog.view.components.inertSlider
+import com.mindbuilders.cognitivemoodlog.ui.CbtDivider
+import com.mindbuilders.cognitivemoodlog.ui.CbtSlider
+import com.mindbuilders.cognitivemoodlog.ui.inertSlider
 
 
 @Composable

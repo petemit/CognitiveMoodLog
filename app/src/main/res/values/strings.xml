@@ -9,7 +9,7 @@
     <string name="drive_backup_key">drive_backup_key</string>
     <string name="backup_to_csv_key">backup_to_csv_key</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="title_activity_main">Cognitive Behavioral Therapy Pal</string>
+    <string name="title_activity_main">CBT Pal</string>
 
 
     <string name="describe_situation">Create New Log</string>

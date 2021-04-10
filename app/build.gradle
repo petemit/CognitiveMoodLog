@@ -1,12 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 29
+    buildToolsVersion "26.0.3"
     defaultConfig {
         applicationId "com.mindbuilders.cognitivemoodlog"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 29
+        multiDexEnabled true
         versionCode 13
         versionName "1.30"
 
@@ -39,7 +40,7 @@ dependencies {
         exclude group: 'org.apache.httpcomponents'
     }
     compile 'com.google.android.gms:play-services-auth:11.6.0'
-    compile 'net.zetetic:android-database-sqlcipher:3.5.7@aar'
+    implementation 'net.zetetic:android-database-sqlcipher:3.5.7'
     debugCompile 'com.facebook.stetho:stetho:1.5.0'
     compile 'com.github.JakeWharton:ViewPagerIndicator:2.4.1@aar'
     testCompile 'junit:junit:4.12'

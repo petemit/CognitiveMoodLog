@@ -7,14 +7,10 @@ import android.util.Log
 import com.mindbuilders.cognitivemoodlog.model.CognitiveDistortion
 import com.mindbuilders.cognitivemoodlog.model.Emotion
 import com.mindbuilders.cognitivemoodlog.model.Thought
-import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-
-const val PREF_KEY = "cbtlog"
-const val NEEDS_MIGRATION = "needs_migration"
 
 @Singleton
 class LegacyDbMigrator @Inject constructor(
@@ -35,30 +31,15 @@ class LegacyDbMigrator @Inject constructor(
                 if (db.version < 2) {
                     if (db != null) {
                         //any data in here?
-                        try {
-                            db.rawQuery("select * from logentry limit 1", null).close()
-                        } catch (e: Exception) {
-                            Log.e(
-                                "mindbuilders",
-                                "unable to parse database.  Exiting"
-                            )
-
+                        if (dbIsEmpty(db)) {
                             return
                         }
 
-
                         try {
-                            //note:  Working with the query builders is really awful.  SQL is just easier... plus we're trying to move the data to noSQL so I've got no problem with this.
-                            val cursor = db.rawQuery(
-                                "\n" +
-                                        "select l.logentry, l.timestamp, t.negativethought, t.positivethought, t.logentry_id, t.negativebeliefbefore, t.negativebeliefafter, t.positivebeliefbefore, tc.thought_id, tc.cognitivedistortion_id, cd.name as cogname, cd.description as cogdescription, emotion_id, elb.beliefbefore, elb.beliefafter, emocatid, ec.name as ecname, e.name as emotionname " +
-                                        "from logentry as l \n" +
-                                        "left join thought as t on l.ROWID = t.logentry_id \n" +
-                                        "left join thought_cognitivedistortion tc on t.ROWID = tc.thought_id\n" +
-                                        "left join cognitivedistortion cd on tc.cognitivedistortion_id = cd.ROWID\n" +
-                                        "left join emotion_logentry_belief as elb on elb.logentry_id = l.ROWID\n" +
-                                        "left join emotion as e on e.ROWID = elb.emotion_id\n" +
-                                        "left join emotioncategory as ec on e.emotioncategory_id = ec.ROWID",
+                            //note:  Working with the query builders was really awful.  SQL is just easier... plus we're moving the data to noSQL so I've got no problem with this.
+
+                            val cursor = db.rawQuery(MIGRATION_SQL,
+
                                 null
                             )
 
@@ -97,8 +78,22 @@ class LegacyDbMigrator @Inject constructor(
         }
     }
 
+    private fun dbIsEmpty(db: SQLiteDatabase): Boolean {
+        try {
+            db.rawQuery("select * from logentry limit 1", null).close()
+        } catch (e: Exception) {
+            Log.e(
+                "mindbuilders",
+                "unable to parse database.  Exiting  ${e.message} ${e.stackTraceToString()} "
+            )
 
-    private fun organizeRows(rows: MutableList<Map<String, String>>) {
+            return true
+        }
+        return false
+    }
+
+
+    private suspend fun organizeRows(rows: MutableList<Map<String, String>>) {
 //        val logentries = rows.groupBy { it["logentry_id"] }
 //        val byEmotionId = logentries.keys.map { logentryid ->
 //            logentries[logentryid]?.groupBy { it["emotion_id"] }
@@ -186,14 +181,14 @@ class LegacyDbMigrator @Inject constructor(
                     }
                 }
             val sdf = SimpleDateFormat("yyyy-MM-dd h:mm a", Locale.getDefault())
-            runBlocking {
-                logRepository.putLog(
-                    situation = situation,
-                    emotions = emotionList,
-                    thoughts = thoughtList,
-                    date = sdf.parse(date) ?: Calendar.getInstance().time
-                )
-            }
+
+            logRepository.putLog(
+                situation = situation,
+                emotions = emotionList,
+                thoughts = thoughtList,
+                date = sdf.parse(date) ?: Calendar.getInstance().time
+            )
+
 
             //preventFutureDbMigration()
         }
@@ -210,3 +205,34 @@ class LegacyDbMigrator @Inject constructor(
 fun Context.getSharedPreferences(): SharedPreferences? {
     return getSharedPreferences(PREF_KEY, Context.MODE_PRIVATE)
 }
+
+//Putting these at the bottom to not obscure code... thanks huge SQL block
+const val PREF_KEY = "cbtlog"
+const val NEEDS_MIGRATION = "needs_migration"
+private val MIGRATION_SQL = """
+                                    select
+                                         l.logentry,
+                                         l.timestamp,
+                                         t.negativethought,
+                                         t.positivethought,
+                                         t.logentry_id,
+                                         t.negativebeliefbefore,
+                                         t.negativebeliefafter,
+                                         t.positivebeliefbefore,
+                                         tc.thought_id,
+                                         tc.cognitivedistortion_id,
+                                         cd.name as cogname,
+                                         cd.description as cogdescription,
+                                         emotion_id, elb.beliefbefore,
+                                         elb.beliefafter,
+                                         emocatid,
+                                         ec.name as ecname,
+                                         e.name as emotionname 
+                                        from logentry as l 
+                                        left join thought as t on l.ROWID = t.logentry_id 
+                                        left join thought_cognitivedistortion tc on t.ROWID = tc.thought_id
+                                        left join cognitivedistortion cd on tc.cognitivedistortion_id = cd.ROWID
+                                        left join emotion_logentry_belief as elb on elb.logentry_id = l.ROWID
+                                        left join emotion as e on e.ROWID = elb.emotion_id
+                                        left join emotioncategory as ec on e.emotioncategory_id = ec.ROWID
+                                """.trimIndent()

@@ -22,8 +22,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.mindbuilders.cognitivemoodlog.di.LogViewModelFactory
 import com.mindbuilders.cognitivemoodlog.di.LogViewModelSavedStateHandleFactory
+import com.mindbuilders.cognitivemoodlog.ui.AppScaffold
 import com.mindbuilders.cognitivemoodlog.ui.theme.CognitiveMoodLogTheme
-import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
 import com.mindbuilders.cognitivemoodlog.ui.CbtButton
 import dagger.android.AndroidInjection
 import javax.inject.Inject

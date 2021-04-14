@@ -10,10 +10,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import com.mindbuilders.cognitivemoodlog.model.Emotion
+import com.mindbuilders.cognitivemoodlog.ui.AppScaffold
 import com.mindbuilders.cognitivemoodlog.ui.Header
 import com.mindbuilders.cognitivemoodlog.ui.SituationText
 import com.mindbuilders.cognitivemoodlog.ui.TitleText
-import com.mindbuilders.cognitivemoodlog.view.components.*
 
 @ExperimentalFoundationApi
 @Composable

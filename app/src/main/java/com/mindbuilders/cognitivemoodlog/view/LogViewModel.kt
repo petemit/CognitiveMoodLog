@@ -3,16 +3,15 @@ package com.mindbuilders.cognitivemoodlog.view
 import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import com.mindbuilders.cognitivemoodlog.data.SeedDataRepository
+import com.mindbuilders.cognitivemoodlog.data.LogRepository
 
 import com.mindbuilders.cognitivemoodlog.model.*
 import dagger.Lazy
 import io.realm.Realm
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class LogViewModel constructor(
-    val repository: SeedDataRepository,
+    val repository: LogRepository,
     private val realm: Lazy<Realm>,
     private val handle: SavedStateHandle
 ) :

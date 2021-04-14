@@ -11,9 +11,10 @@ import kotlinx.coroutines.withContext
 import org.bson.types.ObjectId
 import javax.inject.Inject
 import io.realm.RealmConfiguration
+import java.util.*
 
 
-class SeedDataRepository @Inject constructor(
+class LogRepository @Inject constructor(
     private val assetFetcher: AssetFetcher,
     private val realmConfig: RealmConfiguration
 ) {
@@ -30,12 +31,15 @@ class SeedDataRepository @Inject constructor(
         }
     }
 
-    suspend fun putLog(situation: String, emotions: List<Emotion>, thoughts: List<Thought>) {
+    suspend fun putLog(situation: String, emotions: List<Emotion>, thoughts: List<Thought>, date: Date? = null) {
         withContext(Dispatchers.IO) {
             val realm = Realm.getInstance(realmConfig)
             realm.executeTransaction { r: Realm ->
                 val newLogEntry = r.createObject(RealmLogEntry::class.java, ObjectId())
                 newLogEntry.situation = situation
+                date?.let {
+                    newLogEntry.date = date
+                }
                 newLogEntry.emotions.addAll(emotions.map {
                     val realmEmotion = r.createObject(RealmEmotion::class.java, ObjectId())
                     realmEmotion.category = it.category
@@ -76,7 +80,7 @@ class SeedDataRepository @Inject constructor(
             try {
                 return@withContext assetFetcher.getEmotions()
             } catch (e: Exception) { //being picky about exception types doesn't really do that much for me here.
-                Log.e(SeedDataRepository::class.java.name, "couldn't read or parse emotion file")
+                Log.e(LogRepository::class.java.name, "couldn't read or parse emotion file")
                 throw e
             }
         }
@@ -88,7 +92,7 @@ class SeedDataRepository @Inject constructor(
             try {
                 return@withContext assetFetcher.getCds()
             } catch (e: Exception) { //being picky about exception types doesn't really do that much for me here.
-                Log.e(SeedDataRepository::class.java.name, "couldn't read or parse emotion file")
+                Log.e(LogRepository::class.java.name, "couldn't read or parse emotion file")
                 throw e
             }
         }

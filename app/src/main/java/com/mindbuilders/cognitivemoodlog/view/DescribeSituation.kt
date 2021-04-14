@@ -13,7 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mindbuilders.cognitivemoodlog.ui.AbandonDialog
-import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
+import com.mindbuilders.cognitivemoodlog.ui.AppScaffold
+
 import com.mindbuilders.cognitivemoodlog.ui.CbtButton
 import com.mindbuilders.cognitivemoodlog.ui.TitleText
 

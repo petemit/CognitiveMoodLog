@@ -20,11 +20,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mindbuilders.cognitivemoodlog.model.Thought
-import com.mindbuilders.cognitivemoodlog.ui.CbtButton
-import com.mindbuilders.cognitivemoodlog.ui.CbtDivider
-import com.mindbuilders.cognitivemoodlog.ui.SituationText
-import com.mindbuilders.cognitivemoodlog.ui.TitleText
-import com.mindbuilders.cognitivemoodlog.view.components.*
+import com.mindbuilders.cognitivemoodlog.ui.*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

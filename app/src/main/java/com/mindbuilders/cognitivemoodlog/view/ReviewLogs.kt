@@ -15,9 +15,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.mindbuilders.cognitivemoodlog.model.*
-import com.mindbuilders.cognitivemoodlog.view.components.AppScaffold
+import com.mindbuilders.cognitivemoodlog.ui.AppScaffold
 import com.mindbuilders.cognitivemoodlog.ui.CbtDivider
-import com.mindbuilders.cognitivemoodlog.view.components.MenuAction
+import com.mindbuilders.cognitivemoodlog.ui.MenuAction
 import com.mindbuilders.cognitivemoodlog.ui.TitleText
 import java.text.SimpleDateFormat
 import java.util.*

@@ -4,16 +4,20 @@ import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.mindbuilders.cognitivemoodlog.data.LogRepository
+import com.mindbuilders.cognitivemoodlog.data.MigrationMediator
 
 import com.mindbuilders.cognitivemoodlog.model.*
 import dagger.Lazy
 import io.realm.Realm
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LogViewModel constructor(
     val repository: LogRepository,
     private val realm: Lazy<Realm>,
-    private val handle: SavedStateHandle
+    private val handle: SavedStateHandle,
+    migrationMediator: MigrationMediator
 ) :
     ViewModel() {
 
@@ -25,7 +29,7 @@ class LogViewModel constructor(
     val lastNav: LiveData<String> = handle.getLiveData("lastRoute")
 
     //emotions
-    private val _emotionList: MutableLiveData<List<Emotion>> = MutableLiveData()
+    private val _emotionList: MutableLiveData<List<Emotion>> = MutableLiveData(emptyList())
     val emotionList: LiveData<List<Emotion>> = _emotionList
 
     val groupedEmotions: LiveData<Map<String, List<Emotion>>> =
@@ -34,7 +38,8 @@ class LogViewModel constructor(
         emotionList.map { emotionList -> emotionList.filter { it.strengthBefore > 0 } }
 
     //thoughts
-    private val _thoughts: MutableLiveData<MutableList<Thought>> = MutableLiveData(handle.get("thoughts") ?: mutableListOf())
+    private val _thoughts: MutableLiveData<MutableList<Thought>> =
+        MutableLiveData(handle.get("thoughts") ?: mutableListOf())
     val thoughts: LiveData<out List<Thought>> = _thoughts
 
     val hasANegativeThought: LiveData<Boolean> = thoughts.map { listOfThoughts ->
@@ -60,8 +65,17 @@ class LogViewModel constructor(
     }
 
     //loading status
-    private val _isLoading: MutableLiveData<Boolean> = MutableLiveData<Boolean>(false)
-    val isLoading: LiveData<Boolean> = _isLoading
+    private val _isLoading: LiveData<Boolean> = _emotionList.map {
+        it.isEmpty()
+    }
+    private val _isMigrating = migrationMediator.waitStatus.asLiveData(Dispatchers.IO)
+
+    //This just acts as an aggregate event listener
+    private val isLoadingAggregate: MediatorLiveData<Int> = MediatorLiveData<Int>()
+
+    val isLoading: LiveData<Boolean> = isLoadingAggregate.map {
+        return@map _isLoading.value == true || _isMigrating.value == true
+    }.distinctUntilChanged()
 
     //cognitive distortions
     private val _cognitiveDistortionList: MutableLiveData<List<CognitiveDistortion>> =
@@ -77,12 +91,17 @@ class LogViewModel constructor(
     }
 
     init {
+        isLoadingAggregate.value = 0
+        isLoadingAggregate.addSource(_isMigrating) {
+            isLoadingAggregate.value = isLoadingAggregate.value
+        }
+        isLoadingAggregate.addSource(_isLoading) {
+            isLoadingAggregate.value = isLoadingAggregate.value
+        }
         viewModelScope.launch {
-            _isLoading.value = true
             val savedEmotions = handle.get<List<Emotion>>("emotions")
             _emotionList.value = savedEmotions ?: repository.getEmotions()
             _cognitiveDistortionList.value = repository.getCds()
-            _isLoading.value = false
         }
     }
 
@@ -156,12 +175,4 @@ class LogViewModel constructor(
  */
 fun <T> MutableLiveData<T>.notifyObserver() {
     this.value = this.value
-}
-
-inline fun <X, Y> LiveData<X>.mapOrNull(crossinline transform: (X) -> Y): LiveData<Y>? {
-    return if (this.value == null) {
-        null
-    } else {
-        map(transform)
-    }
 }

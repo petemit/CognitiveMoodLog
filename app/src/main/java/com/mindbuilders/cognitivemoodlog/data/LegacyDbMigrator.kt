@@ -2,7 +2,8 @@ package com.mindbuilders.cognitivemoodlog.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.database.sqlite.*
+import android.database.sqlite.SQLiteCantOpenDatabaseException
+import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.mindbuilders.cognitivemoodlog.model.CognitiveDistortion
 import com.mindbuilders.cognitivemoodlog.model.Emotion
@@ -15,12 +16,15 @@ import javax.inject.Singleton
 @Singleton
 class LegacyDbMigrator @Inject constructor(
     private val logRepository: LogRepository,
-    private val context: Context
+    private val context: Context,
+    private val migrationMediator: MigrationMediator
 ) {
     suspend fun migrateDbIfNecessary() {
+
         if (context.getSharedPreferences()
                 ?.getBoolean(NEEDS_MIGRATION, true) == true
         ) {
+            migrationMediator.waitStatus.value = true
             try {
                 val db = SQLiteDatabase.openDatabase(
                     context.getDatabasePath("CognitiveMoodLog.db").toString(),
@@ -186,6 +190,7 @@ class LegacyDbMigrator @Inject constructor(
     private fun preventFutureDbMigration() {
         context.getSharedPreferences()?.edit()?.putBoolean(NEEDS_MIGRATION, false)
             ?.apply()
+        migrationMediator.waitStatus.value = false
     }
 
 

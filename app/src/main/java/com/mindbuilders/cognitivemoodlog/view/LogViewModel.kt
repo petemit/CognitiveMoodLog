@@ -55,7 +55,7 @@ class LogViewModel constructor(
     val realmLogEntries: LiveData<List<RealmLogEntry>?> = repository.results.map { it.value }
     fun refreshLogEntries() {
         viewModelScope.launch {
-            repository.refresh()
+            repository.refreshAndCount()
         }
     }
 

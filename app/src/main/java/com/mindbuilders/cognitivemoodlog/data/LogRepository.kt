@@ -20,14 +20,14 @@ class LogRepository @Inject constructor(
 ) {
 
     val results = MutableLiveData<LiveRealmResults<RealmLogEntry>>()
-    suspend fun refresh() {
-        withContext(Dispatchers.IO) {
+    suspend fun refreshAndCount(): Int {
+        return withContext(Dispatchers.IO) {
             val realm = Realm.getInstance(realmConfig)
             val realmResults =
                 realm.where(RealmLogEntry::class.java).sort("date", Sort.DESCENDING).findAll().freeze()
 
             results.postValue(LiveRealmResults(realmResults))
-
+            return@withContext realmResults.size
         }
     }
 

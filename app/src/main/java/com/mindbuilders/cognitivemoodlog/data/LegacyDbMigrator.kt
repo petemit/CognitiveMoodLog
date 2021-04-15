@@ -27,47 +27,39 @@ class LegacyDbMigrator @Inject constructor(
                     null,
                     SQLiteDatabase.OPEN_READONLY
                 )
+                if (db != null && db.version < 2 && dbIsEmpty(db)) {
 
-                if (db.version < 2) {
-                    if (db != null) {
-                        //any data in here?
-                        if (dbIsEmpty(db)) {
-                            return
-                        }
+                    try {
+                        //note:  Working with the query builders was really awful.  SQL is just easier... plus we're moving the data to noSQL so I've got no problem with this.
+                        val cursor = db.rawQuery(
+                            MIGRATION_SQL,
+                            null
+                        )
 
-                        try {
-                            //note:  Working with the query builders was really awful.  SQL is just easier... plus we're moving the data to noSQL so I've got no problem with this.
-
-                            val cursor = db.rawQuery(MIGRATION_SQL,
-
-                                null
-                            )
-
-                            val columns = cursor.columnNames
-                            val rows = mutableListOf<Map<String, String>>()
-                            var rowCounter = 0
-                            while (cursor.moveToNext()) {
-                                rowCounter++
-                                val row = mutableMapOf<String, String>()
-                                columns.mapIndexed { index, s ->
-                                    row[s] = cursor.getString(index) //?: cursor.getInt(index)
-                                }
-                                rows.add(row)
+                        val columns = cursor.columnNames
+                        val rows = mutableListOf<Map<String, String>>()
+                        while (cursor.moveToNext()) {
+                            val row = mutableMapOf<String, String>()
+                            columns.mapIndexed { index, s ->
+                                row[s] = cursor.getString(index)
                             }
-                            cursor.close()
-
-                            organizeRows(rows)
-
-                        } catch (e: Exception) {
-                            Log.e(
-                                "mindbuilders",
-                                "unable to parse database. Exiting ${e.message} ${e.stackTraceToString()}"
-                            )
-                            return
+                            rows.add(row)
                         }
+                        cursor.close()
+
+                        val oldLogCount = migrateDb(rows)
+                        if (oldLogCount > -1) {
+                            validateMigration(oldLogCount)
+                        }
+
+
+                    } catch (e: Exception) {
+                        Log.e(
+                            "mindbuilders",
+                            "unable to parse database. Exiting ${e.message} ${e.stackTraceToString()}"
+                        )
+                        return
                     }
-                    println("hey")
-                    // throw RuntimeException("Just quit for now until I've got this sorted.")
                 }
 
 
@@ -75,6 +67,14 @@ class LegacyDbMigrator @Inject constructor(
                 // no db, no problem.   Don't try this again.
                 preventFutureDbMigration()
             }
+        }
+    }
+
+    private suspend fun validateMigration(oldLogCount: Int) {
+        val newLogCount = logRepository.refreshAndCount()
+        if (newLogCount == oldLogCount) {
+            (context.getDatabasePath("CognitiveMoodLog.db")).renameTo(context.getDatabasePath("CognitiveMoodLog_bak.db"))
+            preventFutureDbMigration()
         }
     }
 
@@ -87,22 +87,13 @@ class LegacyDbMigrator @Inject constructor(
                 "unable to parse database.  Exiting  ${e.message} ${e.stackTraceToString()} "
             )
 
-            return true
+            return false
         }
-        return false
+        return true
     }
 
 
-    private suspend fun organizeRows(rows: MutableList<Map<String, String>>) {
-//        val logentries = rows.groupBy { it["logentry_id"] }
-//        val byEmotionId = logentries.keys.map { logentryid ->
-//            logentries[logentryid]?.groupBy { it["emotion_id"] }
-//        }
-//
-//        val byThoughtId = logentries.map { map ->
-//            logentries[map.key]?.groupBy { it["thought_id"] }
-//        }
-//        byThoughtId
+    private suspend fun migrateDb(rows: MutableList<Map<String, String>>): Int {
 
         //todo not optimized, but this will only happen once.
         val logEntries = rows.map { it["logentry_id"] }.distinct()
@@ -117,7 +108,7 @@ class LegacyDbMigrator @Inject constructor(
 
         if (logEntries.isEmpty() || emotions.isEmpty() || thoughts.isEmpty()) {
             preventFutureDbMigration()
-            return
+            return -1
         }
 
         logEntries.forEach { logEntry_id ->
@@ -188,10 +179,8 @@ class LegacyDbMigrator @Inject constructor(
                 thoughts = thoughtList,
                 date = sdf.parse(date) ?: Calendar.getInstance().time
             )
-
-
-            //preventFutureDbMigration()
         }
+        return logEntries.size
     }
 
     private fun preventFutureDbMigration() {

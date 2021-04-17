@@ -3,15 +3,19 @@ package com.mindbuilders.cognitivemoodlog.data
 import android.content.Context
 import android.content.SharedPreferences
 import android.database.sqlite.SQLiteCantOpenDatabaseException
-import android.database.sqlite.SQLiteDatabase
 import android.util.Log
 import com.mindbuilders.cognitivemoodlog.model.CognitiveDistortion
 import com.mindbuilders.cognitivemoodlog.model.Emotion
 import com.mindbuilders.cognitivemoodlog.model.Thought
+import kotlinx.coroutines.awaitCancellation
+import net.sqlcipher.database.SQLiteDatabase
+import java.lang.StringBuilder
+import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.experimental.and
 
 @Singleton
 class LegacyDbMigrator @Inject constructor(
@@ -20,14 +24,15 @@ class LegacyDbMigrator @Inject constructor(
     private val migrationMediator: MigrationMediator
 ) {
     suspend fun migrateDbIfNecessary() {
-
         if (context.getSharedPreferences()
                 ?.getBoolean(NEEDS_MIGRATION, true) == true
         ) {
             migrationMediator.waitStatus.value = true
             try {
+                SQLiteDatabase.loadLibs(context)
                 val db = SQLiteDatabase.openDatabase(
                     context.getDatabasePath("CognitiveMoodLog.db").toString(),
+                    migrationMediator.password.value.toSha1(),
                     null,
                     SQLiteDatabase.OPEN_READONLY
                 )
@@ -67,9 +72,22 @@ class LegacyDbMigrator @Inject constructor(
                 }
 
 
-            } catch (e: SQLiteCantOpenDatabaseException) {
-                // no db, no problem.   Don't try this again.
-                preventFutureDbMigration()
+            } catch (e: net.sqlcipher.database.SQLiteException) {
+                with(e.message ?: "") {
+                    when {
+                        contains("Could not open database") -> preventFutureDbMigration()
+                        contains("file is not a database") -> {
+                            migrationMediator.enterPasswordState.value = true
+                            return //end process
+                        }
+                        else -> {
+                            //preventFutureDbMigration()
+                        }
+                    }
+                    // no db, no problem.   Don't try this again.
+                    e.toString()
+
+                }
             }
         }
     }
@@ -193,7 +211,22 @@ class LegacyDbMigrator @Inject constructor(
         migrationMediator.waitStatus.value = false
     }
 
-
+    private fun String.toSha1(): String? {
+        val clearString = this
+        return try {
+            val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-1")
+            messageDigest.update(clearString.toByteArray(charset("UTF-8")))
+            val bytes: ByteArray = messageDigest.digest()
+            val buffer = StringBuilder()
+            for (b in bytes) {
+                buffer.append(((b and 0xff.toByte()) + 0x100).toString(16).substring(1))
+            }
+            buffer.toString()
+        } catch (ignored: java.lang.Exception) {
+            ignored.printStackTrace()
+            null
+        }
+    }
 }
 
 fun Context.getSharedPreferences(): SharedPreferences? {

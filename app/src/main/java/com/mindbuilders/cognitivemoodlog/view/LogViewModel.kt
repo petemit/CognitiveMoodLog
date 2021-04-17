@@ -1,10 +1,13 @@
 package com.mindbuilders.cognitivemoodlog.view
 
+import android.content.Context
 import androidx.lifecycle.*
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.mindbuilders.cognitivemoodlog.data.LogRepository
 import com.mindbuilders.cognitivemoodlog.data.MigrationMediator
+import com.mindbuilders.cognitivemoodlog.data.NEEDS_MIGRATION
+import com.mindbuilders.cognitivemoodlog.data.getSharedPreferences
 
 import com.mindbuilders.cognitivemoodlog.model.*
 import dagger.Lazy
@@ -17,7 +20,7 @@ class LogViewModel constructor(
     val repository: LogRepository,
     private val realm: Lazy<Realm>,
     private val handle: SavedStateHandle,
-    migrationMediator: MigrationMediator
+    private val migrationMediator: MigrationMediator
 ) :
     ViewModel() {
 
@@ -76,6 +79,9 @@ class LogViewModel constructor(
     val isLoading: LiveData<Boolean> = isLoadingAggregate.map {
         return@map _isLoading.value == true || _isMigrating.value == true
     }.distinctUntilChanged()
+
+    //passwordState
+    val passwordState = migrationMediator.enterPasswordState.asLiveData()
 
     //cognitive distortions
     private val _cognitiveDistortionList: MutableLiveData<List<CognitiveDistortion>> =
@@ -167,6 +173,21 @@ class LogViewModel constructor(
     fun nav(navController: NavController, route: String) {
         handle["lastRoute"] = route
         navController.navigate(route)
+    }
+
+    fun exitPasswordState() {
+        migrationMediator.enterPasswordState.value = false
+    }
+
+    fun setPassword(password: String) {
+        migrationMediator.password.value = password
+    }
+
+    fun stopMigration(context: Context) {
+        //todo dupe code, but since there's only 2 I'll roll with it rather than add needless coupling
+        context.getSharedPreferences()?.edit()?.putBoolean(NEEDS_MIGRATION, false)
+            ?.apply()
+        migrationMediator.waitStatus.value = false
     }
 }
 

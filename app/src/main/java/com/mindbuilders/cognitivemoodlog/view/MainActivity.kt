@@ -1,16 +1,13 @@
 package com.mindbuilders.cognitivemoodlog.view
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +33,7 @@ class MainActivity : ComponentActivity() {
     val viewModel: LogViewModel by viewModels {
         LogViewModelSavedStateHandleFactory<LogViewModel>(viewModelFactory, this)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AndroidInjection.inject(this)
@@ -43,6 +41,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val loadingState = viewModel.isLoading.observeAsState(initial = false)
             val lastNav by viewModel.lastNav.observeAsState()
+            val passwordState = viewModel.passwordState.observeAsState(false)
             CognitiveMoodLogTheme {
                 val navController = rememberNavController()
                 val lastNavVal = lastNav
@@ -52,12 +51,87 @@ class MainActivity : ComponentActivity() {
                     BuildNavHost(navController, viewModel)
                 }
             }
-            Log.e("progressbar", "state changed ${loadingState.value}")
-            if (loadingState.value) {
-                ProgressView()
+            Column {
+                if (passwordState.value) {
+                    EnterPassword()
+                }
+                if (loadingState.value) {
+                    ProgressView()
+                }
             }
         }
 
+    }
+
+    @Composable
+    private fun EnterPassword() {
+
+        var areYouSure by remember { mutableStateOf(false) }
+        var password by remember { mutableStateOf("") }
+
+        val dismiss = { viewModel.exitPasswordState() }
+        AlertDialog(onDismissRequest =
+        dismiss,
+            dismissButton = {
+                Button(onClick = {
+                    areYouSure = true
+                }) {
+                    Text("Ignore Old Data")
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+                    viewModel.exitPasswordState()
+                    viewModel.setPassword(password)
+                }) {
+                    Text("OK")
+                }
+            }, title = { Text("Enter Your Password To Unlock Your DB.") },
+            text = {
+                Column {
+                    Text("If you want to start fresh and don't want your old logs, click the \"Ignore Old Data\" button.")
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(start = 12.dp, end = 12.dp),
+                        value = password,
+                        label = { Text("enter password") },
+                        onValueChange = {
+                            password = it
+                        })
+                }
+            })
+
+
+        if (areYouSure) {
+            AlertDialog(
+                onDismissRequest = {
+                    areYouSure = false
+                },
+                dismissButton = {
+                    Button(onClick = {
+                        areYouSure = false
+                    }) {
+                        Text("Cancel")
+                    }
+                },
+                confirmButton = {
+                    Button(onClick = {
+                        areYouSure = false
+                        dismiss.invoke()
+                        viewModel.stopMigration(context = applicationContext)
+                    }) {
+                        Text("Ignore Old Logs")
+                    }
+                }, text = {
+                    Text(
+                        """
+                    Are you sure you want ignore your old logs? 
+                    You won't be able to see them in your previous logs.
+                """.trimIndent()
+                    )
+                }
+            )
+        }
     }
 
     @Composable
@@ -152,7 +226,7 @@ fun MainMenu(navController: NavController, viewModel: LogViewModel) {
                         .padding(12.dp)
                         .fillMaxWidth(.5f)
                 ) {
-                    viewModel.nav(navController,screen.route)
+                    viewModel.nav(navController, screen.route)
                 }
             }
 

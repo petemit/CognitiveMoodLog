@@ -72,7 +72,8 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"]}")
     implementation("androidx.compose.runtime:runtime-livedata:${rootProject.extra["compose_version"]}")
 
-
+    //sqlcipher for migration purposes
+    implementation("net.zetetic:android-database-sqlcipher:4.4.3")
 
     //architectural components
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
@@ -85,11 +86,6 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.3.4")
     implementation("androidx.navigation:navigation-ui-ktx:2.3.4")
     implementation("androidx.navigation:navigation-compose:1.0.0-alpha09")
-
-    //room
-    implementation("androidx.room:room-ktx:2.2.6")
-    implementation("androidx.room:room-runtime:2.2.6")
-    kapt("androidx.room:room-compiler:2.2.6")
 
 }
 //

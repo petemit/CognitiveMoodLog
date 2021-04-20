@@ -3,7 +3,7 @@ package com.mindbuilders.cognitivemoodlog.data
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.mindbuilders.cognitivemoodlog.model.*
-import com.mindbuilders.cognitivemoodlog.realm.LiveRealmResults
+import com.mindbuilders.cognitivemoodlog.data.realm.LiveRealmResults
 import io.realm.Realm
 import io.realm.Sort
 import kotlinx.coroutines.Dispatchers

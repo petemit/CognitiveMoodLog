@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog.realm
+package com.mindbuilders.cognitivemoodlog.data.realm
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData

@@ -8,7 +8,6 @@
 
     <application
         android:name=".App"
-        android:allowBackup="true"
         android:icon="@drawable/book"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -17,30 +16,13 @@
         <activity
             android:name=".view.MainActivity"
             android:windowSoftInputMode="adjustResize"
-            android:label="@string/title_activity_main">
+            android:label="@string/title_activity_main"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<!--        <activity-->
-<!--            android:name=".CreateNewLogEntryActivity"-->
-<!--            android:label="@string/title_activity_create_new_log_entry"-->
-<!--            android:theme="@style/AppTheme.NoActionBar"-->
-<!--            android:windowSoftInputMode="adjustPan" />-->
-<!--        <activity-->
-<!--            android:name=".ReviewActivity"-->
-<!--            android:windowSoftInputMode="adjustPan" />-->
-<!--        <activity-->
-<!--            android:name=".OpenPreviousLogsActivity"-->
-<!--            android:windowSoftInputMode="adjustPan" />-->
-<!--        <activity-->
-<!--            android:name=".TroubleshootEntryActivity"-->
-<!--            android:windowSoftInputMode="adjustPan" />-->
-<!--        <activity-->
-<!--            android:name=".ExplainCognitiveTherapyActivity"-->
-<!--            android:windowSoftInputMode="adjustPan" />-->
-<!--        <activity android:name=".PreferenceActivity" />-->
     </application>
 
 </manifest>

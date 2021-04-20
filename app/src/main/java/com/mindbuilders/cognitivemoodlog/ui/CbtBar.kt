@@ -14,31 +14,31 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun CbtBar(title: String = "", isSave: Boolean = false, actionAction: () -> Unit = {}) {
+fun CbtBar(
+    title: String = "",
+    isSave: Boolean = false,
+    isNone: Boolean = false,
+    actionAction: () -> Unit = {},
+) {
     TopAppBar(
         title = { Text(title) },
         backgroundColor = MaterialTheme.colors.primarySurface,
-        navigationIcon = {
-            Icon(
-                Icons.Default.Menu,
-                "menuButton",
-                modifier = Modifier.clickable {
-                    // scaffoldState.drawerState.open()
-                }
-            )
-        },
+        //todo I don't love how this turned out. I  should hoist this behavior
         actions = {
-            gimmeAction(
-                name = "clearButton",
-                vector = Icons.Default.Clear,
-                actionAction = actionAction
-            )
-            if (isSave) {
+            if (isNone) {
+            } else {
                 gimmeAction(
-                    name = "saveButton",
-                    vector = Icons.Default.Done,
+                    name = "clearButton",
+                    vector = Icons.Default.Clear,
                     actionAction = actionAction
                 )
+                if (isSave) {
+                    gimmeAction(
+                        name = "saveButton",
+                        vector = Icons.Default.Done,
+                        actionAction = actionAction
+                    )
+                }
             }
         })
 }

@@ -2,20 +2,16 @@ package com.mindbuilders.cognitivemoodlog.data
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.database.sqlite.SQLiteCantOpenDatabaseException
 import android.util.Log
 import com.mindbuilders.cognitivemoodlog.model.CognitiveDistortion
 import com.mindbuilders.cognitivemoodlog.model.Emotion
 import com.mindbuilders.cognitivemoodlog.model.Thought
-import kotlinx.coroutines.awaitCancellation
 import net.sqlcipher.database.SQLiteDatabase
-import java.lang.StringBuilder
 import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.experimental.and
 
 @Singleton
 class LegacyDbMigrator @Inject constructor(
@@ -27,7 +23,7 @@ class LegacyDbMigrator @Inject constructor(
         if (context.getSharedPreferences()
                 ?.getBoolean(NEEDS_MIGRATION, true) == true
         ) {
-            migrationMediator.waitStatus.value = true
+            migrationMediator.migrationStatus.value = true
             try {
                 SQLiteDatabase.loadLibs(context)
                 val db = SQLiteDatabase.openDatabase(
@@ -77,16 +73,15 @@ class LegacyDbMigrator @Inject constructor(
                     when {
                         contains("Could not open database") -> preventFutureDbMigration()
                         contains("file is not a database") -> {
-                            migrationMediator.enterPasswordState.value = true
+                            migrationMediator.enterPasswordPrompt.value = true
                             return //end process
                         }
                         else -> {
-                            //preventFutureDbMigration()
+                            preventFutureDbMigration()
                         }
                     }
                     // no db, no problem.   Don't try this again.
                     e.toString()
-
                 }
             }
         }
@@ -208,24 +203,24 @@ class LegacyDbMigrator @Inject constructor(
     private fun preventFutureDbMigration() {
         context.getSharedPreferences()?.edit()?.putBoolean(NEEDS_MIGRATION, false)
             ?.apply()
-        migrationMediator.waitStatus.value = false
+        migrationMediator.migrationStatus.value = false
     }
+}
 
-    private fun String.toSha1(): String? {
-        val clearString = this
-        return try {
-            val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-1")
-            messageDigest.update(clearString.toByteArray(charset("UTF-8")))
-            val bytes: ByteArray = messageDigest.digest()
-            val buffer = StringBuilder()
-            for (b in bytes) {
-                buffer.append(((b and 0xff.toByte()) + 0x100).toString(16).substring(1))
-            }
-            buffer.toString()
-        } catch (ignored: java.lang.Exception) {
-            ignored.printStackTrace()
-            null
+fun String.toSha1(): String? {
+    val clearString = this
+    return try {
+        val messageDigest: MessageDigest = MessageDigest.getInstance("SHA-1")
+        messageDigest.update(clearString.toByteArray(charset("UTF-8")))
+        val bytes: ByteArray = messageDigest.digest()
+        val buffer = StringBuilder()
+        for (b in bytes) {
+            buffer.append(((b.toInt() and 0xff) + 0x100).toString(16).substring(1))
         }
+        buffer.toString()
+    } catch (ignored: java.lang.Exception) {
+        ignored.printStackTrace()
+        null
     }
 }
 

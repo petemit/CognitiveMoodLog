@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.mindbuilders.cognitivemoodlog.view.LogViewModel
-import com.mindbuilders.cognitivemoodlog.view.Screen
+import com.mindbuilders.cognitivemoodlog.nav.Screen
 
 @Composable
 fun AppScaffold(
@@ -44,7 +44,7 @@ fun AppScaffold(
             isEnabled = destEnabled
         ) {
             destination?.route?.let {
-                viewModel.nav(navController, it)
+                navController.navigate(it)
             }
         }
     },
@@ -86,6 +86,9 @@ fun AppScaffold(
                     CbtBar(title) {
                         closeBehavior.invoke()
                     }
+                }
+                MenuAction.NONE -> {
+                    CbtBar(title, isNone = true)
                 }
             }
 
@@ -167,5 +170,6 @@ fun NavigationButtons(
 enum class MenuAction {
     CLEAR,
     SAVE,
-    CLOSE
+    CLOSE,
+    NONE
 }

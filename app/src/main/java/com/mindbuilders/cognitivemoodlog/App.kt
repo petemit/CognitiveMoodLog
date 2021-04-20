@@ -4,13 +4,10 @@ import com.mindbuilders.cognitivemoodlog.data.LegacyDbMigrator
 import com.mindbuilders.cognitivemoodlog.data.LogRepository
 import com.mindbuilders.cognitivemoodlog.data.MigrationMediator
 import com.mindbuilders.cognitivemoodlog.di.DaggerAppComponent
-import com.mindbuilders.cognitivemoodlog.model.*
 import dagger.android.AndroidInjector
 import dagger.android.DaggerApplication
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.observeOn
-import java.util.*
 import javax.inject.Inject
 
 
@@ -41,24 +38,23 @@ class App : DaggerApplication() {
         job = launchMigrationJob()
 
         migrationScope.launch {
-            migrationMediator.password.collect {
-                if (it.isNotEmpty() && !migrationMediator.enterPasswordState.value) {
+            migrationMediator.needsRetry.collect {
+                if (it && !migrationMediator.enterPasswordPrompt.value) {
                     job = launchMigrationJob()
+                    migrationMediator.needsRetry.value = false
                 }
             }
-
         }
         migrationScope.launch {
-            migrationMediator.enterPasswordState.collect {
+            migrationMediator.enterPasswordPrompt.collect {
                 if (it) {
                     job.cancel()
                 }
             }
         }
-
     }
 
-    fun launchMigrationJob() = migrationScope.launch {
+    private fun launchMigrationJob() = migrationScope.launch {
         legacyDbMigrator.migrateDbIfNecessary()
     }
 

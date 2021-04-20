@@ -1,21 +1,27 @@
 package com.mindbuilders.cognitivemoodlog.view
 
 import android.content.Context
+import android.os.Bundle
 import androidx.lifecycle.*
 import androidx.navigation.NavController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.navigate
+import androidx.navigation.compose.popUpTo
 import com.mindbuilders.cognitivemoodlog.data.LogRepository
 import com.mindbuilders.cognitivemoodlog.data.MigrationMediator
 import com.mindbuilders.cognitivemoodlog.data.NEEDS_MIGRATION
 import com.mindbuilders.cognitivemoodlog.data.getSharedPreferences
 
 import com.mindbuilders.cognitivemoodlog.model.*
+import com.mindbuilders.cognitivemoodlog.nav.Screen
 import dagger.Lazy
 import io.realm.Realm
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+/**
+ * This class is in charge of the entire vie
+ */
 class LogViewModel constructor(
     val repository: LogRepository,
     private val realm: Lazy<Realm>,
@@ -29,7 +35,7 @@ class LogViewModel constructor(
     val situation: LiveData<String> = _situation
 
     //last nav
-    val lastNav: LiveData<String> = handle.getLiveData("lastRoute")
+    val lastNav: LiveData<Bundle> = handle.getLiveData("lastRoute")
 
     //emotions
     private val _emotionList: MutableLiveData<List<Emotion>> = MutableLiveData(emptyList())
@@ -71,7 +77,7 @@ class LogViewModel constructor(
     private val _isLoading: LiveData<Boolean> = _emotionList.map {
         it.isEmpty()
     }
-    private val _isMigrating = migrationMediator.waitStatus.asLiveData(Dispatchers.IO)
+    private val _isMigrating = migrationMediator.migrationStatus.asLiveData(Dispatchers.IO)
 
     //This just acts as an aggregate event listener
     private val isLoadingAggregate: MediatorLiveData<Int> = MediatorLiveData<Int>()
@@ -81,7 +87,7 @@ class LogViewModel constructor(
     }.distinctUntilChanged()
 
     //passwordState
-    val passwordState = migrationMediator.enterPasswordState.asLiveData()
+    val passwordState = migrationMediator.enterPasswordPrompt.asLiveData()
 
     //cognitive distortions
     private val _cognitiveDistortionList: MutableLiveData<List<CognitiveDistortion>> =
@@ -104,13 +110,15 @@ class LogViewModel constructor(
         isLoadingAggregate.addSource(_isLoading) {
             isLoadingAggregate.value = isLoadingAggregate.value
         }
+        fetchEmotions()
+    }
+    fun fetchEmotions() {
         viewModelScope.launch {
             val savedEmotions = handle.get<List<Emotion>>("emotions")
             _emotionList.value = savedEmotions ?: repository.getEmotions()
             _cognitiveDistortionList.value = repository.getCds()
         }
     }
-
     fun onSituationChange(newSituation: String) {
         handle["situation"] = newSituation
         _situation.value = newSituation
@@ -140,9 +148,12 @@ class LogViewModel constructor(
         _emotionList.value = mutableListOf()
         _situation.value = ""
 
+        handle.remove<Bundle>("lastRoute")
         handle.remove<String>("situation")
         handle.remove<List<Thought>>("thoughts")
         handle.remove<List<Emotion>>("emotions")
+
+        fetchEmotions()
     }
 
     fun saveLog() {
@@ -163,31 +174,26 @@ class LogViewModel constructor(
         realm.get().close()
     }
 
-//    fun navLast(navController: NavController) {
-//        val route = handle.get<String>("lastRoute")
-//        if (route != null && route.isNotEmpty()) {
-//            navController.navigate(route)
-//        }
-//    }
-
-    fun nav(navController: NavController, route: String) {
-        handle["lastRoute"] = route
-        navController.navigate(route)
+    fun updateLastNav(bundle: Bundle) {
+        handle["lastRoute"] = bundle
     }
 
     fun exitPasswordState() {
-        migrationMediator.enterPasswordState.value = false
+        migrationMediator.enterPasswordPrompt.value = false
     }
 
     fun setPassword(password: String) {
+        exitPasswordState()
         migrationMediator.password.value = password
+        migrationMediator.needsRetry.value = true
     }
 
     fun stopMigration(context: Context) {
         //todo dupe code, but since there's only 2 I'll roll with it rather than add needless coupling
+        context.getDatabasePath("CognitiveMoodLog.db").renameTo(context.getDatabasePath("CognitiveMoodLog_bak.db"))
         context.getSharedPreferences()?.edit()?.putBoolean(NEEDS_MIGRATION, false)
             ?.apply()
-        migrationMediator.waitStatus.value = false
+        migrationMediator.migrationStatus.value = false
     }
 }
 

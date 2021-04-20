@@ -6,7 +6,8 @@ import javax.inject.Singleton
 
 @Singleton
 class MigrationMediator @Inject constructor(){
-    val waitStatus = MutableStateFlow(false)
-    val enterPasswordState = MutableStateFlow(false)
+    val migrationStatus = MutableStateFlow(false)
+    val enterPasswordPrompt = MutableStateFlow(false)
+    val needsRetry = MutableStateFlow(false)
     val password = MutableStateFlow("")
 }

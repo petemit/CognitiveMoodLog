@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import com.mindbuilders.cognitivemoodlog.view.LogViewModel
-import com.mindbuilders.cognitivemoodlog.view.Screen
+import com.mindbuilders.cognitivemoodlog.nav.Screen
 
 @Composable
 fun AbandonDialog(navController: NavController, viewModel: LogViewModel, isShowing: MutableState<Boolean>) {

@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mindbuilders.cognitivemoodlog.model.Thought
+import com.mindbuilders.cognitivemoodlog.nav.Screen
 import com.mindbuilders.cognitivemoodlog.ui.AppScaffold
 import com.mindbuilders.cognitivemoodlog.ui.SituationText
 import com.mindbuilders.cognitivemoodlog.ui.TitleText

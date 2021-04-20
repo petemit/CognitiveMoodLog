@@ -32,7 +32,7 @@ fun ReviewLogs(navController: NavHostController, viewModel: LogViewModel) {
     /*  todo I haven't dug into how to better interop with RealmObjects...
      *      They seem to be kind of a pain... for now I'll just map them.
      */
-    val logEntries = realmLogEntries?.mapNotNull { logEntry ->
+    val logEntries = realmLogEntries?.map { logEntry ->
         LogEntry(
             logEntry.id.toHexString(),
             emotions = logEntry.emotions.map { emotion ->
@@ -94,29 +94,39 @@ fun ReviewLogs(navController: NavHostController, viewModel: LogViewModel) {
         } else {
 
             LazyColumn {
-                item {
-                    TitleText("Tap On a Row To Review Your Past Logs")
-                    CbtDivider()
-                }
-                logEntries?.let { logEntries ->
-                    items(logEntries) { logEntry ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(80.dp)
-                                .clickable {
-                                    selectedLog = logEntry
-                                }
+                if (logEntries?.isNotEmpty() == true) {
+                    item {
+                        TitleText("Tap On a Row To Review Your Past Logs")
+                        CbtDivider()
+                    }
+                    logEntries?.let { logEntries ->
+                        items(logEntries) { logEntry ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(80.dp)
+                                    .clickable {
+                                        selectedLog = logEntry
+                                    }
 
-                        ) {
-                            Text(
-                                logEntry.situation,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 3,
-                                modifier = Modifier.weight(1f)
-                            )
-                            Text(logEntry.date.toFormattedDate(), modifier = Modifier.weight(1f))
+                            ) {
+                                Text(
+                                    logEntry.situation,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 3,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Text(
+                                    logEntry.date.toFormattedDate(),
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
                         }
+                    }
+                }
+                else {
+                    item {
+                        TitleText("No Logs Yet")
                     }
                 }
             }

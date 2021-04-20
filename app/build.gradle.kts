@@ -15,7 +15,7 @@ android {
         versionCode(20)
         versionName("2.0.0")
 
-        testInstrumentationRunner("android.support.test.runner.AndroidJUnitRunner")
+        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
     }
 
 
@@ -55,6 +55,7 @@ dependencies {
     //dagger
     implementation("com.google.dagger:dagger:2.28.3")
     implementation("com.google.dagger:dagger-android:2.28.3")
+
     kapt("com.google.dagger:dagger-compiler:2.28.3")
     kapt("com.google.dagger:dagger-android-processor:2.28.3")
 
@@ -87,6 +88,9 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.3.4")
     implementation("androidx.navigation:navigation-compose:1.0.0-alpha09")
 
+    testImplementation("junit:junit:4.12")
+    androidTestImplementation("androidx.test.ext:junit:1.1.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
 }
 //
 //ext.supportLibraryVersion = '26.1.0'

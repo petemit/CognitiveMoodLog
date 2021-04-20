@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mindbuilders.cognitivemoodlog.model.Thought
+import com.mindbuilders.cognitivemoodlog.nav.Screen
 import com.mindbuilders.cognitivemoodlog.ui.*
 
 @OptIn(ExperimentalComposeUiApi::class)

@@ -1,4 +1,4 @@
-package com.mindbuilders.cognitivemoodlog.view
+package com.mindbuilders.cognitivemoodlog.nav
 
 import androidx.annotation.StringRes
 import com.mindbuilders.cognitivemoodlog.R
@@ -15,3 +15,8 @@ sealed class Screen(val route: String, @StringRes val resourceId: Int) {
     object EmotionsAfter: Screen("emotions_after", R.string.emotions_after)
     object LogReview: Screen("log_review", R.string.log_review)
 }
+
+val mainMenuDestinations = listOf(
+    Screen.DescribeSituation,
+    Screen.ReviewLogs
+)

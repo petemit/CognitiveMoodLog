@@ -21,7 +21,7 @@ fun CognitiveDistortions(navController: NavController, viewModel: LogViewModel) 
         "Cognitive Distortions",
         destination = Screen.ThoughtsAfter,
         destEnabled = allCogged,
-        instructions = "Select a cognitive distortion for each thought or pick \"I'm not sure\"",
+        instructions = "Select a cognitive distortion for each thought",
         navController = navController,
         viewModel = viewModel
     ) {

@@ -1,7 +1,8 @@
 package com.mindbuilders.cognitivemoodlog.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.AlertDialog
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
@@ -19,12 +20,16 @@ fun AbandonDialog(
 ) {
     val dismiss = { isShowing.value = false }
     if (isShowing.value) {
-        AlertDialog(onDismissRequest = dismiss,
+        AlertDialog(
+            onDismissRequest = dismiss,
+            backgroundColor = MaterialTheme.colors.background,
             text = {
-                ScrollableText(
-                    "Are you sure you want to cancel this log?  All data will be deleted.",
-                    modifier = Modifier.height(300.dp)
-                )
+
+                    ScrollableText(
+                        "Are you sure you want to cancel this log?  All data will be deleted.",
+                        modifier = Modifier.height(300.dp)
+                    )
+
             },
             dismissButton = {
                 CbtButton(text = "Discard Log", onClick = {

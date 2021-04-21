@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 import com.mindbuilders.cognitivemoodlog.model.Emotion
+import com.mindbuilders.cognitivemoodlog.ui.CbtSlider
 
 import com.mindbuilders.cognitivemoodlog.util.roundTo
 
@@ -24,18 +25,16 @@ fun EmotionRow(emotion: Emotion, isBefore: Boolean, viewModel: LogViewModel) {
         Text(emotion.name, modifier = Modifier.padding(12.dp))
         Spacer(modifier = Modifier.weight(1f))
         Column(modifier = Modifier.width(200.dp)) {
-            Slider(
+            CbtSlider(
                 value = strength,
-                steps = 10,
-                valueRange = 0f..10f,
-                onValueChange = {
+                onValueChanged = {
                     strength = it
                     viewModel.editEmotion {
                         emotion.strengthBefore =
                             strength.roundTo(0)
                     }
-                })
-            Text(strength.roundTo(0).toString())
+                }
+            )
         }
     }
 }

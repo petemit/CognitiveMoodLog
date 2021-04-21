@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.mindbuilders.cognitivemoodlog.model.Thought
@@ -40,10 +41,20 @@ fun ThoughtRow(
         //Cognitive Distortion
         if (!isBefore || isReview) {
             Row {
-                Text(
-                    "Cognitive Distortion: ${thought.cognitiveDistortion?.name}",
-                    modifier = Modifier.padding(8.dp)
-                )
+                Surface(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    color = MaterialTheme.colors.surface,
+                    contentColor = MaterialTheme.colors.onSurface
+                ) {
+                    Text(
+                        "Cognitive Distortion: ${thought.cognitiveDistortion?.name}",
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .fillMaxWidth(),
+                        style = MaterialTheme.typography.h3,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
 
@@ -55,7 +66,9 @@ fun ThoughtRow(
                     .weight(1f),
                 verticalArrangement = Arrangement.Center
             ) {
-                RowThought(thought.thoughtBefore) {
+                RowThought(
+                    "Before:\n${thought.thoughtBefore}"
+                ) {
                     selectedThought = thought.thoughtBefore
                     openDialog.value = true
                 }
@@ -80,7 +93,10 @@ fun ThoughtRow(
                 } else if (!isBefore && !isReview) {
                     inertSlider(value = beforeBelief)
                 } else if (isReview) {
-                    Text("Before: $beforeBelief -> After: ${thought.negBeliefAfter}")
+                    Text(
+                        "Before: $beforeBelief\nAfter: ${thought.negBeliefAfter}",
+                        modifier = Modifier.padding(12.dp)
+                    )
                 }
             }
         }
@@ -89,7 +105,7 @@ fun ThoughtRow(
             Row(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.weight(1f)) {
                     if (isReview) {
-                        RowThought(thought.thoughtAfter) {
+                        RowThought("After:\n${thought.thoughtAfter}") {
                             selectedThought = thought.thoughtAfter
                             openDialog.value = true
                         }

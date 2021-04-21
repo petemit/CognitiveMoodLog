@@ -1,5 +1,6 @@
 package com.mindbuilders.cognitivemoodlog.view
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -42,6 +43,7 @@ fun EmotionsBefore(navController: NavController, viewModel: LogViewModel) {
             list?.let {
                 groupedEmotions?.forEach { (category, emotions) ->
                     stickyHeader {
+                        Log.e("pmit", "$category")
                         Header(category)
                     }
                     items(emotions, key = { item: Emotion -> item.id }) { emotion ->

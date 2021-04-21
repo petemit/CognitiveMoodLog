@@ -7,10 +7,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
@@ -42,6 +46,7 @@ fun SituationText(situation: String, situationDialog: MutableState<Boolean>) {
 fun ScrollableText(string: String, modifier: Modifier) {
     BasicTextField(
         value = string,
+        textStyle = TextStyle(color = MaterialTheme.colors.onBackground),
         onValueChange = {},
         readOnly = true,
         modifier = modifier

@@ -79,16 +79,17 @@ fun ThoughtAnalysisRow(
             fontSize = 16.sp,
             textAlign = TextAlign.Center
         )
-        Box(
+
+        Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 32.dp)
-                .background(Color.LightGray)
                 .border(width = 1.dp, color = MaterialTheme.colors.onBackground)
-                .padding(8.dp)
-                .clickable { isOpen = true }
+                .clickable { isOpen = true },
+            color = MaterialTheme.colors.surface,
+            contentColor = contentColorFor(backgroundColor = MaterialTheme.colors.primarySurface)
         ) {
-            Row {
+            Row(modifier = Modifier.padding(8.dp)) {
                 Row(modifier = Modifier.weight(3f), horizontalArrangement = Arrangement.Start) {
                     if (selectedCd == -1) {
                         Text("Select a Cognitive Distortion")

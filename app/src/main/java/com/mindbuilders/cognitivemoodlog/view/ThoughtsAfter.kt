@@ -39,7 +39,10 @@ fun ThoughtsAfter(navController: NavController, viewModel: LogViewModel) {
                 ThoughtRow(thought, false, viewModel = viewModel)
             }
             item {
-                Spacer(modifier = Modifier.fillMaxWidth().height(20.dp))
+                //todo There's a bug with adjustResize wherein the keyboard continues to hide if it
+                //  obscures the editText within a LazyColumn.  Bummer. Others having same issue:
+                //  https://stackoverflow.com/questions/66803850/how-can-i-keep-an-item-of-a-lazycolumn-in-view-when-resizing
+                Spacer(modifier = Modifier.fillMaxWidth().height(100.dp))
             }
         }
     }

@@ -1,6 +1,8 @@
 package com.mindbuilders.cognitivemoodlog.view
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -14,24 +16,38 @@ import com.mindbuilders.cognitivemoodlog.ui.inertSlider
 
 
 @Composable
-fun AfterAnalysisRow(before: Float, after: Float, text: String, isReview: Boolean, onValueChanged: (Float) -> Unit) {
+fun AfterAnalysisRow(
+    before: Float,
+    after: Float,
+    text: String,
+    isReview: Boolean,
+    onValueChanged: (Float) -> Unit
+) {
     var afterStrength by remember { mutableStateOf(after) }
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-            Text(
-                text,
-                modifier = Modifier
-                    .padding(bottom = 12.dp),
-                fontSize = 17.sp,
-                textAlign = TextAlign.Center
-            )
+            Surface(
+                modifier = Modifier.padding(vertical = 4.dp),
+                color = MaterialTheme.colors.surface,
+                contentColor = MaterialTheme.colors.onSurface
+            ) {
+                Text(
+                    text,
+                    modifier = Modifier
+                        .padding(4.dp)
+                        .fillMaxWidth(),
+                    style = MaterialTheme.typography.h3,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
         Row {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     "Before:",
                     modifier = Modifier
-                        .padding(bottom = 12.dp),
+                        .padding(bottom = 12.dp)
+                        .fillMaxWidth(),
                     fontSize = 15.sp,
                     textAlign = TextAlign.Center
                 )
@@ -41,7 +57,8 @@ fun AfterAnalysisRow(before: Float, after: Float, text: String, isReview: Boolea
                 Text(
                     "After:",
                     modifier = Modifier
-                        .padding(bottom = 12.dp),
+                        .padding(bottom = 12.dp)
+                        .fillMaxWidth(),
                     fontSize = 15.sp,
                     textAlign = TextAlign.Center
                 )

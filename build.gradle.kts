@@ -8,7 +8,7 @@ buildscript {
         jcenter()  //todo bummer... realm needs this
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.0.0-alpha12")
+        classpath("com.android.tools.build:gradle:7.0.0-alpha14")
         classpath(kotlin("gradle-plugin", version = "1.4.32"))
         classpath("io.realm:realm-gradle-plugin:10.2.0")
 

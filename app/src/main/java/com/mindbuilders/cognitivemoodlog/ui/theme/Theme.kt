@@ -8,36 +8,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-        primary = PrimaryBluePrimary,
-        primaryVariant = PrimaryDarkColor,
-        secondary = SecondaryDarkColor,
-        background = DarkBackgroundColor,
-        onPrimary = Color.White,
-        surface = PrimaryDarkColor,
-        onSecondary = Color.White
+    primary = PrimaryBluePrimary,
+    primaryVariant = PrimaryDarkColor,
+    secondary = SecondaryDarkColor,
+    background = DarkBackgroundColor,
+    onPrimary = Color.White,
+    surface = PrimaryDarkColor,
+    onSecondary = Color.White
 )
 
 private val LightColorPalette = lightColors(
-        primary = PrimaryBlueLight,
-        primaryVariant = PrimaryBluePrimary,
-        secondary = SecondaryLightColor,
-        background = LightBackgroundColor,
-        onPrimary = Color.Black,
-        surface = SecondaryLightColor
-
-
-        /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
+    primary = PrimaryBluePrimary,
+    primaryVariant = PrimaryBluePrimary,
+    secondary = SecondaryLightColor,
+    background = LightBackgroundColor,
     onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    surface = PrimaryBluePrimary,
+    onSurface = Color.Black
+
+
+    /* Other default colors to override
+background = Color.White,
+surface = Color.White,
+onPrimary = Color.White,
+onSecondary = Color.Black,
+onBackground = Color.Black,
+onSurface = Color.Black,
+*/
 )
 
 @Composable
-fun CognitiveMoodLogTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
+fun CognitiveMoodLogTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable() () -> Unit
+) {
     val colors = if (darkTheme) {
         DarkColorPalette
     } else {
@@ -45,9 +49,9 @@ fun CognitiveMoodLogTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @
     }
 
     MaterialTheme(
-            colors = colors,
-            typography = Typography,
-            shapes = Shapes,
-            content = content
+        colors = colors,
+        typography = Typography,
+        shapes = Shapes,
+        content = content
     )
 }

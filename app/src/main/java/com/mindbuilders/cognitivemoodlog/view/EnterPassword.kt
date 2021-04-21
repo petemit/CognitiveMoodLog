@@ -3,10 +3,7 @@ package com.mindbuilders.cognitivemoodlog.view
 import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -22,6 +19,7 @@ fun EnterPassword(context: Context, viewModel: LogViewModel) {
     val dismiss = { viewModel.exitPasswordState() }
     AlertDialog(onDismissRequest =
     dismiss,
+        backgroundColor = MaterialTheme.colors.background,
         dismissButton = {
             CbtButton(text = "Ignore Old Data", onClick = {
                 areYouSure = true
@@ -34,7 +32,10 @@ fun EnterPassword(context: Context, viewModel: LogViewModel) {
         }, title = { Text("Enter Your Password To Unlock Your Data.") },
         text = {
             Column {
-                Text("If you want to start fresh and don't want your old logs, click the \"Ignore Old Data\" button.")
+                Text(
+                    "If you want to start fresh and don't want your old logs, click the \"Ignore Old Data\" button.",
+                    color = MaterialTheme.colors.onBackground
+                )
                 OutlinedTextField(
                     modifier = Modifier
                         .padding(start = 12.dp, end = 12.dp),
@@ -53,6 +54,7 @@ fun EnterPassword(context: Context, viewModel: LogViewModel) {
             onDismissRequest = {
                 areYouSure = false
             },
+            backgroundColor = MaterialTheme.colors.background,
             dismissButton = {
                 CbtButton(text = "Cancel", onClick = {
                     areYouSure = false
@@ -69,7 +71,8 @@ fun EnterPassword(context: Context, viewModel: LogViewModel) {
                     """
                     Are you sure you want ignore your old logs? 
                     You won't be able to see them in your previous logs.
-                """.trimIndent()
+                """.trimIndent(),
+                    color = MaterialTheme.colors.onBackground
                 )
             }
         )

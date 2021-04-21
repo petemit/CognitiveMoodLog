@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupProperties
 import com.mindbuilders.cognitivemoodlog.R
 import com.mindbuilders.cognitivemoodlog.model.CognitiveDistortion
 import com.mindbuilders.cognitivemoodlog.model.Thought
@@ -53,6 +54,7 @@ fun ThoughtAnalysisRow(
         if (showDialog) {
             AlertDialog(
                 onDismissRequest = dismiss,
+                backgroundColor = MaterialTheme.colors.background,
                 text = {
                     infoCd?.let {
                         val text = if (it.description.isNotEmpty()) {
@@ -106,7 +108,9 @@ fun ThoughtAnalysisRow(
                     )
                 }
             }
-            DropdownMenu(expanded = isOpen, onDismissRequest = { isOpen = false }) {
+            DropdownMenu(expanded = isOpen,
+                modifier = Modifier.background(MaterialTheme.colors.background),
+                onDismissRequest = { isOpen = false }) {
                 cognitiveDistortions.forEachIndexed { index, cd ->
                     DropdownMenuItem(onClick = {
                         selectedCd = index
@@ -117,10 +121,11 @@ fun ThoughtAnalysisRow(
                     }) {
                         Row {
                             //todo find a way to make the text not displace its siblings
-                            Text(cd.name, maxLines = 2)
+                            Text(cd.name, maxLines = 2, color = MaterialTheme.colors.onBackground)
                             Spacer(modifier = Modifier.weight(1f))
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_baseline_info_24),
+                                tint = MaterialTheme.colors.onBackground,
                                 contentDescription = "more information about this cognitive distortion",
                                 modifier = Modifier
                                     .padding(horizontal = 8.dp)

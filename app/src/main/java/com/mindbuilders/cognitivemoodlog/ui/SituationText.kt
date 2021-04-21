@@ -24,6 +24,7 @@ fun SituationText(situation: String, situationDialog: MutableState<Boolean>) {
     if (situationDialog.value) {
         AlertDialog(
             onDismissRequest = dismiss,
+            backgroundColor = MaterialTheme.colors.background,
             text = { ScrollableText(situation, modifier = Modifier.height(200.dp)) },
             confirmButton = {
                 CbtButton(text = "Close", onClick = dismiss)

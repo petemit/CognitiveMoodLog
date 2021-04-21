@@ -44,7 +44,7 @@ fun ThoughtRow(
                 Surface(
                     modifier = Modifier.padding(vertical = 4.dp),
                     color = MaterialTheme.colors.surface,
-                    contentColor = MaterialTheme.colors.onSurface
+                    contentColor = MaterialTheme.colors.onPrimary
                 ) {
                     Text(
                         "Cognitive Distortion: ${thought.cognitiveDistortion?.name}",

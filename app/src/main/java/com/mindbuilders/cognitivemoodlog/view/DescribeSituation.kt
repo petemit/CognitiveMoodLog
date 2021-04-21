@@ -33,7 +33,7 @@ fun DescribeSituation(navController: NavController, viewModel: LogViewModel) {
         navController = navController,
         backButton = {
             CbtButton(
-                name = "Back", modifier = Modifier.fillMaxWidth()
+                text = "Back", modifier = Modifier.fillMaxWidth()
             ) {
                 abandonDialogIsShowing.value = true
             }

@@ -6,7 +6,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -21,19 +20,19 @@ fun CbtBar(
     actionAction: () -> Unit = {},
 ) {
     TopAppBar(
-        title = { Text(title) },
+        title = { Text(title, color = MaterialTheme.colors.onPrimary) },
         backgroundColor = MaterialTheme.colors.primarySurface,
         //todo I don't love how this turned out. I  should hoist this behavior
         actions = {
             if (isNone) {
             } else {
-                gimmeAction(
+                GimmeAction(
                     name = "clearButton",
                     vector = Icons.Default.Clear,
                     actionAction = actionAction
                 )
                 if (isSave) {
-                    gimmeAction(
+                    GimmeAction(
                         name = "saveButton",
                         vector = Icons.Default.Done,
                         actionAction = actionAction
@@ -44,7 +43,7 @@ fun CbtBar(
 }
 
 @Composable
-private fun gimmeAction(name: String, vector: ImageVector, actionAction: () -> Unit) {
+private fun GimmeAction(name: String, vector: ImageVector, actionAction: () -> Unit) {
     Icon(
         imageVector = vector,
         name,

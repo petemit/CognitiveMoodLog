@@ -26,9 +26,15 @@ class LegacyDbMigrator @Inject constructor(
             migrationMediator.migrationStatus.value = true
             try {
                 SQLiteDatabase.loadLibs(context)
+
+                val pass = if (migrationMediator.password.value.isNotEmpty()) {
+                    migrationMediator.password.value.toSha1()
+                } else {
+                    ""
+                }
                 val db = SQLiteDatabase.openDatabase(
                     context.getDatabasePath("CognitiveMoodLog.db").toString(),
-                    migrationMediator.password.value.toSha1(),
+                    pass,
                     null,
                     SQLiteDatabase.OPEN_READONLY
                 )

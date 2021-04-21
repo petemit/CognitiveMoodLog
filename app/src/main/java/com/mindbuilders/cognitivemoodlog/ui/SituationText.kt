@@ -22,9 +22,7 @@ fun SituationText(situation: String, situationDialog: MutableState<Boolean>) {
             onDismissRequest = dismiss,
             text = { ScrollableText(situation, modifier = Modifier.height(200.dp)) },
             confirmButton = {
-                Button(onClick = dismiss) {
-                    Text("Close")
-                }
+                CbtButton(text = "Close", onClick = dismiss)
             })
     }
     Text(

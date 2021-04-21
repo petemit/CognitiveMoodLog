@@ -62,7 +62,7 @@ fun ThoughtsBefore(navController: NavController, viewModel: LogViewModel) {
                             currentThought = it
                         })
                     CbtButton(
-                        name = "Add", modifier = Modifier
+                        text = "Add", modifier = Modifier
                             .padding(start = 12.dp, end = 12.dp, top = 8.dp)
                             .weight(1f)
                     ) {

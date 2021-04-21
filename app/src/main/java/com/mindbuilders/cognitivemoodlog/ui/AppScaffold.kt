@@ -33,14 +33,14 @@ fun AppScaffold(
     },
     backButton: @Composable () -> Unit = {
         CbtButton(
-            name = "Back", modifier = Modifier.fillMaxWidth()
+            text = "Back", modifier = Modifier.fillMaxWidth()
         ) {
             navController.popBackStack()
         }
     },
     nextButton: @Composable () -> Unit = {
         CbtButton(
-            name = "Next", modifier = Modifier.fillMaxWidth(),
+            text = "Next", modifier = Modifier.fillMaxWidth(),
             isEnabled = destEnabled
         ) {
             destination?.route?.let {

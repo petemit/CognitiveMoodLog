@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.mindbuilders.cognitivemoodlog.ui.CbtButton
 
 @Composable
 fun EnterPassword(context: Context, viewModel: LogViewModel) {
@@ -22,18 +23,14 @@ fun EnterPassword(context: Context, viewModel: LogViewModel) {
     AlertDialog(onDismissRequest =
     dismiss,
         dismissButton = {
-            Button(onClick = {
+            CbtButton(text = "Ignore Old Data", onClick = {
                 areYouSure = true
-            }) {
-                Text("Ignore Old Data")
-            }
+            })
         },
         confirmButton = {
-            Button(onClick = {
+            CbtButton(text = "OK", onClick = {
                 viewModel.setPassword(password)
-            }) {
-                Text("OK")
-            }
+            })
         }, title = { Text("Enter Your Password To Unlock Your Data.") },
         text = {
             Column {
@@ -57,20 +54,16 @@ fun EnterPassword(context: Context, viewModel: LogViewModel) {
                 areYouSure = false
             },
             dismissButton = {
-                Button(onClick = {
+                CbtButton(text = "Cancel", onClick = {
                     areYouSure = false
-                }) {
-                    Text("Cancel")
-                }
+                })
             },
             confirmButton = {
-                Button(onClick = {
+                CbtButton(text = "Ignore Old Logs", onClick = {
                     areYouSure = false
                     dismiss.invoke()
                     viewModel.stopMigration(context = context)
-                }) {
-                    Text("Ignore Old Logs")
-                }
+                })
             }, text = {
                 Text(
                     """

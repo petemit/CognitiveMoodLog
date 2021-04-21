@@ -7,7 +7,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,13 +14,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.navigation.compose.popUpTo
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.findNavController
 import com.mindbuilders.cognitivemoodlog.di.LogViewModelFactory
 import com.mindbuilders.cognitivemoodlog.di.LogViewModelSavedStateHandleFactory
 import com.mindbuilders.cognitivemoodlog.nav.BuildNavHost
-import com.mindbuilders.cognitivemoodlog.nav.Screen
 import com.mindbuilders.cognitivemoodlog.nav.mainMenuDestinations
 import com.mindbuilders.cognitivemoodlog.ui.AppScaffold
 import com.mindbuilders.cognitivemoodlog.ui.CbtButton
@@ -87,7 +83,7 @@ fun MainMenu(navController: NavController, viewModel: LogViewModel) {
         ) {
             mainMenuDestinations.forEach { screen ->
                 CbtButton(
-                    name = stringResource(id = screen.resourceId), modifier = Modifier
+                    text = stringResource(id = screen.resourceId), modifier = Modifier
                         .padding(12.dp)
                         .fillMaxWidth(.5f)
                 ) {

@@ -55,8 +55,6 @@ class LiveRealmResults<T : RealmModel?> @MainThread constructor(results: RealmRe
      * Wraps the provided managed RealmResults as a LiveData.
      *
      * The provided object should be managed, and should be valid.
-     *
-     * @param object the managed RealmResults to wrap as LiveData
      */
     init {
         require(results.isManaged) { "LiveRealmResults only supports managed RealmModel instances!" }

@@ -112,7 +112,7 @@ class LogViewModel constructor(
         }
         fetchEmotions()
     }
-    fun fetchEmotions() {
+    private fun fetchEmotions() {
         viewModelScope.launch {
             val savedEmotions = handle.get<List<Emotion>>("emotions")
             _emotionList.value = savedEmotions ?: repository.getEmotions()

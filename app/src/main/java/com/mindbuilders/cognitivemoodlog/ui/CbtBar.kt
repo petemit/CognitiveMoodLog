@@ -25,6 +25,7 @@ fun CbtBar(
         //todo I don't love how this turned out. I  should hoist this behavior
         actions = {
             if (isNone) {
+                //noop
             } else {
                 GimmeAction(
                     name = "clearButton",

@@ -32,7 +32,7 @@ fun ThoughtsBefore(navController: NavController, viewModel: LogViewModel) {
     val hasNegativeThought: Boolean by viewModel.hasANegativeThought.observeAsState(false)
     var thoughtCount: Int by rememberSaveable { mutableStateOf (thoughtList.count { it.thoughtBefore.isNotEmpty()}) }
     val keyboardController = LocalSoftwareKeyboardController.current
-    var situationDialog = remember { mutableStateOf(false) }
+    val situationDialog = remember { mutableStateOf(false) }
 
     AppScaffold(
         "Thoughts Before",
@@ -69,7 +69,7 @@ fun ThoughtsBefore(navController: NavController, viewModel: LogViewModel) {
                         viewModel.addBeforeThought(currentThought)
                         currentThought = ""
                         thoughtCount = viewModel.thoughts.value?.size ?: 0
-                        keyboardController?.hideSoftwareKeyboard()
+                        keyboardController?.hide()
                     }
                 }
                 CbtDivider()

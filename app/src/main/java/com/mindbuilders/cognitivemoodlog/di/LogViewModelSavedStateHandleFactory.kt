@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
 
-class LogViewModelSavedStateHandleFactory<out T : ViewModel> constructor(
+class LogViewModelSavedStateHandleFactory constructor(
     private val viewModelFactoryAssistant: LogViewModelFactory,
     owner: SavedStateRegistryOwner
 ) : AbstractSavedStateViewModelFactory(owner, null) {

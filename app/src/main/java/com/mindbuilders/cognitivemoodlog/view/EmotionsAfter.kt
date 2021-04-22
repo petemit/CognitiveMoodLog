@@ -21,7 +21,7 @@ import com.mindbuilders.cognitivemoodlog.ui.TitleText
 fun EmotionsAfter(navController: NavController, viewModel: LogViewModel) {
     val situation: String by viewModel.situation.observeAsState("")
     val selectedEmotions: List<Emotion>? by viewModel.selectedEmotions.observeAsState()
-    var situationDialog = remember { mutableStateOf(false) }
+    val situationDialog = remember { mutableStateOf(false) }
     AppScaffold(
         "Emotions After",
         destination = Screen.LogReview,

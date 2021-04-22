@@ -21,7 +21,7 @@ import com.mindbuilders.cognitivemoodlog.ui.TitleText
 fun ThoughtsReview(navController: NavController, viewModel: LogViewModel) {
     val situation: String by viewModel.situation.observeAsState("")
     val thoughtList: List<Thought> by viewModel.thoughts.observeAsState(listOf())
-    var situationDialog = remember { mutableStateOf(false) }
+    val situationDialog = remember { mutableStateOf(false) }
     AppScaffold("Thoughts Review",
         destination = Screen.EmotionsAfter,
         destEnabled = true,

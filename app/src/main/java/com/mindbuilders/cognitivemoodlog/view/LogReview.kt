@@ -14,11 +14,11 @@ import com.mindbuilders.cognitivemoodlog.ui.TitleText
 
 
 @Composable
-fun LogReview(navController: NavController, viewModel: LogViewModel,) {
+fun LogReview(navController: NavController, viewModel: LogViewModel) {
     val situation: String by viewModel.situation.observeAsState("")
     val selectedEmotions: List<Emotion>? by viewModel.selectedEmotions.observeAsState()
     val thoughtList: List<Thought> by viewModel.thoughts.observeAsState(listOf())
-    var situationDialog = remember { mutableStateOf(false) }
+    val situationDialog = remember { mutableStateOf(false) }
 
     AppScaffold("Log Entry Review",
         //destination = Screen.ThoughtsBefore,

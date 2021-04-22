@@ -22,8 +22,8 @@ class App : DaggerApplication() {
     @Inject
     lateinit var migrationMediator: MigrationMediator
 
-    lateinit var dispatchingAndroidInjector: AndroidInjector<out DaggerApplication>
-    lateinit var job: Job
+    private lateinit var dispatchingAndroidInjector: AndroidInjector<out DaggerApplication>
+    private lateinit var job: Job
 
     private val migrationScope = CoroutineScope(Dispatchers.IO)
     override fun onCreate() {

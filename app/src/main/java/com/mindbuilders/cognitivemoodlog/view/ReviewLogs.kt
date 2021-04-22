@@ -25,7 +25,7 @@ import java.util.*
 @Composable
 fun ReviewLogs(navController: NavHostController, viewModel: LogViewModel) {
     var selectedLog: LogEntry? by rememberSaveable { mutableStateOf(null) }
-    var situationDialog = remember { mutableStateOf(false) }
+    val situationDialog = remember { mutableStateOf(false) }
     viewModel.refreshLogEntries()
     val realmLogEntries: List<RealmLogEntry>? =
         viewModel.realmLogEntries.observeAsState(listOf()).value
@@ -99,28 +99,26 @@ fun ReviewLogs(navController: NavHostController, viewModel: LogViewModel) {
                         TitleText("Tap On a Row To Review Your Past Logs")
                         CbtDivider()
                     }
-                    logEntries?.let { logEntries ->
-                        items(logEntries) { logEntry ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(80.dp)
-                                    .clickable {
-                                        selectedLog = logEntry
-                                    }
+                    items(logEntries) { logEntry ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(80.dp)
+                                .clickable {
+                                    selectedLog = logEntry
+                                }
 
-                            ) {
-                                Text(
-                                    logEntry.situation,
-                                    overflow = TextOverflow.Ellipsis,
-                                    maxLines = 3,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                Text(
-                                    logEntry.date.toFormattedDate(),
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
+                        ) {
+                            Text(
+                                logEntry.situation,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 3,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Text(
+                                logEntry.date.toFormattedDate(),
+                                modifier = Modifier.weight(1f)
+                            )
                         }
                     }
                 }

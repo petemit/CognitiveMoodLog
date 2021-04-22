@@ -1,6 +1,6 @@
 package com.mindbuilders.cognitivemoodlog.view
 
-import android.util.Log
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,12 +24,12 @@ fun EmotionsBefore(navController: NavController, viewModel: LogViewModel) {
     val list: List<Emotion>? by viewModel.emotionList.observeAsState()
     val groupedEmotions by viewModel.groupedEmotions.observeAsState()
     val selectedEmotions by viewModel.selectedEmotions.observeAsState()
-    var situationDialog = remember { mutableStateOf(false) }
+    val situationDialog = remember { mutableStateOf(false) }
 
     AppScaffold(
         "Pick Emotions",
         destination = Screen.ThoughtsBefore,
-        destEnabled = selectedEmotions?.let { it.isNotEmpty() } ?: false,
+        destEnabled = selectedEmotions?.isNotEmpty() ?: false,
         instructions = "Scroll to find the emotions you are feeling and drag at least one slider to continue",
         navController = navController,
         viewModel = viewModel
@@ -43,7 +43,6 @@ fun EmotionsBefore(navController: NavController, viewModel: LogViewModel) {
             list?.let {
                 groupedEmotions?.forEach { (category, emotions) ->
                     stickyHeader {
-                        Log.e("pmit", "$category")
                         Header(category)
                     }
                     items(emotions, key = { item: Emotion -> item.id }) { emotion ->

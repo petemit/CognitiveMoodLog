@@ -30,6 +30,6 @@ fun CbtSlider(value: Float, enabled: Boolean = true, onValueChanged: (Float) -> 
 }
 
 @Composable
-fun inertSlider(value: Float) {
+fun InertSlider(value: Float) {
     CbtSlider(value = value, enabled = false, onValueChanged = {})
 }

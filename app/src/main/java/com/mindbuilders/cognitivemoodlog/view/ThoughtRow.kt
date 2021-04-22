@@ -91,7 +91,7 @@ fun ThoughtRow(
 
                     }
                 } else if (!isBefore && !isReview) {
-                    inertSlider(value = beforeBelief)
+                    InertSlider(value = beforeBelief)
                 } else if (isReview) {
                     Text(
                         "Before: $beforeBelief\nAfter: ${thought.negBeliefAfter}",
@@ -139,7 +139,7 @@ fun ThoughtRow(
 
                         }
                     } else {
-                        inertSlider(value = posBelief)
+                        InertSlider(value = posBelief)
                     }
                 }
             }

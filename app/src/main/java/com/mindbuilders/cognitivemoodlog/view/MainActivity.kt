@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var viewModelFactory: LogViewModelFactory
     val viewModel: LogViewModel by viewModels {
-        LogViewModelSavedStateHandleFactory<LogViewModel>(viewModelFactory, this)
+        LogViewModelSavedStateHandleFactory(viewModelFactory, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,15 +47,16 @@ class MainActivity : ComponentActivity() {
                 navController.saveState()
                 BuildNavHost(navController, viewModel)
 
-            }
-            Column {
-                if (passwordState.value) {
-                    EnterPassword(applicationContext, viewModel)
+                Column {
+                    if (passwordState.value) {
+                        EnterPassword(applicationContext, viewModel)
+                    }
+                    if (loadingState.value) {
+                        ProgressView()
+                    }
                 }
-                if (loadingState.value) {
-                    ProgressView()
-                }
             }
+
         }
 
     }

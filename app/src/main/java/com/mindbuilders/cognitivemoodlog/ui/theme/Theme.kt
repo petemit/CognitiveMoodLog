@@ -12,9 +12,8 @@ private val DarkColorPalette = darkColors(
     primaryVariant = PrimaryDarkColor,
     secondary = SecondaryDarkColor,
     background = DarkBackgroundColor,
-    onPrimary = Color.White,
     surface = PrimaryDarkColor,
-    onSecondary = Color.White
+    onSecondary = Color.White,
 )
 
 private val LightColorPalette = lightColors(
@@ -22,7 +21,6 @@ private val LightColorPalette = lightColors(
     primaryVariant = PrimaryBluePrimary,
     secondary = SecondaryLightColor,
     background = LightBackgroundColor,
-    onPrimary = Color.White,
     surface = PrimaryBluePrimary,
     onSurface = Color.Black
 
@@ -46,7 +44,8 @@ fun CognitiveMoodLogTheme(
         DarkColorPalette
     } else {
         LightColorPalette
-    }
+    }.copy(onPrimary = Color.White)
+
 
     MaterialTheme(
         colors = colors,

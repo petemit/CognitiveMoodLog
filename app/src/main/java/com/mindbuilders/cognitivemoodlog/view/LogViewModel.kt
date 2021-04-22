@@ -3,17 +3,11 @@ package com.mindbuilders.cognitivemoodlog.view
 import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.*
-import androidx.navigation.NavController
-import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.navigate
-import androidx.navigation.compose.popUpTo
 import com.mindbuilders.cognitivemoodlog.data.LogRepository
 import com.mindbuilders.cognitivemoodlog.data.MigrationMediator
 import com.mindbuilders.cognitivemoodlog.data.NEEDS_MIGRATION
 import com.mindbuilders.cognitivemoodlog.data.getSharedPreferences
-
 import com.mindbuilders.cognitivemoodlog.model.*
-import com.mindbuilders.cognitivemoodlog.nav.Screen
 import dagger.Lazy
 import io.realm.Realm
 import kotlinx.coroutines.Dispatchers

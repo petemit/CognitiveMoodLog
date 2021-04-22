@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -28,9 +32,7 @@ fun AppScaffold(
     instructions: String = "",
     viewModel: LogViewModel,
     barActionBehavior: MenuAction = MenuAction.CLEAR,
-    closeBehavior: () -> Unit = {
-
-    },
+    closeBehavior: () -> Unit = {},
     backButton: @Composable () -> Unit = {
         CbtButton(
             text = "Back", modifier = Modifier.fillMaxWidth()
@@ -52,6 +54,7 @@ fun AppScaffold(
 ) {
     val context = LocalContext.current
     val abandonDialogIsShowing: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
+    val clearAction: () -> Unit = { abandonDialogIsShowing.value = true }
     AbandonDialog(
         navController = navController,
         viewModel = viewModel,
@@ -63,32 +66,47 @@ fun AppScaffold(
                 MenuAction.CLEAR -> {
                     CbtBar(
                         title
-                    )
-                    {
-                        abandonDialogIsShowing.value = true
+                    ) {
+                        GimmeAction(
+                            name = "clearButton",
+                            vector = Icons.Default.Clear,
+                            actionAction = clearAction
+                        )
                     }
-
                 }
                 MenuAction.SAVE -> {
                     CbtBar(
                         title,
-                        isSave = true
                     ) {
-                        //commit
-                        viewModel.saveLog()
-                        Toast.makeText(context, "Log saved", Toast.LENGTH_LONG).show()
-                        viewModel.clearLog()
-                        navController.navigate(Screen.MainMenu.route)
+                        GimmeAction(
+                            name = "clearButton",
+                            vector = Icons.Default.Clear,
+                            actionAction = clearAction
+                        )
+                        GimmeAction(
+                            name = "saveButton",
+                            vector = Icons.Default.Done
+                        )
+                        { //commit
+                            viewModel.saveLog()
+                            Toast.makeText(context, "Log saved", Toast.LENGTH_LONG).show()
+                            viewModel.clearLog()
+                            navController.navigate(Screen.MainMenu.route)
+                        }
+
                     }
+
 
                 }
                 MenuAction.CLOSE -> {
                     CbtBar(title) {
-                        closeBehavior.invoke()
+                        GimmeAction(name = "closeButton", vector = Icons.Default.Close) {
+                            closeBehavior.invoke()
+                        }
                     }
                 }
                 MenuAction.NONE -> {
-                    CbtBar(title, isNone = true)
+                    CbtBar(title)
                 }
             }
 

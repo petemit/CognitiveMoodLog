@@ -10,12 +10,10 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.PopupProperties
 import com.mindbuilders.cognitivemoodlog.R
 import com.mindbuilders.cognitivemoodlog.model.CognitiveDistortion
 import com.mindbuilders.cognitivemoodlog.model.Thought
@@ -26,7 +24,7 @@ import com.mindbuilders.cognitivemoodlog.ui.ScrollableText
 fun ThoughtAnalysisRow(
     thought: Thought,
     viewModel: LogViewModel,
-    modifier: Modifier = Modifier.padding(12.dp)
+    modifier: Modifier = Modifier
 ) {
     val cognitiveDistortions: List<CognitiveDistortion> by
     viewModel.cognitiveDistortionList.observeAsState(listOf())
@@ -49,7 +47,7 @@ fun ThoughtAnalysisRow(
         showDialog = false
         infoCd = null
     }
-    Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(modifier = modifier.fillMaxWidth().padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
 
         if (showDialog) {
             AlertDialog(

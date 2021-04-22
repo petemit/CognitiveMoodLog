@@ -1,6 +1,7 @@
 package com.mindbuilders.cognitivemoodlog.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -15,36 +16,17 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CbtBar(
     title: String = "",
-    isSave: Boolean = false,
-    isNone: Boolean = false,
-    actionAction: () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
         title = { Text(title, color = MaterialTheme.colors.onPrimary) },
         backgroundColor = MaterialTheme.colors.primarySurface,
         //todo I don't love how this turned out. I  should hoist this behavior
-        actions = {
-            if (isNone) {
-                //noop
-            } else {
-                GimmeAction(
-                    name = "clearButton",
-                    vector = Icons.Default.Clear,
-                    actionAction = actionAction
-                )
-                if (isSave) {
-                    GimmeAction(
-                        name = "saveButton",
-                        vector = Icons.Default.Done,
-                        actionAction = actionAction
-                    )
-                }
-            }
-        })
+        actions = actions)
 }
 
 @Composable
-private fun GimmeAction(name: String, vector: ImageVector, actionAction: () -> Unit) {
+fun GimmeAction(name: String, vector: ImageVector, actionAction: () -> Unit) {
     Icon(
         imageVector = vector,
         name,

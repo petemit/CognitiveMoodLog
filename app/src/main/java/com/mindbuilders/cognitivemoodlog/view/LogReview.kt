@@ -21,7 +21,6 @@ fun LogReview(navController: NavController, viewModel: LogViewModel) {
     val situationDialog = remember { mutableStateOf(false) }
 
     AppScaffold("Log Entry Review",
-        //destination = Screen.ThoughtsBefore,
         destEnabled = true,
         navController = navController,
         viewModel = viewModel,

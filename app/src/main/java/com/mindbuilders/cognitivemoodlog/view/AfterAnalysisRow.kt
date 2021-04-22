@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.sp
 import com.mindbuilders.cognitivemoodlog.util.roundTo
 import com.mindbuilders.cognitivemoodlog.ui.CbtDivider
 import com.mindbuilders.cognitivemoodlog.ui.CbtSlider
-import com.mindbuilders.cognitivemoodlog.ui.inertSlider
+import com.mindbuilders.cognitivemoodlog.ui.InertSlider
 
 
 @Composable
@@ -51,7 +51,7 @@ fun AfterAnalysisRow(
                     fontSize = 15.sp,
                     textAlign = TextAlign.Center
                 )
-                inertSlider(value = before)
+                InertSlider(value = before)
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -68,7 +68,7 @@ fun AfterAnalysisRow(
                         onValueChanged.invoke(afterStrength.roundTo(0))
                     }
                 } else {
-                    inertSlider(value = afterStrength)
+                    InertSlider(value = afterStrength)
                 }
             }
         }

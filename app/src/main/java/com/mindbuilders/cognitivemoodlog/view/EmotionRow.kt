@@ -1,16 +1,12 @@
 package com.mindbuilders.cognitivemoodlog.view
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-
 import androidx.compose.ui.unit.dp
-
 import com.mindbuilders.cognitivemoodlog.model.Emotion
 import com.mindbuilders.cognitivemoodlog.ui.CbtSlider
-
 import com.mindbuilders.cognitivemoodlog.util.roundTo
 
 @Composable

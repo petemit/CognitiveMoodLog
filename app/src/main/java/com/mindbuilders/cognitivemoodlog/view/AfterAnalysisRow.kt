@@ -64,7 +64,7 @@ fun AfterAnalysisRow(
                 )
                 if (!isReview) {
                     CbtSlider(value = afterStrength) {
-                        afterStrength = it.roundTo(0)
+                        afterStrength = it
                         onValueChanged.invoke(afterStrength.roundTo(0))
                     }
                 } else {

@@ -3,24 +3,25 @@ package com.mindbuilders.cognitivemoodlog.ui
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Surface
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.AndroidUriHandler
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
+import com.mindbuilders.cognitivemoodlog.data.privacyPolicy
 import com.mindbuilders.cognitivemoodlog.view.LogViewModel
 import com.mindbuilders.cognitivemoodlog.nav.Screen
+import androidx.compose.ui.platform.UriHandler
 
 @Composable
 fun AppScaffold(
@@ -53,7 +54,31 @@ fun AppScaffold(
     body: @Composable () -> Unit
 ) {
     val context = LocalContext.current
+    var aboutDialogIsShowing by rememberSaveable { mutableStateOf(false)}
     val abandonDialogIsShowing: MutableState<Boolean> = rememberSaveable { mutableStateOf(false) }
+
+    if (aboutDialogIsShowing) {
+        AlertDialog(onDismissRequest = { aboutDialogIsShowing = false },
+            backgroundColor = MaterialTheme.colors.background,
+            text = {
+                Column {
+                    Text("""
+                        Thank you for using my app. This app helped me with my current career as an app developer and I hope it is helpful to you as you work with your own thoughts and emotions.
+                       
+            
+                            """.trimIndent(), color = MaterialTheme.colors.onBackground)
+                    ClickableText(text = privacyPolicy, onClick = {
+                        AndroidUriHandler(context).openUri("https://sites.google.com/view/cognitivemoodlogprivacypolicy")
+                    } )
+                }
+            },
+            confirmButton = {
+                CbtButton(text = "OK") {
+                    aboutDialogIsShowing = false
+                }
+            })
+    }
+
     val clearAction: () -> Unit = { abandonDialogIsShowing.value = true }
     AbandonDialog(
         navController = navController,
@@ -107,6 +132,13 @@ fun AppScaffold(
                 }
                 MenuAction.NONE -> {
                     CbtBar(title)
+                }
+                MenuAction.ABOUT -> {
+                    CbtBar(title) {
+                        GimmeAction(name = "about", vector = Icons.Default.Info ) {
+                            aboutDialogIsShowing = true
+                        }
+                    }
                 }
             }
 
@@ -189,5 +221,6 @@ enum class MenuAction {
     CLEAR,
     SAVE,
     CLOSE,
-    NONE
+    NONE,
+    ABOUT
 }

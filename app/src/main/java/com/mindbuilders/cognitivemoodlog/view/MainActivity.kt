@@ -68,7 +68,7 @@ fun MainMenu(navController: NavController, viewModel: LogViewModel) {
         "Cognitive Behavioral Therapy Pal",
         navController = navController,
         viewModel = viewModel,
-        barActionBehavior = MenuAction.NONE
+        barActionBehavior = MenuAction.ABOUT
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

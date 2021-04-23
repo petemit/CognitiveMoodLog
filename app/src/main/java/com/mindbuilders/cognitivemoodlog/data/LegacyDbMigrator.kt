@@ -59,6 +59,7 @@ class LegacyDbMigrator @Inject constructor(
                         cursor.close()
 
                         val oldLogCount = migrateDb(rows)
+                        db.close()
                         if (oldLogCount > -1) {
                             validateMigration(oldLogCount)
                         }

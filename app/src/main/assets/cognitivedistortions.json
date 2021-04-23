@@ -1,0 +1,86 @@
+[
+  {
+    "id": "1",
+    "name": "All-or-nothing thinking",
+    "summary": "You look at things in absolute, black-and-white categories, using absolute terms like never or always.",
+    "description": "",
+    "example": ""
+  },
+  {
+    "id": "2",
+    "name": "Over-generalization",
+    "summary": "You view an event as a never-ending pattern of defeat.",
+    "description": "",
+    "example": ""
+  },
+  {
+    "id": "3",
+    "name": "Mental Filter",
+    "summary": "You dwell on the negatives of a situation or a person and ignore the positives.",
+    "description": "",
+    "example": ""
+  },
+  {
+    "id": "4",
+    "name": "Discounting positives",
+    "summary": "You dismiss the positive qualities of yourself or the positive qualities of others.",
+    "description": "",
+    "example": ""
+  },
+  {
+    "id": "5",
+    "name": "Jumping to Conclusions",
+    "summary": "You assume an outcome without evidence for it.",
+    "description": "",
+    "example": ""
+  },
+  {
+    "id": "6",
+    "name": "Mind-reading",
+    "summary": "You assume that people are either reacting or will react negatively to you.",
+    "description": "",
+    "example": ""
+  },
+  {
+    "id": "7",
+    "name": "Magnification or minimization",
+    "summary": "You blow things way out of proportion in either direction.",
+    "description": "",
+    "example": ""
+  },
+  {
+    "id": "8",
+    "name": "Emotional Reasoning",
+    "summary": "You reason from your feelings. For example, dreading budgeting might cause you to think that \"my finances are impossible to manage\".",
+    "description": "",
+    "example": ""
+  },
+  {
+    "id": "9",
+    "name": "Should statements",
+    "summary": "You use words or phrases including \"shoulds\", should nots\", \"musts\", and \"have tos\".",
+    "description": "",
+    "example": ""
+  },
+  {
+    "id": "10",
+    "name": "Labeling",
+    "summary": "Linking your's or another's personality to the situation.  For example, instead of saying \"I didn't do it right\", you tell yourself \"I am a failure\".",
+    "description": "",
+    "example": ""
+  },
+  {
+    "id": "11",
+    "name": "Self-blame",
+    "summary": "You take the blame of the situation even if you were not entirely responsible",
+    "description": "",
+    "example": ""
+  },
+  {
+    "id": "12",
+    "name": "Other-blame",
+    "summary": "Others are held responsible for negative situations or for your feelings",
+    "description": "",
+    "example": ""
+  }
+]

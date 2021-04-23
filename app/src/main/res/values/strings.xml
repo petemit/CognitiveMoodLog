@@ -1,20 +1,20 @@
 <resources>
-    <string name="app_name">CognitiveMoodLog</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_create_new_log_entry">CreateNewLogEntry</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="describe_your_situation_that_made_you_feel_upset">Describe your situation that made you feel upset:</string>
+    <string name="app_name">CBT Pal</string>
     <string name="feelinggoodlink"><a href="http://www.feelinggood.com">feelinggood.com</a></string>
-    <!-- Test id-->
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/630097811</string>
-    <string name="preferences">Preferences</string>
     <string name="password_protect_key">encrypt_logentry_with_password_preference</string>
     <string name="drive_backup_key">drive_backup_key</string>
     <string name="backup_to_csv_key">backup_to_csv_key</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <!-- my id-->
-    <!--  <string name="banner_ad_unit_id">ca-app-pub-0694347371071565/6137388488</string>-->
+    <string name="title_activity_main">CBT Pal</string>
+    <string name="action_settings">Settings</string>
+    <string name="describe_situation">Create New Log</string>
+    <string name="review_logs">Review Past Logs</string>
+    <string name="select_emotions">Select Emotions</string>
+    <string name="thoughts_before">Initial Thoughts</string>
+    <string name="cognitive_distortions">Select Cognitive Distortions</string>
+    <string name="thoughts_after">Positive Thoughts</string>
+    <string name="thoughts_review">Review Initial Thoughts</string>
+    <string name="emotions_after">Emotions Review</string>
+    <string name="log_review">Log Review</string>
 
 </resources>

@@ -65,6 +65,7 @@ class LegacyDbMigrator @Inject constructor(
 
 
                     } catch (e: Exception) {
+                        db.close()
                         Log.e(
                             "mindbuilders",
                             "unable to parse database. Exiting ${e.message} ${e.stackTraceToString()}"

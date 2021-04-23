@@ -19,7 +19,7 @@ android {
 
     buildTypes {
         named("release") {
-            minifyEnabled(true)
+            minifyEnabled(false)
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -73,20 +73,20 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:${rootProject.extra["compose_version"]}")
     implementation("androidx.compose.runtime:runtime-livedata:${rootProject.extra["compose_version"]}")
 
-    //sqlcipher for migration purposes
-    implementation("net.zetetic:android-database-sqlcipher:4.4.3")
+    //sqlcipher for migration purposes... also, keeping at an old version (3.5.7) because 4.0.0 will not decrypt
+    implementation("net.zetetic:android-database-sqlcipher:3.5.7")
 
     //architectural components
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha01")
-    implementation("androidx.activity:activity-compose:1.3.0-alpha05")
+    implementation("androidx.activity:activity-compose:1.3.0-alpha07")
 
     //navigation
-    implementation("androidx.navigation:navigation-runtime:2.3.4")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.3.4")
-    implementation("androidx.navigation:navigation-ui-ktx:2.3.4")
-    implementation("androidx.navigation:navigation-compose:1.0.0-alpha09")
+    implementation("androidx.navigation:navigation-runtime:${rootProject.extra["navigation_version"]}")
+    implementation("androidx.navigation:navigation-fragment-ktx:${rootProject.extra["navigation_version"]}")
+    implementation("androidx.navigation:navigation-ui-ktx:${rootProject.extra["navigation_version"]}")
+    implementation("androidx.navigation:navigation-compose:1.0.0-alpha10")
 
     testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.test.ext:junit:1.1.2")

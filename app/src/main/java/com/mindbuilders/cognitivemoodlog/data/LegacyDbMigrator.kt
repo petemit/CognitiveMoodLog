@@ -79,7 +79,7 @@ class LegacyDbMigrator @Inject constructor(
                 with(e.message ?: "") {
                     when {
                         contains("Could not open database") -> preventFutureDbMigration()
-                        contains("file is not a database") -> {
+                        contains("file is encrypted or is not a database") -> {
                             migrationMediator.enterPasswordPrompt.value = true
                             return //end process
                         }

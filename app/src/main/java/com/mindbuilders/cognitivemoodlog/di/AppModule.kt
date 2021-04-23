@@ -24,8 +24,6 @@ interface AppModule {
             Realm.init(context)
 
             return RealmConfiguration.Builder()
-                //todo PLEASE REMOVE
-                .deleteRealmIfMigrationNeeded()
                 .build()
         }
 

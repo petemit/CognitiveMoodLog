@@ -21,7 +21,6 @@ fun CbtBar(
     TopAppBar(
         title = { Text(title, color = MaterialTheme.colors.onPrimary) },
         backgroundColor = MaterialTheme.colors.primarySurface,
-        //todo I don't love how this turned out. I  should hoist this behavior
         actions = actions)
 }
 

@@ -255,7 +255,7 @@ private val MIGRATION_SQL = """
                                          cd.description as cogdescription,
                                          emotion_id, elb.beliefbefore,
                                          elb.beliefafter,
-                                         emocatid,
+                                         e.emotioncategory_id,
                                          ec.name as ecname,
                                          e.name as emotionname 
                                         from logentry as l 

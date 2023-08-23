@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
 import com.mindbuilders.cognitivemoodlog.di.LogViewModelFactory
 import com.mindbuilders.cognitivemoodlog.di.LogViewModelSavedStateHandleFactory
@@ -41,16 +40,12 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val loadingState = viewModel.isLoading.observeAsState(initial = false)
-            val passwordState = viewModel.passwordState.observeAsState(false)
             CognitiveMoodLogTheme {
                 val navController = rememberNavController()
                 navController.saveState()
                 BuildNavHost(navController, viewModel)
 
                 Column {
-                    if (passwordState.value) {
-                        EnterPassword(applicationContext, viewModel)
-                    }
                     if (loadingState.value) {
                         ProgressView()
                     }
@@ -89,8 +84,6 @@ fun MainMenu(navController: NavController, viewModel: LogViewModel) {
             }
         }
     }
-
-
 }
 
 

@@ -8,7 +8,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
 import com.mindbuilders.cognitivemoodlog.nav.Screen
 import com.mindbuilders.cognitivemoodlog.view.LogViewModel
 

@@ -1,5 +1,6 @@
 package com.mindbuilders.cognitivemoodlog.ui
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,12 +18,12 @@ import androidx.compose.ui.platform.AndroidUriHandler
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.navigate
 import com.mindbuilders.cognitivemoodlog.data.privacyPolicy
 import com.mindbuilders.cognitivemoodlog.view.LogViewModel
 import com.mindbuilders.cognitivemoodlog.nav.Screen
 import androidx.compose.ui.platform.UriHandler
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun AppScaffold(
     //todo this function is too big.  I'd like to DI some of these things, but how do I do that with a function?

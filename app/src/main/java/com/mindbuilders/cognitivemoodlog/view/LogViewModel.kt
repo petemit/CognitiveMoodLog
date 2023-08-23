@@ -1,16 +1,11 @@
 package com.mindbuilders.cognitivemoodlog.view
 
-import android.content.Context
 import android.os.Bundle
 import androidx.lifecycle.*
 import com.mindbuilders.cognitivemoodlog.data.LogRepository
-import com.mindbuilders.cognitivemoodlog.data.MigrationMediator
-import com.mindbuilders.cognitivemoodlog.data.NEEDS_MIGRATION
-import com.mindbuilders.cognitivemoodlog.data.getSharedPreferences
 import com.mindbuilders.cognitivemoodlog.model.*
 import dagger.Lazy
 import io.realm.Realm
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
@@ -19,8 +14,7 @@ import kotlinx.coroutines.launch
 class LogViewModel constructor(
     val repository: LogRepository,
     private val realm: Lazy<Realm>,
-    private val handle: SavedStateHandle,
-    private val migrationMediator: MigrationMediator
+    private val handle: SavedStateHandle
 ) :
     ViewModel() {
 
@@ -71,17 +65,14 @@ class LogViewModel constructor(
     private val _isLoading: LiveData<Boolean> = _emotionList.map {
         it.isEmpty()
     }
-    private val _isMigrating = migrationMediator.migrationStatus.asLiveData(Dispatchers.IO)
 
     //This just acts as an aggregate event listener
     private val isLoadingAggregate: MediatorLiveData<Int> = MediatorLiveData<Int>()
 
     val isLoading: LiveData<Boolean> = isLoadingAggregate.map {
-        return@map _isLoading.value == true || _isMigrating.value == true
+        return@map _isLoading.value == true
     }.distinctUntilChanged()
 
-    //passwordState
-    val passwordState = migrationMediator.enterPasswordPrompt.asLiveData()
 
     //cognitive distortions
     private val _cognitiveDistortionList: MutableLiveData<List<CognitiveDistortion>> =
@@ -98,9 +89,6 @@ class LogViewModel constructor(
 
     init {
         isLoadingAggregate.value = 0
-        isLoadingAggregate.addSource(_isMigrating) {
-            isLoadingAggregate.value = isLoadingAggregate.value
-        }
         isLoadingAggregate.addSource(_isLoading) {
             isLoadingAggregate.value = isLoadingAggregate.value
         }
@@ -170,24 +158,6 @@ class LogViewModel constructor(
 
     fun updateLastNav(bundle: Bundle) {
         handle["lastRoute"] = bundle
-    }
-
-    fun exitPasswordState() {
-        migrationMediator.enterPasswordPrompt.value = false
-    }
-
-    fun setPassword(password: String) {
-        exitPasswordState()
-        migrationMediator.password.value = password
-        migrationMediator.needsRetry.value = true
-    }
-
-    fun stopMigration(context: Context) {
-        //todo dupe code, but since there's only 2 I'll roll with it rather than add needless coupling
-        context.getDatabasePath("CognitiveMoodLog.db").renameTo(context.getDatabasePath("CognitiveMoodLog_bak.db"))
-        context.getSharedPreferences()?.edit()?.putBoolean(NEEDS_MIGRATION, false)
-            ?.apply()
-        migrationMediator.migrationStatus.value = false
     }
 }
 
